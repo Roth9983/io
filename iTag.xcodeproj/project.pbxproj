@@ -1,0 +1,538 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A9F602CA1BCCE4E10008B52D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F602C91BCCE4E10008B52D /* main.m */; };
+		A9F602CD1BCCE4E10008B52D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F602CC1BCCE4E10008B52D /* AppDelegate.m */; };
+		A9F602D01BCCE4E10008B52D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F602CF1BCCE4E10008B52D /* ViewController.m */; };
+		A9F602D31BCCE4E10008B52D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9F602D11BCCE4E10008B52D /* Main.storyboard */; };
+		A9F602D61BCCE4E10008B52D /* iTag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A9F602D41BCCE4E10008B52D /* iTag.xcdatamodeld */; };
+		A9F602D81BCCE4E10008B52D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9F602D71BCCE4E10008B52D /* Assets.xcassets */; };
+		A9F602DB1BCCE4E10008B52D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9F602D91BCCE4E10008B52D /* LaunchScreen.storyboard */; };
+		A9F602E61BCCE4E10008B52D /* iTagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F602E51BCCE4E10008B52D /* iTagTests.m */; };
+		A9F602F11BCCE4E10008B52D /* iTagUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F602F01BCCE4E10008B52D /* iTagUITests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A9F602E21BCCE4E10008B52D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A9F602BD1BCCE4E10008B52D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A9F602C41BCCE4E10008B52D;
+			remoteInfo = iTag;
+		};
+		A9F602ED1BCCE4E10008B52D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A9F602BD1BCCE4E10008B52D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A9F602C41BCCE4E10008B52D;
+			remoteInfo = iTag;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A9F602C51BCCE4E10008B52D /* iTag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iTag.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9F602C91BCCE4E10008B52D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A9F602CB1BCCE4E10008B52D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A9F602CC1BCCE4E10008B52D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A9F602CE1BCCE4E10008B52D /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		A9F602CF1BCCE4E10008B52D /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		A9F602D21BCCE4E10008B52D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A9F602D51BCCE4E10008B52D /* iTag.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iTag.xcdatamodel; sourceTree = "<group>"; };
+		A9F602D71BCCE4E10008B52D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A9F602DA1BCCE4E10008B52D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A9F602DC1BCCE4E10008B52D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9F602E11BCCE4E10008B52D /* iTagTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iTagTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9F602E51BCCE4E10008B52D /* iTagTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iTagTests.m; sourceTree = "<group>"; };
+		A9F602E71BCCE4E10008B52D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9F602EC1BCCE4E10008B52D /* iTagUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iTagUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9F602F01BCCE4E10008B52D /* iTagUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iTagUITests.m; sourceTree = "<group>"; };
+		A9F602F21BCCE4E10008B52D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A9F602C21BCCE4E10008B52D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F602DE1BCCE4E10008B52D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F602E91BCCE4E10008B52D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A9F602BC1BCCE4E10008B52D = {
+			isa = PBXGroup;
+			children = (
+				A9F602C71BCCE4E10008B52D /* iTag */,
+				A9F602E41BCCE4E10008B52D /* iTagTests */,
+				A9F602EF1BCCE4E10008B52D /* iTagUITests */,
+				A9F602C61BCCE4E10008B52D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A9F602C61BCCE4E10008B52D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A9F602C51BCCE4E10008B52D /* iTag.app */,
+				A9F602E11BCCE4E10008B52D /* iTagTests.xctest */,
+				A9F602EC1BCCE4E10008B52D /* iTagUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A9F602C71BCCE4E10008B52D /* iTag */ = {
+			isa = PBXGroup;
+			children = (
+				A9F602CB1BCCE4E10008B52D /* AppDelegate.h */,
+				A9F602CC1BCCE4E10008B52D /* AppDelegate.m */,
+				A9F602CE1BCCE4E10008B52D /* ViewController.h */,
+				A9F602CF1BCCE4E10008B52D /* ViewController.m */,
+				A9F602D11BCCE4E10008B52D /* Main.storyboard */,
+				A9F602D71BCCE4E10008B52D /* Assets.xcassets */,
+				A9F602D91BCCE4E10008B52D /* LaunchScreen.storyboard */,
+				A9F602DC1BCCE4E10008B52D /* Info.plist */,
+				A9F602D41BCCE4E10008B52D /* iTag.xcdatamodeld */,
+				A9F602C81BCCE4E10008B52D /* Supporting Files */,
+			);
+			path = iTag;
+			sourceTree = "<group>";
+		};
+		A9F602C81BCCE4E10008B52D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A9F602C91BCCE4E10008B52D /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A9F602E41BCCE4E10008B52D /* iTagTests */ = {
+			isa = PBXGroup;
+			children = (
+				A9F602E51BCCE4E10008B52D /* iTagTests.m */,
+				A9F602E71BCCE4E10008B52D /* Info.plist */,
+			);
+			path = iTagTests;
+			sourceTree = "<group>";
+		};
+		A9F602EF1BCCE4E10008B52D /* iTagUITests */ = {
+			isa = PBXGroup;
+			children = (
+				A9F602F01BCCE4E10008B52D /* iTagUITests.m */,
+				A9F602F21BCCE4E10008B52D /* Info.plist */,
+			);
+			path = iTagUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A9F602C41BCCE4E10008B52D /* iTag */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9F602F51BCCE4E10008B52D /* Build configuration list for PBXNativeTarget "iTag" */;
+			buildPhases = (
+				A9F602C11BCCE4E10008B52D /* Sources */,
+				A9F602C21BCCE4E10008B52D /* Frameworks */,
+				A9F602C31BCCE4E10008B52D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iTag;
+			productName = iTag;
+			productReference = A9F602C51BCCE4E10008B52D /* iTag.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A9F602E01BCCE4E10008B52D /* iTagTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9F602F81BCCE4E10008B52D /* Build configuration list for PBXNativeTarget "iTagTests" */;
+			buildPhases = (
+				A9F602DD1BCCE4E10008B52D /* Sources */,
+				A9F602DE1BCCE4E10008B52D /* Frameworks */,
+				A9F602DF1BCCE4E10008B52D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A9F602E31BCCE4E10008B52D /* PBXTargetDependency */,
+			);
+			name = iTagTests;
+			productName = iTagTests;
+			productReference = A9F602E11BCCE4E10008B52D /* iTagTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A9F602EB1BCCE4E10008B52D /* iTagUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9F602FB1BCCE4E10008B52D /* Build configuration list for PBXNativeTarget "iTagUITests" */;
+			buildPhases = (
+				A9F602E81BCCE4E10008B52D /* Sources */,
+				A9F602E91BCCE4E10008B52D /* Frameworks */,
+				A9F602EA1BCCE4E10008B52D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A9F602EE1BCCE4E10008B52D /* PBXTargetDependency */,
+			);
+			name = iTagUITests;
+			productName = iTagUITests;
+			productReference = A9F602EC1BCCE4E10008B52D /* iTagUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A9F602BD1BCCE4E10008B52D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = NFC;
+				TargetAttributes = {
+					A9F602C41BCCE4E10008B52D = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+					A9F602E01BCCE4E10008B52D = {
+						CreatedOnToolsVersion = 7.0.1;
+						TestTargetID = A9F602C41BCCE4E10008B52D;
+					};
+					A9F602EB1BCCE4E10008B52D = {
+						CreatedOnToolsVersion = 7.0.1;
+						TestTargetID = A9F602C41BCCE4E10008B52D;
+					};
+				};
+			};
+			buildConfigurationList = A9F602C01BCCE4E10008B52D /* Build configuration list for PBXProject "iTag" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A9F602BC1BCCE4E10008B52D;
+			productRefGroup = A9F602C61BCCE4E10008B52D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A9F602C41BCCE4E10008B52D /* iTag */,
+				A9F602E01BCCE4E10008B52D /* iTagTests */,
+				A9F602EB1BCCE4E10008B52D /* iTagUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A9F602C31BCCE4E10008B52D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9F602DB1BCCE4E10008B52D /* LaunchScreen.storyboard in Resources */,
+				A9F602D81BCCE4E10008B52D /* Assets.xcassets in Resources */,
+				A9F602D31BCCE4E10008B52D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F602DF1BCCE4E10008B52D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F602EA1BCCE4E10008B52D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A9F602C11BCCE4E10008B52D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9F602D01BCCE4E10008B52D /* ViewController.m in Sources */,
+				A9F602CD1BCCE4E10008B52D /* AppDelegate.m in Sources */,
+				A9F602D61BCCE4E10008B52D /* iTag.xcdatamodeld in Sources */,
+				A9F602CA1BCCE4E10008B52D /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F602DD1BCCE4E10008B52D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9F602E61BCCE4E10008B52D /* iTagTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F602E81BCCE4E10008B52D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9F602F11BCCE4E10008B52D /* iTagUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A9F602E31BCCE4E10008B52D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A9F602C41BCCE4E10008B52D /* iTag */;
+			targetProxy = A9F602E21BCCE4E10008B52D /* PBXContainerItemProxy */;
+		};
+		A9F602EE1BCCE4E10008B52D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A9F602C41BCCE4E10008B52D /* iTag */;
+			targetProxy = A9F602ED1BCCE4E10008B52D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A9F602D11BCCE4E10008B52D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9F602D21BCCE4E10008B52D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A9F602D91BCCE4E10008B52D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9F602DA1BCCE4E10008B52D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A9F602F31BCCE4E10008B52D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A9F602F41BCCE4E10008B52D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A9F602F61BCCE4E10008B52D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = iTag/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTag;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A9F602F71BCCE4E10008B52D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = iTag/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTag;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		A9F602F91BCCE4E10008B52D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = iTagTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTagTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iTag.app/iTag";
+			};
+			name = Debug;
+		};
+		A9F602FA1BCCE4E10008B52D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = iTagTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTagTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iTag.app/iTag";
+			};
+			name = Release;
+		};
+		A9F602FC1BCCE4E10008B52D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = iTagUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTagUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = iTag;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		A9F602FD1BCCE4E10008B52D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = iTagUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTagUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = iTag;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A9F602C01BCCE4E10008B52D /* Build configuration list for PBXProject "iTag" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9F602F31BCCE4E10008B52D /* Debug */,
+				A9F602F41BCCE4E10008B52D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9F602F51BCCE4E10008B52D /* Build configuration list for PBXNativeTarget "iTag" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9F602F61BCCE4E10008B52D /* Debug */,
+				A9F602F71BCCE4E10008B52D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		A9F602F81BCCE4E10008B52D /* Build configuration list for PBXNativeTarget "iTagTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9F602F91BCCE4E10008B52D /* Debug */,
+				A9F602FA1BCCE4E10008B52D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		A9F602FB1BCCE4E10008B52D /* Build configuration list for PBXNativeTarget "iTagUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9F602FC1BCCE4E10008B52D /* Debug */,
+				A9F602FD1BCCE4E10008B52D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A9F602D41BCCE4E10008B52D /* iTag.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A9F602D51BCCE4E10008B52D /* iTag.xcdatamodel */,
+			);
+			currentVersion = A9F602D51BCCE4E10008B52D /* iTag.xcdatamodel */;
+			path = iTag.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = A9F602BD1BCCE4E10008B52D /* Project object */;
+}
