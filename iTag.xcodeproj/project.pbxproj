@@ -1201,7 +1201,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/iTag/Ble",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTag;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ihoin.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1220,7 +1220,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/iTag/Ble",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = NFC.iTag;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ihoin.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
