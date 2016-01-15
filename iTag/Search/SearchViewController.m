@@ -26,6 +26,8 @@ AlertViewController *alertVCSearch;
 UIView *alertViewSearch;
 NSTimer *beepTimer;
 int beepCount;
+ScanViewController *ScanS;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,6 +35,7 @@ int beepCount;
     
     searchUdf = [NSUserDefaults standardUserDefaults];
     alertVCSearch = [AlertViewController new];
+    ScanS = [ScanViewController new];
     
     [self setSearchUI];
 }
@@ -214,6 +217,7 @@ int beepCount;
     [beepTimer invalidate];
     beepTimer = nil;
     [sensor SendBuzzer:0 ontime:0 offtime:0 count:0];
+    [ScanS stopScan];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -231,14 +235,15 @@ int beepCount;
 }
 
 - (void)sendBuzzer{
-    [sensor SendBuzzer:true ontime:5 offtime:5 count:beepCount];
+    [sensor SendBuzzer:(BOOL *)true ontime:5 offtime:5 count:beepCount];
 }
 
 - (void)searchTag{
     if([[[NSUserDefaults standardUserDefaults] objectForKey:@"connect"] isEqualToString:@"y"]){
         [self beepWithCount];
     }else{
-        [self autoConnectTag];
+        [ScanS autoConnectTag];
+        //[self autoConnectTag];
     }
 }
 
@@ -258,90 +263,90 @@ int beepCount;
     //[sensor SendBuzzer:true ontime:1 offtime:1 count:3];
 }
 
-- (void)connectSensor:(BleController *)inController{
-    NSLog(@"connectSensor\n%@\n%@", [self UUIDtoString:inController.peripheral.identifier], [[NSUserDefaults standardUserDefaults] objectForKey:@"tagID"]);
-    if([[self UUIDtoString:inController.peripheral.identifier] isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:@"tagID"]]){
-        BleController *controller = inController;
-        
-        if (sensor.activePeripheral && sensor.activePeripheral != controller.peripheral) {
-            [sensor disconnect:sensor.activePeripheral];
-        }
-        
-        sensor.activePeripheral = controller.peripheral;
-        
-        [sensor connect:sensor.activePeripheral];
-        [sensor stopScan];
-        
-        BleController *ble = [[BleController alloc] init];
-        ble.sensor = sensor;
-        
-        [self setSensor];
-    }
-}
+//- (void)connectSensor:(BleController *)inController{
+//    NSLog(@"connectSensor\n%@\n%@", [self UUIDtoString:inController.peripheral.identifier], [[NSUserDefaults standardUserDefaults] objectForKey:@"tagID"]);
+//    if([[self UUIDtoString:inController.peripheral.identifier] isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:@"tagID"]]){
+//        BleController *controller = inController;
+//        
+//        if (sensor.activePeripheral && sensor.activePeripheral != controller.peripheral) {
+//            [sensor disconnect:sensor.activePeripheral];
+//        }
+//        
+//        sensor.activePeripheral = controller.peripheral;
+//        
+//        [sensor connect:sensor.activePeripheral];
+//        [sensor stopScan];
+//        
+//        BleController *ble = [[BleController alloc] init];
+//        ble.sensor = sensor;
+//        
+//        [self setSensor];
+//    }
+//}
+//
+//- (void)autoConnectTag{
+//    NSLog(@"autoConnectTag");
+//    
+//    sensor = [[SmcGATT alloc] init];
+//    [sensor setup];
+//    sensor.delegate = self;
+//    
+//    peripheralArrayS = [[NSMutableArray alloc] init];
+//    
+//    [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(scanBLEDevice) userInfo:nil repeats:NO];
+//}
+//- (void)scanBLEDevice{
+//    NSLog(@"scanBleDevice Search");
+//    if ([sensor activePeripheral]) {
+//        if (sensor.activePeripheral.state == CBPeripheralStateConnected) {
+//            [sensor.manager cancelPeripheralConnection:sensor.activePeripheral];
+//            sensor.activePeripheral = nil;
+//        }
+//    }
+//    
+//    if ([sensor peripherals]) {
+//        sensor.peripherals = nil;
+//        [peripheralArrayS removeAllObjects];
+//    }
+//    
+//    sensor.delegate = self;
+//    printf("S : now we are searching device...\n");
+//    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
+//    
+//    [sensor findHMSoftPeripherals:5];
+//}
 
-- (void)autoConnectTag{
-    NSLog(@"autoConnectTag");
-    
-    sensor = [[SmcGATT alloc] init];
-    [sensor setup];
-    sensor.delegate = self;
-    
-    peripheralArrayS = [[NSMutableArray alloc] init];
-    
-    [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(scanBLEDevice) userInfo:nil repeats:NO];
-}
-- (void)scanBLEDevice{
-    NSLog(@"scanBleDevice");
-    if ([sensor activePeripheral]) {
-        if (sensor.activePeripheral.state == CBPeripheralStateConnected) {
-            [sensor.manager cancelPeripheralConnection:sensor.activePeripheral];
-            sensor.activePeripheral = nil;
-        }
-    }
-    
-    if ([sensor peripherals]) {
-        sensor.peripherals = nil;
-        [peripheralArrayS removeAllObjects];
-    }
-    
-    sensor.delegate = self;
-    printf("now we are searching device...\n");
-    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
-    
-    [sensor findHMSoftPeripherals:5];
-}
+//-(void) scanTimer:(NSTimer *)timer
+//{
+//    NSLog(@"S : Auto connect : %ld", self.peripheralArrayS.count);
+//    
+//    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(connectTimeout) userInfo:nil repeats:NO];
+//}
 
--(void) scanTimer:(NSTimer *)timer
-{
-    NSLog(@"Auto connect : %ld", self.peripheralArrayS.count);
-    
-    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(connectTimeout) userInfo:nil repeats:NO];
-}
-
--(void) peripheralFound:(CBPeripheral *)peripheral rssi:(NSNumber *)rssi
-{
-    NSLog(@"peripheralFound");
-    BleController *controller = [[BleController alloc] init];
-    controller.peripheral = peripheral;
-    controller.sensor = sensor;
-    controller.rssi = rssi;
-    [peripheralArrayS addObject:controller];
-    
-    [self connectSensor:controller];
-}
+//-(void) peripheralFound:(CBPeripheral *)peripheral rssi:(NSNumber *)rssi
+//{
+//    NSLog(@"S : peripheralFound");
+//    BleController *controller = [[BleController alloc] init];
+//    controller.peripheral = peripheral;
+//    controller.sensor = sensor;
+//    controller.rssi = rssi;
+//    [peripheralArrayS addObject:controller];
+//    
+//    [self connectSensor:controller];
+//}
 
 //取得資料整理
 -(void) serialGATTCharValueUpdated:(NSData *)data
 {
     NSString *value = [self NSDataToHex:data];
-    NSLog(@"data     %@",value);
+    NSLog(@"S : data     %@",value);
 }
 
 
 //連線成功
 -(void)setConnect
 {
-    NSLog(@"OK+CONN");
+    NSLog(@"S : OK+CONN");
     [self beepWithCount];
     connectStateImageView.image = [UIImage imageNamed:@"light_g"];
 
@@ -352,7 +357,7 @@ int beepCount;
 //斷線
 -(void)setDisconnect
 {
-    NSLog(@"OK+LOST");
+    NSLog(@"S : OK+LOST");
     connectStateImageView.image = [UIImage imageNamed:@"light_r"];
     
     [[NSUserDefaults standardUserDefaults] setObject:@"n" forKey:@"connect"];
@@ -378,7 +383,8 @@ int beepCount;
         NSLog(@"try");
         searchWordImageView.image = [UIImage imageNamed:@"search1"];
         
-        [self autoConnectTag];
+        [ScanS autoConnectTag];
+        //[self autoConnectTag];
         
         [alertViewSearch removeFromSuperview];
         alertViewSearch = nil;

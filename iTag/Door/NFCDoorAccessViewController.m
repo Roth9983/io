@@ -214,17 +214,21 @@ UIView *alertViewDoor;
         key4Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
     }
     
+    NSAttributedString *placeholderOfKeyTextField = [[NSAttributedString alloc] initWithString:@"Input key's name" attributes:@{NSForegroundColorAttributeName : [UIColor colorWithRed:60.0/255.0 green:120.0/255.0 blue:180.0/255.0 alpha:1.0]}];
+    
     //key1
     [key1Button addTarget:self action:@selector(keyButtonPressed:) forControlEvents:UIControlEventAllTouchEvents];
     [key1Button addSubview:key1ImageView];
     key1Textfield.delegate = self;
     key1Textfield.tintColor = tintColor;
     key1Textfield.textColor = [UIColor whiteColor];
+    key1Textfield.attributedPlaceholder = placeholderOfKeyTextField;
     [key1Textfield addTarget:self action:@selector(keySelect:) forControlEvents:UIControlEventEditingDidBegin];
     [key1Textfield addTarget:self action:@selector(textFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
     [key1Button addSubview:key1Textfield];
     NSString *key = [NFCArray objectAtIndex:0];
     if([key isEqualToString:@"nil"]){
+        //key1Textfield.placeholder = placeholderOfKeyTextField;
         key1Textfield.enabled = false;
         key1ImageView.image = [UIImage imageNamed:@"key1_01"];
     }else{
@@ -235,12 +239,14 @@ UIView *alertViewDoor;
     }
     [self.view addSubview:key1Button];
     
+    
     //key2
     [key2Button addTarget:self action:@selector(keyButtonPressed:) forControlEvents:UIControlEventAllTouchEvents];
     [key2Button addSubview:key2ImageView];
     key2Textfield.delegate = self;
     key2Textfield.tintColor = tintColor;
     key2Textfield.textColor = [UIColor whiteColor];
+    key2Textfield.attributedPlaceholder = placeholderOfKeyTextField;
     [key2Textfield addTarget:self action:@selector(keySelect:) forControlEvents:UIControlEventEditingDidBegin];
     [key2Textfield addTarget:self action:@selector(textFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
     [key2Button addSubview:key2Textfield];
@@ -255,13 +261,14 @@ UIView *alertViewDoor;
             key2Textfield.text = [keyNameArray objectAtIndex:1];
     }
     [self.view addSubview:key2Button];
-
+    
     //key3
     [key3Button addTarget:self action:@selector(keyButtonPressed:) forControlEvents:UIControlEventAllTouchEvents];
     [key3Button addSubview:key3ImageView];
     key3Textfield.delegate = self;
     key3Textfield.tintColor = tintColor;
     key3Textfield.textColor = [UIColor whiteColor];
+    key3Textfield.attributedPlaceholder = placeholderOfKeyTextField;
     [key3Textfield addTarget:self action:@selector(keySelect:) forControlEvents:UIControlEventEditingDidBegin];
     [key3Textfield addTarget:self action:@selector(textFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
     [key3Button addSubview:key3Textfield];
@@ -283,6 +290,7 @@ UIView *alertViewDoor;
     key4Textfield.delegate = self;
     key4Textfield.tintColor = tintColor;
     key4Textfield.textColor = [UIColor whiteColor];
+    key4Textfield.attributedPlaceholder = placeholderOfKeyTextField;
     [key4Textfield addTarget:self action:@selector(keySelect:) forControlEvents:UIControlEventEditingDidBegin];
     [key4Textfield addTarget:self action:@selector(textFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
     [key4Button addSubview:key4Textfield];
@@ -358,6 +366,8 @@ UIView *alertViewDoor;
         [keyNameArray removeObjectAtIndex:3];
         [keyNameArray insertObject:textfield.text atIndex:3];
     }
+    
+    [self setNFCData];
     
     CGRect viewFrame = self.view.frame;
     viewFrame.origin.y += animatedDistance;
@@ -690,6 +700,7 @@ UIView *alertViewDoor;
     [NFCArray removeObjectAtIndex:chooseIndexOfKey];
     [NFCArray insertObject:@"nil" atIndex:chooseIndexOfKey];
     [self changeKeyUI:chooseIndexOfKey];
+    [self setNFCData];
 }
 
 - (IBAction)saveButtonPressed:(id)sender {
@@ -703,7 +714,9 @@ UIView *alertViewDoor;
             }
         }
         keyIDTextfield.text = nil;
+        saveButton.enabled = false;
         [self checkKeyStorage];
+        [self setNFCData];
     }
     NSLog(@"~~key :\ncount : %ld\n1 : %@\n2 : %@\n3 : %@\n4 : %@", NFCArray.count, [NFCArray objectAtIndex:0], [NFCArray objectAtIndex:1], [NFCArray objectAtIndex:2], [NFCArray objectAtIndex:3]);
 }

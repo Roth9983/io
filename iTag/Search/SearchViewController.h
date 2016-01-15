@@ -11,6 +11,7 @@
 #import "BleController.h"
 #import "SmcGATT.h"
 #import "AlertViewController.h"
+#import "ScanViewController.h"
 
 @interface SearchViewController : UIViewController<BTSmartSensorDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *connectStateImageView;

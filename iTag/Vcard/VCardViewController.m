@@ -152,6 +152,22 @@ CGFloat animatedDistanceV;
     [self.view bringSubviewToFront:vCardLoadButton];
 }
 
+- (void)setData{
+    [userDefaults setValue:nameTextField.text forKey:@"name"];
+    [userDefaults setValue:companyTextField.text forKey:@"company"];
+    [userDefaults setValue:titleTextField.text forKey:@"title"];
+    [userDefaults setValue:companyPhoneTextField.text forKey:@"companyPhone"];
+    [userDefaults setValue:addressTextField.text forKey:@"address"];
+    [userDefaults setValue:phoneTextField.text forKey:@"phone1"];
+    [userDefaults setValue:phone2TextField.text forKey:@"phone2"];
+    [userDefaults setValue:emailTextField.text forKey:@"email1"];
+    [userDefaults setValue:email2TextField.text forKey:@"email2"];
+    [userDefaults setValue:webTextField.text forKey:@"web"];
+    [userDefaults setValue:skypeTextField.text forKey:@"skype"];
+    [userDefaults setValue:QQTextField.text forKey:@"QQ"];
+    [userDefaults setValue:noteTextView.text forKey:@"note"];
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [nameTextField resignFirstResponder];
@@ -209,6 +225,8 @@ CGFloat animatedDistanceV;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textfield{
+    [self setData];
+    
     CGRect viewFrame = self.view.frame;
     viewFrame.origin.y += animatedDistanceV;
     
@@ -520,21 +538,6 @@ CGFloat animatedDistanceV;
     [alertViewVcard addGestureRecognizer:tap];
     
     [self.view addSubview:alertViewVcard];
-
-    
-    [userDefaults setValue:nameTextField.text forKey:@"name"];
-    [userDefaults setValue:companyTextField.text forKey:@"company"];
-    [userDefaults setValue:titleTextField.text forKey:@"title"];
-    [userDefaults setValue:companyPhoneTextField.text forKey:@"companyPhone"];
-    [userDefaults setValue:addressTextField.text forKey:@"address"];
-    [userDefaults setValue:phoneTextField.text forKey:@"phone1"];
-    [userDefaults setValue:phone2TextField.text forKey:@"phone2"];
-    [userDefaults setValue:emailTextField.text forKey:@"email1"];
-    [userDefaults setValue:email2TextField.text forKey:@"email2"];
-    [userDefaults setValue:webTextField.text forKey:@"web"];
-    [userDefaults setValue:skypeTextField.text forKey:@"skype"];
-    [userDefaults setValue:QQTextField.text forKey:@"QQ"];
-    [userDefaults setValue:noteTextView.text forKey:@"note"];
 }
 
 - (void)connectErrorButtonPressed:(UIButton *)button{
