@@ -27,6 +27,7 @@ UIView *alertView;
 
 @synthesize sensor;
 
+#pragma mark view controller life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -58,6 +59,137 @@ UIView *alertView;
     [self setMainUI];
 }
 
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"viewWillDisappear");
+    self.sensor.delegate = nil;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    NSLog(@"viewWillAppear");
+    
+    self.sensor.delegate = (ViewController *) self;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    NSLog(@"viewDidAppear");//View 呈現後
+    
+    //CBPeripheral *cp = (CBPeripheral*)[[mainUdf arrayForKey:@"device"] objectAtIndex:0];
+    //NSLog(@"cp : %@", cp.identifier);
+    if(firstSet){
+        NSLog(@"first use scan");
+        firstSet = false;
+        UIViewController *scan = [self.storyboard instantiateViewControllerWithIdentifier:@"scan"];
+        [self presentViewController:scan animated:NO completion:nil];
+        BleController *shareBERController = [BleController sharedController];
+        sensor = shareBERController.sensor;
+        sensor.delegate = self;
+    }else{
+        NSLog(@"auto connect");
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(udfHandle)
+                                                     name:NSUserDefaultsDidChangeNotification
+                                                   object:nil];
+        
+        if([[mainUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
+            NSLog(@"pair io");
+            [alertView removeFromSuperview];
+            alertView = nil;
+            alertView = [alertVC alertCustom:@"Please pair the io !"];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertView addGestureRecognizer:tap];
+            [self.view addSubview:alertView];
+        }else if(![[mainUdf objectForKey:@"connect"] isEqualToString:@"y"] && ![[mainUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
+            NSLog(@"no connect");
+            
+            [scanV autoConnectTag];
+            //[scanV autoConnectTag2:[mainUdf objectForKey:@"tagID"]];
+            //NSUUID *uuid = [[NSUUID UUID] initWithUUIDString:[mainUdf objectForKey:@"tagID"]];
+            
+            [alertView removeFromSuperview];
+            alertView = nil;
+            alertView = [alertVC alertConnecting];
+            
+            [self.view addSubview:alertView];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
+            [alertView addGestureRecognizer:tap];
+            
+        }else{
+            BleController *shareBERController = [BleController sharedController];
+            sensor = shareBERController.sensor;
+            sensor.delegate = self;
+        }
+    }
+    NSLog(@"finish auto connect");
+    
+    NSLog(@"Name : %@",sensor.activePeripheral.name);
+}
+
+#pragma mark main UI setting
+- (void)setMainUI{
+    float wRatio = [alertVC getSizeWRatio];
+    float hRatio = [alertVC getSizeHRatio];
+    
+    [self.view addSubview:[alertVC setBGImageView:[UIImage imageNamed:@"bg_main"]]];
+    
+    [self.view bringSubviewToFront:powerImageview];
+    [self.view bringSubviewToFront:settingsButton];
+    [self.view bringSubviewToFront:vCardButton];
+    [self.view bringSubviewToFront:doorAccessButton];
+    [self.view bringSubviewToFront:autoPhotoButton];
+    [self.view bringSubviewToFront:searchButton];
+    
+    [powerImageview setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [settingsButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [vCardButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [doorAccessButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [autoPhotoButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [searchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    
+    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
+        [powerImageview setFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
+        [settingsButton setFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
+        [vCardButton setFrame:CGRectMake(108*wRatio, 268*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
+        [doorAccessButton setFrame:CGRectMake(222*wRatio, 369*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
+        [autoPhotoButton setFrame:CGRectMake(113*wRatio, 468*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
+        [searchButton setFrame:CGRectMake(216*wRatio, 568*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
+    }else{
+        [powerImageview setFrame:CGRectMake(412*wRatio, 47*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
+        
+        [settingsButton setFrame:CGRectMake(550*wRatio, 28*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
+        [vCardButton setFrame:CGRectMake(243*wRatio, 394*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
+        [doorAccessButton setFrame:CGRectMake(406*wRatio, 537*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
+        [autoPhotoButton setFrame:CGRectMake(251*wRatio, 679*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
+        [searchButton setFrame:CGRectMake(398*wRatio, 823*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
+    }
+    
+    [settingsButton setImage:[UIImage imageNamed:@"setting02"] forState:UIControlStateHighlighted];
+    [vCardButton setImage:[UIImage imageNamed:@"vcard02"] forState:UIControlStateHighlighted];
+    [doorAccessButton setImage:[UIImage imageNamed:@"key02"] forState:UIControlStateHighlighted];
+    [autoPhotoButton setImage:[UIImage imageNamed:@"selfie02"] forState:UIControlStateHighlighted];
+    [searchButton setImage:[UIImage imageNamed:@"find02"] forState:UIControlStateHighlighted];
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark handle connect state
 - (void) udfHandle{
     BleController *shareBERController = [BleController sharedController];
     sensor = shareBERController.sensor;
@@ -132,116 +264,6 @@ UIView *alertView;
     }
 }
 
-- (void)setMainUI{
-    float wRatio = [alertVC getSizeWRatio];
-    float hRatio = [alertVC getSizeHRatio];
-    
-    [self.view addSubview:[alertVC setBGImageView:[UIImage imageNamed:@"bg_main"]]];
-    
-    [self.view bringSubviewToFront:powerImageview];
-    [self.view bringSubviewToFront:settingsButton];
-    [self.view bringSubviewToFront:vCardButton];
-    [self.view bringSubviewToFront:doorAccessButton];
-    [self.view bringSubviewToFront:autoPhotoButton];
-    [self.view bringSubviewToFront:searchButton];
-    
-    [powerImageview setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [settingsButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [vCardButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [doorAccessButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [autoPhotoButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [searchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    
-    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
-        [powerImageview setFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
-        [settingsButton setFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
-        [vCardButton setFrame:CGRectMake(108*wRatio, 268*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
-        [doorAccessButton setFrame:CGRectMake(222*wRatio, 369*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
-        [autoPhotoButton setFrame:CGRectMake(113*wRatio, 468*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
-        [searchButton setFrame:CGRectMake(216*wRatio, 568*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
-    }else{
-        [powerImageview setFrame:CGRectMake(412*wRatio, 47*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
-
-        [settingsButton setFrame:CGRectMake(550*wRatio, 28*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
-        [vCardButton setFrame:CGRectMake(243*wRatio, 394*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
-        [doorAccessButton setFrame:CGRectMake(406*wRatio, 537*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
-        [autoPhotoButton setFrame:CGRectMake(251*wRatio, 679*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
-        [searchButton setFrame:CGRectMake(398*wRatio, 823*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
-    }
-    
-    [settingsButton setImage:[UIImage imageNamed:@"setting02"] forState:UIControlStateHighlighted];
-    [vCardButton setImage:[UIImage imageNamed:@"vcard02"] forState:UIControlStateHighlighted];
-    [doorAccessButton setImage:[UIImage imageNamed:@"key02"] forState:UIControlStateHighlighted];
-    [autoPhotoButton setImage:[UIImage imageNamed:@"selfie02"] forState:UIControlStateHighlighted];
-    [searchButton setImage:[UIImage imageNamed:@"find02"] forState:UIControlStateHighlighted];
-}
-
-- (void) viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    NSLog(@"viewWillDisappear");
-    self.sensor.delegate = nil;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    NSLog(@"viewDidAppear");//View 呈現後
-    
-    //CBPeripheral *cp = (CBPeripheral*)[[mainUdf arrayForKey:@"device"] objectAtIndex:0];
-    //NSLog(@"cp : %@", cp.identifier);
-    if(firstSet){
-        NSLog(@"first use scan");
-        firstSet = false;
-        UIViewController *scan = [self.storyboard instantiateViewControllerWithIdentifier:@"scan"];
-        [self presentViewController:scan animated:NO completion:nil];
-        BleController *shareBERController = [BleController sharedController];
-        sensor = shareBERController.sensor;
-        sensor.delegate = self;
-    }else{
-        NSLog(@"auto connect");
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(udfHandle)
-                                                     name:NSUserDefaultsDidChangeNotification
-                                                   object:nil];
-        
-        if([[mainUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
-            NSLog(@"pair io");
-            [alertView removeFromSuperview];
-            alertView = nil;
-            alertView = [alertVC alertCustom:@"Please pair the io !"];
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-            [alertView addGestureRecognizer:tap];
-            [self.view addSubview:alertView];
-        }else if(![[mainUdf objectForKey:@"connect"] isEqualToString:@"y"] && ![[mainUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
-            NSLog(@"no connect");
-            
-            [scanV autoConnectTag];
-            //[scanV autoConnectTag2:[mainUdf objectForKey:@"tagID"]];
-            //NSUUID *uuid = [[NSUUID UUID] initWithUUIDString:[mainUdf objectForKey:@"tagID"]];
-            
-            [alertView removeFromSuperview];
-            alertView = nil;
-            alertView = [alertVC alertConnecting];
-            
-            [self.view addSubview:alertView];
-            
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
-            [alertView addGestureRecognizer:tap];
-            
-        }else{
-            BleController *shareBERController = [BleController sharedController];
-            sensor = shareBERController.sensor;
-            sensor.delegate = self;
-        }
-    }
-    NSLog(@"finish auto connect");
-
-    NSLog(@"Name : %@",sensor.activePeripheral.name);
-}
 
 - (void)tapToStopConnect{
     [alertView removeFromSuperview];
@@ -250,62 +272,28 @@ UIView *alertView;
     [scanV stopScan];
 }
 
-- (IBAction)goback:(id)sender {
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]){
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated{
-    NSLog(@"viewWillAppear");
-
-    self.sensor.delegate = (ViewController *) self;
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
-- (BOOL)shouldAutorotate{
-    return YES;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (IBAction)toVCard:(id)sender {
-//    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
-        UIViewController *vCard = [self.storyboard instantiateViewControllerWithIdentifier:@"vCard"];
-        [self presentViewController:vCard animated:YES completion:nil];
-//    }else{
-//        [self setAlertConnectToIO];
+//- (IBAction)goback:(id)sender {
+//    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]){
+//        self.edgesForExtendedLayout = UIRectEdgeNone;
 //    }
+//    
+//}
+
+#pragma mark button actions
+- (IBAction)toVCard:(id)sender {
+    UIViewController *vCard = [self.storyboard instantiateViewControllerWithIdentifier:@"vCard"];
+    [self presentViewController:vCard animated:YES completion:nil];
 }
 
 - (IBAction)toDoorAccess:(id)sender {
-//    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
-        UIViewController *door = [self.storyboard instantiateViewControllerWithIdentifier:@"door"];
-        [self presentViewController:door animated:YES completion:nil];
-//    }else{
-//        [self setAlertConnectToIO];
-//    }
+    UIViewController *door = [self.storyboard instantiateViewControllerWithIdentifier:@"door"];
+    [self presentViewController:door animated:YES completion:nil];
 }
 
 
 - (IBAction)toAutoTake:(id)sender {
-//    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
-        UIViewController *camera = [self.storyboard instantiateViewControllerWithIdentifier:@"camera"];
-        [self presentViewController:camera animated:YES completion:nil];
-//    }else{
-//        [self setAlertConnectToIO];
-//    }
+    UIViewController *camera = [self.storyboard instantiateViewControllerWithIdentifier:@"camera"];
+    [self presentViewController:camera animated:YES completion:nil];
 }
 
 - (IBAction)toSet:(id)sender {
@@ -314,30 +302,17 @@ UIView *alertView;
 }
 
 - (IBAction)toSearch:(id)sender {
-//    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
-        UIViewController *search = [self.storyboard instantiateViewControllerWithIdentifier:@"search"];
-        [self presentViewController:search animated:YES completion:nil];
-//    }else{
-//        [self setAlertConnectToIO];
-//    }
+    UIViewController *search = [self.storyboard instantiateViewControllerWithIdentifier:@"search"];
+    [self presentViewController:search animated:YES completion:nil];
 }
 
-- (void)setAlertConnectToIO{
-    [alertView removeFromSuperview];
-    alertView = nil;
-    alertView = [alertVC alertCustom:@"Please connect io !"];
-    [self.view addSubview:alertView];
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-    [alertView addGestureRecognizer:tap];
-}
-
+#pragma mark BTSmartSensorDelegate
 //取得資料整理
 -(void) serialGATTCharValueUpdated:(NSData *)data
 {
     NSString *value = [self NSDataToHex:data];
     NSLog(@"data     %@",value);
 }
-
 
 //連線成功
 -(void)setConnect
@@ -365,6 +340,11 @@ UIView *alertView;
         [hexStr appendFormat:@"%02x", dbytes[i]];
     }
     return [NSString stringWithString: hexStr];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 @end

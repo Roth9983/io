@@ -41,6 +41,10 @@ ScanViewController *ScanS;
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+    [self startRadarAnimation];
+}
+
+- (void)startRadarAnimation{
     [self runSpinAnimationOnView:radar1ImageView clockwise:1 rotation:0.5];
     [self runSpinAnimationOnView:radar2ImageView clockwise:-1 rotation:0.3];
     [self runSpinAnimationOnView:radar3ImageView clockwise:1 rotation:0.25];
@@ -185,8 +189,13 @@ ScanViewController *ScanS;
     sensor.delegate = self;
     NSLog(@"Name : %@",sensor.activePeripheral.name);
     [self searchTag];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udfHandle) name:NSUserDefaultsDidChangeNotification object:nil];
 }
 
+- (void)udfHandle{
+    //TODO
+}
 
 - (void) viewWillDisappear:(BOOL)animated
 {
