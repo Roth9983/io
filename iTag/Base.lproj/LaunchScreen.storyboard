@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8150" systemVersion="15A204g" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1509" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8122"/>
+        <deployment version="2048" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -15,13 +16,90 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
+                        <subviews>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="launch_L.png" translatesAutoresizingMaskIntoConstraints="NO" id="Hxy-h4-O6x">
+                                <rect key="frame" x="0.0" y="-375" width="667" height="375"/>
+                            </imageView>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="launch_ipad.png" translatesAutoresizingMaskIntoConstraints="NO" id="O2o-Cc-nrE">
+                                <rect key="frame" x="0.0" y="-1024" width="768" height="1024"/>
+                            </imageView>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="launch_ipad2.png" translatesAutoresizingMaskIntoConstraints="NO" id="Yon-dh-Lqz">
+                                <rect key="frame" x="0.0" y="-768" width="1024" height="768"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="launchP.png" translatesAutoresizingMaskIntoConstraints="NO" id="6y0-Q3-2h9">
+                                <rect key="frame" x="0.0" y="-667" width="375" height="667"/>
+                            </imageView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Hxy-h4-O6x" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="HrC-um-yL2"/>
+                            <constraint firstItem="6y0-Q3-2h9" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Huj-uJ-2vk"/>
+                            <constraint firstItem="Yon-dh-Lqz" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Krf-2L-sXk"/>
+                            <constraint firstItem="Hxy-h4-O6x" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="RLk-sO-hxi"/>
+                            <constraint firstItem="O2o-Cc-nrE" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="ZQ6-SC-C4x"/>
+                            <constraint firstItem="O2o-Cc-nrE" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="adO-Bg-7qI"/>
+                            <constraint firstItem="6y0-Q3-2h9" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="ptQ-lv-ugt"/>
+                            <constraint firstItem="Yon-dh-Lqz" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="z9O-dY-Lps"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="Hxy-h4-O6x"/>
+                                <exclude reference="O2o-Cc-nrE"/>
+                                <exclude reference="Yon-dh-Lqz"/>
+                                <exclude reference="6y0-Q3-2h9"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="HrC-um-yL2"/>
+                                <exclude reference="RLk-sO-hxi"/>
+                                <exclude reference="ZQ6-SC-C4x"/>
+                                <exclude reference="adO-Bg-7qI"/>
+                                <exclude reference="Krf-2L-sXk"/>
+                                <exclude reference="z9O-dY-Lps"/>
+                                <exclude reference="Huj-uJ-2vk"/>
+                                <exclude reference="ptQ-lv-ugt"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="subviews">
+                                <include reference="Hxy-h4-O6x"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="HrC-um-yL2"/>
+                                <include reference="RLk-sO-hxi"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="6y0-Q3-2h9"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="Huj-uJ-2vk"/>
+                                <include reference="ptQ-lv-ugt"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="subviews">
+                                <include reference="O2o-Cc-nrE"/>
+                                <include reference="Yon-dh-Lqz"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="ZQ6-SC-C4x"/>
+                                <include reference="adO-Bg-7qI"/>
+                                <include reference="Krf-2L-sXk"/>
+                                <include reference="z9O-dY-Lps"/>
+                            </mask>
+                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="404" y="336"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="launchP.png" width="375" height="667"/>
+        <image name="launch_L.png" width="667" height="375"/>
+        <image name="launch_ipad.png" width="768" height="1024"/>
+        <image name="launch_ipad2.png" width="1024" height="768"/>
+    </resources>
 </document>
