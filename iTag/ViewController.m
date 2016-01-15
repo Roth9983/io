@@ -281,32 +281,31 @@ UIView *alertView;
 }
 
 - (IBAction)toVCard:(id)sender {
-    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
+//    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
         UIViewController *vCard = [self.storyboard instantiateViewControllerWithIdentifier:@"vCard"];
         [self presentViewController:vCard animated:YES completion:nil];
-    }else{
-        [self setAlertConnectToIO];
-    }
+//    }else{
+//        [self setAlertConnectToIO];
+//    }
 }
 
 - (IBAction)toDoorAccess:(id)sender {
-    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
+//    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
         UIViewController *door = [self.storyboard instantiateViewControllerWithIdentifier:@"door"];
         [self presentViewController:door animated:YES completion:nil];
-    }else{
-        [self setAlertConnectToIO];
-    }
+//    }else{
+//        [self setAlertConnectToIO];
+//    }
 }
 
 
 - (IBAction)toAutoTake:(id)sender {
-    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
+//    if([[mainUdf objectForKey:@"connect"] isEqualToString:@"y"]){
         UIViewController *camera = [self.storyboard instantiateViewControllerWithIdentifier:@"camera"];
         [self presentViewController:camera animated:YES completion:nil];
-    }else{
-        [self setAlertConnectToIO];
-    }
-
+//    }else{
+//        [self setAlertConnectToIO];
+//    }
 }
 
 - (IBAction)toSet:(id)sender {
