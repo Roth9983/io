@@ -264,7 +264,6 @@ UIView *alertView;
     }
 }
 
-
 - (void)tapToStopConnect{
     [alertView removeFromSuperview];
     alertView = nil;

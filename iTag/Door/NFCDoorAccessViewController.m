@@ -41,6 +41,7 @@ UIImageView *key1ImageView, *key2ImageView, *key3ImageView, *key4ImageView;
 AlertViewController *alertVCDoor;
 UIView *alertViewDoor;
 
+#pragma mark door view controller life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -56,20 +57,21 @@ UIView *alertViewDoor;
     deleteButton.enabled = false;
 }
 
-- (int)checkKeyStorage{
-    int keyStorage = 0;
-    for(int i=0;i<4;i++){
-        if([[NFCArray objectAtIndex:i] isEqualToString:@"nil"]){
-            keyStorage++;
-        }
-    }
-    if(keyStorage == 0){
-        saveButton.enabled = false;
-    }
-    NSLog(@"storage %d", keyStorage);
-    return keyStorage;
+- (void)viewWillAppear:(BOOL)animated{
+    NSLog(@"door");
+    BleController *shareBERController = [BleController sharedController];
+    sensor = shareBERController.sensor;
+    sensor.delegate = self;
+    NSLog(@"Name : %@",sensor.activePeripheral.name);
 }
 
+- (void) viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    NSLog(@"door exit"); //view 將要結束
+    self.sensor.delegate = nil;
+}
+
+#pragma mark door UI setting
 - (void)setDoorUI{
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
@@ -129,28 +131,6 @@ UIView *alertViewDoor;
     
     [self setKeyUI];
 }
-
-- (void)tapAtnoTapView{
-    //NSLog(@"tapAtnoTapView");
-}
-
-- (void)tapActive:(UIGestureRecognizer *)ges{
-    //NSLog(@"tap at bg");
-    keyIDTextfield.text = nil;
-    [keySelectImageview setFrame:CGRectMake(0, 0, 0, 0)];
-    deleteButton.enabled = false;
-    keyIDTextfield.enabled = true;
-    key1Textfield.enabled = false;
-    key2Textfield.enabled = false;
-    key3Textfield.enabled = false;
-    key4Textfield.enabled = false;
-    chooseIndexOfKey = 4;
-    [self textFieldDone:key1Textfield];
-    [self textFieldDone:key2Textfield];
-    [self textFieldDone:key3Textfield];
-    [self textFieldDone:key4Textfield];
-}
-
 - (void)setKeyUI{
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
@@ -168,19 +148,19 @@ UIView *alertViewDoor;
         key1ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(42*wRatio, (key1Button.bounds.size.height-49*hRatio)/2, 50*wRatio, 49*hRatio)];
         key1Textfield = [[UITextField alloc] initWithFrame:CGRectMake((42+50+10)*wRatio, (key1Button.bounds.size.height-30)/2, key1Button.bounds.size.width-(42+50+30)*wRatio, 30)];
         key1Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
-    
+        
         //key2
         key2Button = [[UIButton alloc] initWithFrame:CGRectMake(24*wRatio, 390*hRatio, 367*wRatio, 88*hRatio)];
         key2ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(42*wRatio, (key2Button.bounds.size.height-49*hRatio)/2, 50*wRatio, 49*hRatio)];
         key2Textfield = [[UITextField alloc] initWithFrame:CGRectMake((42+50+10)*wRatio, (key2Button.bounds.size.height-30)/2, key2Button.bounds.size.width-(42+50+30)*wRatio, 30)];
         key2Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
-    
+        
         //key3
         key3Button = [[UIButton alloc] initWithFrame:CGRectMake(24*wRatio, 469*hRatio, 367*wRatio, 88*hRatio)];
         key3ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(42*wRatio, (key3Button.bounds.size.height-49*hRatio)/2, 50*wRatio, 49*hRatio)];
         key3Textfield = [[UITextField alloc] initWithFrame:CGRectMake((42+50+10)*wRatio, (key3Button.bounds.size.height-30)/2, key3Button.bounds.size.width-(42+50+30)*wRatio, 30)];
         key3Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
-    
+        
         //key4
         key4Button = [[UIButton alloc] initWithFrame:CGRectMake(24*wRatio, 548*hRatio, 367*wRatio, 88*hRatio)];
         key4ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(42*wRatio, (key4Button.bounds.size.height-49*hRatio)/2, 50*wRatio, 49*hRatio)];
@@ -307,6 +287,227 @@ UIView *alertViewDoor;
     [self.view addSubview:key4Button];
 }
 
+- (void)tapAtnoTapView{
+    //NSLog(@"tapAtnoTapView");
+}
+
+- (void)tapActive:(UIGestureRecognizer *)ges{
+    //NSLog(@"tap at bg");
+    keyIDTextfield.text = nil;
+    [keySelectImageview setFrame:CGRectMake(0, 0, 0, 0)];
+    deleteButton.enabled = false;
+    keyIDTextfield.enabled = true;
+    key1Textfield.enabled = false;
+    key2Textfield.enabled = false;
+    key3Textfield.enabled = false;
+    key4Textfield.enabled = false;
+    chooseIndexOfKey = 4;
+    [self textFieldDone:key1Textfield];
+    [self textFieldDone:key2Textfield];
+    [self textFieldDone:key3Textfield];
+    [self textFieldDone:key4Textfield];
+}
+
+- (void)changeKeyUI:(int)index{
+    //delete or save
+    bool editEnable;
+    NSString *keytype;
+    if([[NFCArray objectAtIndex:index] isEqualToString:@"nil"]){
+        keytype = @"1";
+        editEnable = false;
+        [keyNameArray removeObjectAtIndex:index];
+        [keyNameArray insertObject:@"nil" atIndex:index];
+    }else{
+        keytype = @"2";
+        editEnable = true;
+    }
+    switch (index) {
+        case 0:
+            key1Textfield.text = nil;
+            key1Textfield.enabled = editEnable;
+            key1ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
+            break;
+        case 1:
+            key2Textfield.text = nil;
+            key2Textfield.enabled = editEnable;
+            key2ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
+            break;
+        case 2:
+            key3Textfield.text = nil;
+            key3Textfield.enabled = editEnable;
+            key3ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
+            break;
+        case 3:
+            key4Textfield.text = nil;
+            key4Textfield.enabled = editEnable;
+            key4ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
+            break;
+        default:
+            break;
+    }
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark handle connect state
+- (void) udfHandle{
+    BleController *shareBERController = [BleController sharedController];
+    sensor = shareBERController.sensor;
+    sensor.delegate = self;
+    
+    NSString *str = [[NSUserDefaults standardUserDefaults] objectForKey:@"connect"];
+    
+    if([str isEqualToString:@"y"]){
+        NSLog(@"connect state : success");
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+        
+        [self sendData];
+        
+        [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+    }else if([str isEqualToString:@"n"]){
+        NSLog(@"connect state : failed");
+        
+        [alertViewDoor removeFromSuperview];
+        alertViewDoor = nil;
+        alertViewDoor = [alertVCDoor alertConnectError];
+        
+        [self.view addSubview:alertViewDoor];
+        
+        UIButton *tryButton = [alertVCDoor getTryBurtton];
+        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIButton *cancelButton = [alertVCDoor getCancelButton];
+        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [alertViewDoor addSubview:tryButton];
+        [alertViewDoor addSubview:cancelButton];
+        
+    }else if([str isEqualToString:@"t"]){
+        NSLog(@"connect state : timeout");
+        
+        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(connectTimeout) userInfo:nil repeats:NO];
+    }
+}
+
+- (void)connectErrorButtonPressed:(UIButton *)button{
+    if(button.tag == 0){
+        NSLog(@"try");
+        ScanViewController *scanV = [[ScanViewController alloc] init];
+        [scanV autoConnectTag];
+        
+        [alertViewDoor removeFromSuperview];
+        alertViewDoor = nil;
+        alertViewDoor = [alertVCDoor alertConnecting];
+        [self.view addSubview:alertViewDoor];
+    }else{
+        NSLog(@"cancel");
+        [button.superview removeFromSuperview];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+    }
+}
+
+- (void)connectTimeout{
+    if(![[[NSUserDefaults standardUserDefaults] objectForKey:@"connect"] isEqualToString:@"y"])
+        [[NSUserDefaults standardUserDefaults] setObject:@"n" forKey:@"connect"];
+}
+
+- (void)dismissAlert{
+    NSLog(@"dismiss alert");
+    if(alertViewDoor != nil){
+        [alertViewDoor removeFromSuperview];
+        alertViewDoor = nil;
+    }
+}
+
+- (void)sendData{
+    //load data to band
+    NSString *index=@"";
+    [StringArray removeAllObjects];
+    int j=0;
+    count = 0;
+    for(int i=0;i<[NFCArray count];i++){
+        
+        if(j==0)
+            index = @"F0";
+        if(j==1)
+            index = @"F4";
+        if(j==2)
+            index = @"F8";
+        if(j==3)
+            index = @"FC";
+        
+        
+        NSString *key = [NFCArray objectAtIndex:i];
+        if(key != nil){
+            NSString *data = [NSString stringWithFormat:@"0223%@04000004%@000000000000000%lu",index,[NFCArray objectAtIndex:i],(unsigned long)[NFCArray count]];
+            [StringArray addObject:data];
+        }
+        
+        j++;
+    }
+    [sensor SendData:[StringArray objectAtIndex:0]];
+}
+
+#pragma mark set and get data
+- (void)getNFCData{
+    if([[NSUserDefaults standardUserDefaults] arrayForKey:@"door"].count != 0){
+        NFCArray = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"door"]];
+        keyNameArray = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"keyName"]];
+    }else{
+        NFCArray = [[NSMutableArray alloc] initWithObjects:@"nil", @"nil", @"nil", @"nil", nil];
+        keyNameArray = [[NSMutableArray alloc] initWithObjects:@"nil", @"nil", @"nil", @"nil", nil];
+    }
+}
+
+- (void)setNFCData{
+    [[NSUserDefaults standardUserDefaults] setObject:NFCArray forKey:@"door"];
+    [[NSUserDefaults standardUserDefaults] setObject:keyNameArray forKey:@"keyName"];
+}
+
+#pragma mark check key's state
+- (int)checkKeyStorage{
+    int keyStorage = 0;
+    for(int i=0;i<4;i++){
+        if([[NFCArray objectAtIndex:i] isEqualToString:@"nil"]){
+            keyStorage++;
+        }
+    }
+    if(keyStorage == 0){
+        saveButton.enabled = false;
+    }
+    NSLog(@"storage %d", keyStorage);
+    return keyStorage;
+}
+
+- (BOOL)checkKeyAtIndexNotEmptyToDelete:(int)index{
+    BOOL isFull = false;
+    //isEdit = false;
+    if(![[NFCArray objectAtIndex:index] isEqualToString:@"nil"]){
+        isFull = true;
+        
+        deleteButton.enabled = true;
+        keyIDTextfield.enabled = false;
+    }else{
+        isFull = false;
+        
+        deleteButton.enabled = false;
+        keyIDTextfield.enabled = true;
+    }
+    return isFull;
+}
+
+#pragma mark text field delegate
 - (void)textFieldDone:(UITextField *)textField{
     [textField resignFirstResponder];
 }
@@ -381,6 +582,7 @@ UIView *alertViewDoor;
     [UIView commitAnimations];
 }
 
+#pragma mark detect and handle key is selected
 - (void)keySelect:(UITextField *)textField{
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
@@ -469,65 +671,7 @@ UIView *alertViewDoor;
     [self.view addSubview:keySelectImageview];
 }
 
-- (BOOL)checkKeyAtIndexNotEmptyToDelete:(int)index{
-    BOOL isFull = false;
-    //isEdit = false;
-    if(![[NFCArray objectAtIndex:index] isEqualToString:@"nil"]){
-        isFull = true;
-        
-        deleteButton.enabled = true;
-        keyIDTextfield.enabled = false;
-    }else{
-        isFull = false;
-        
-        deleteButton.enabled = false;
-        keyIDTextfield.enabled = true;
-    }
-    return isFull;
-}
-
-- (void)viewWillAppear:(BOOL)animated{
-    NSLog(@"door");
-    BleController *shareBERController = [BleController sharedController];
-    sensor = shareBERController.sensor;
-    sensor.delegate = self;
-    NSLog(@"Name : %@",sensor.activePeripheral.name);
-}
-
-- (void) viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    NSLog(@"door exit"); //view 將要結束
-    self.sensor.delegate = nil;
-}
-
-
-- (void)getNFCData{
-    if([[NSUserDefaults standardUserDefaults] arrayForKey:@"door"].count != 0){
-        NFCArray = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"door"]];
-        keyNameArray = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"keyName"]];
-    }else{
-        NFCArray = [[NSMutableArray alloc] initWithObjects:@"nil", @"nil", @"nil", @"nil", nil];
-        keyNameArray = [[NSMutableArray alloc] initWithObjects:@"nil", @"nil", @"nil", @"nil", nil];
-    }
-}
-
-- (void)setNFCData{
-    [[NSUserDefaults standardUserDefaults] setObject:NFCArray forKey:@"door"];
-    [[NSUserDefaults standardUserDefaults] setObject:keyNameArray forKey:@"keyName"];
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
-- (BOOL)shouldAutorotate{
-    return YES;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
+#pragma mark button actions
 - (IBAction)backDoorPressed:(id)sender {
     [self dismissViewControllerAnimated:NO completion:nil];
 }
@@ -558,144 +702,6 @@ UIView *alertViewDoor;
     }
 }
 
-- (void)sendData{
-    //load data to band
-    NSString *index=@"";
-    [StringArray removeAllObjects];
-    int j=0;
-    count = 0;
-    for(int i=0;i<[NFCArray count];i++){
-        
-        if(j==0)
-            index = @"F0";
-        if(j==1)
-            index = @"F4";
-        if(j==2)
-            index = @"F8";
-        if(j==3)
-            index = @"FC";
-        
-        
-        NSString *key = [NFCArray objectAtIndex:i];
-        if(key != nil){
-            NSString *data = [NSString stringWithFormat:@"0223%@04000004%@000000000000000%lu",index,[NFCArray objectAtIndex:i],(unsigned long)[NFCArray count]];
-            [StringArray addObject:data];
-        }
-        
-        j++;
-    }
-    [sensor SendData:[StringArray objectAtIndex:0]];
-}
-
-- (void) udfHandle{
-    BleController *shareBERController = [BleController sharedController];
-    sensor = shareBERController.sensor;
-    sensor.delegate = self;
-    
-    NSString *str = [[NSUserDefaults standardUserDefaults] objectForKey:@"connect"];
-    
-    if([str isEqualToString:@"y"]){
-        NSLog(@"connect state : success");
-        
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
-        
-        [self sendData];
-        
-        [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
-    }else if([str isEqualToString:@"n"]){
-        NSLog(@"connect state : failed");
-        
-        [alertViewDoor removeFromSuperview];
-        alertViewDoor = nil;
-        alertViewDoor = [alertVCDoor alertConnectError];
-        
-        [self.view addSubview:alertViewDoor];
-        
-        UIButton *tryButton = [alertVCDoor getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCDoor getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewDoor addSubview:tryButton];
-        [alertViewDoor addSubview:cancelButton];
-        
-    }else if([str isEqualToString:@"t"]){
-        NSLog(@"connect state : timeout");
-        
-        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(connectTimeout) userInfo:nil repeats:NO];
-    }
-}
-
-- (void)connectErrorButtonPressed:(UIButton *)button{
-    if(button.tag == 0){
-        NSLog(@"try");
-        ScanViewController *scanV = [[ScanViewController alloc] init];
-        [scanV autoConnectTag];
-        
-        [alertViewDoor removeFromSuperview];
-        alertViewDoor = nil;
-        alertViewDoor = [alertVCDoor alertConnecting];
-        [self.view addSubview:alertViewDoor];
-    }else{
-        NSLog(@"cancel");
-        [button.superview removeFromSuperview];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
-    }
-}
-
-- (void)connectTimeout{
-    if(![[[NSUserDefaults standardUserDefaults] objectForKey:@"connect"] isEqualToString:@"y"])
-        [[NSUserDefaults standardUserDefaults] setObject:@"n" forKey:@"connect"];
-}
-
-- (void)dismissAlert{
-    NSLog(@"dismiss alert");
-    if(alertViewDoor != nil){
-        [alertViewDoor removeFromSuperview];
-        alertViewDoor = nil;
-    }
-}
-
-- (void)changeKeyUI:(int)index{
-    //delete or save
-    bool editEnable;
-    NSString *keytype;
-    if([[NFCArray objectAtIndex:index] isEqualToString:@"nil"]){
-        keytype = @"1";
-        editEnable = false;
-        [keyNameArray removeObjectAtIndex:index];
-        [keyNameArray insertObject:@"nil" atIndex:index];
-    }else{
-        keytype = @"2";
-        editEnable = true;
-    }
-    switch (index) {
-        case 0:
-            key1Textfield.text = nil;
-            key1Textfield.enabled = editEnable;
-            key1ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
-            break;
-        case 1:
-            key2Textfield.text = nil;
-            key2Textfield.enabled = editEnable;
-            key2ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
-            break;
-        case 2:
-            key3Textfield.text = nil;
-            key3Textfield.enabled = editEnable;
-            key3ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
-            break;
-        case 3:
-            key4Textfield.text = nil;
-            key4Textfield.enabled = editEnable;
-            key4ImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"key%d_0%@", index+1, keytype]];
-            break;
-        default:
-            break;
-    }
-}
-
 - (IBAction)deleteButtonPressed:(id)sender {
     [NFCArray removeObjectAtIndex:chooseIndexOfKey];
     [NFCArray insertObject:@"nil" atIndex:chooseIndexOfKey];
@@ -721,12 +727,7 @@ UIView *alertViewDoor;
     NSLog(@"~~key :\ncount : %ld\n1 : %@\n2 : %@\n3 : %@\n4 : %@", NFCArray.count, [NFCArray objectAtIndex:0], [NFCArray objectAtIndex:1], [NFCArray objectAtIndex:2], [NFCArray objectAtIndex:3]);
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
+#pragma mark BTSmartSensorDelegate
 //取得資料整理
 -(void) serialGATTCharValueUpdated:(NSData *)data
 {
@@ -801,6 +802,9 @@ UIView *alertViewDoor;
     return [NSString stringWithString: hexStr];
 }
 
-
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 @end
