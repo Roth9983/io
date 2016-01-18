@@ -22,8 +22,7 @@ AlertViewController *alertVCSet;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
+
     setUdf = [NSUserDefaults standardUserDefaults];
     
     alertVCSet = [AlertViewController new];
@@ -31,23 +30,7 @@ AlertViewController *alertVCSet;
     [self setSetUI];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
-- (BOOL)shouldAutorotate{
-    return YES;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
+#pragma mark set UI setting
 - (void)setSetUI{
     float wRatio = [alertVCSet getSizeWRatio];
     float hRatio = [alertVCSet getSizeHRatio];
@@ -107,6 +90,28 @@ AlertViewController *alertVCSet;
     [self.view bringSubviewToFront:aboutUsButton];
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark set connect handle
+- (void)udfHandle{
+    if([[setUdf objectForKey:@"connect"] isEqualToString:@"y"]){
+        [pairButton setImage:[UIImage imageNamed:@"unpair01"] forState:UIControlStateNormal];
+        [pairButton setImage:[UIImage imageNamed:@"unpair02"] forState:UIControlStateHighlighted];
+    }
+    [[NSNotificationCenter defaultCenter] removeObserver:setUdf name:NSUserDefaultsDidChangeNotification object:nil];
+}
+
+#pragma mark set button actions
 - (IBAction)setBackPressed:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -126,14 +131,6 @@ AlertViewController *alertVCSet;
         UIViewController *scan = [self.storyboard instantiateViewControllerWithIdentifier:@"scan"];
         [self presentViewController:scan animated:YES completion:nil];
     }
-}
-
-- (void)udfHandle{
-    if([[setUdf objectForKey:@"connect"] isEqualToString:@"y"]){
-        [pairButton setImage:[UIImage imageNamed:@"unpair01"] forState:UIControlStateNormal];
-        [pairButton setImage:[UIImage imageNamed:@"unpair02"] forState:UIControlStateHighlighted];
-    }
-    [[NSNotificationCenter defaultCenter] removeObserver:setUdf name:NSUserDefaultsDidChangeNotification object:nil];
 }
 
 - (IBAction)alarmDurationButtonPressed:(id)sender {
@@ -159,5 +156,10 @@ AlertViewController *alertVCSet;
 - (IBAction)aboutUsButtonPressed:(id)sender {
     NSURL *url = [NSURL URLWithString:@"http://www.ihoin.com/about.html"];
     [[UIApplication sharedApplication] openURL:url];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 @end

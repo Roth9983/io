@@ -49,6 +49,7 @@ UIView *alertViewVcard;
 
 CGFloat animatedDistanceV;
 
+#pragma mark vCard view controller life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -61,6 +62,24 @@ CGFloat animatedDistanceV;
     [self setVCardUI];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"vCard");
+    BleController *shareBERController = [BleController sharedController];
+    sensor = shareBERController.sensor;
+    sensor.delegate = self;
+    NSLog(@"Name : %@",sensor.activePeripheral.name);
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"vcard exit"); //view 將要結束
+    self.sensor.delegate = nil;
+}
+
+#pragma mark vCard UI setting
 - (void)setVCardUI{
     float wRatio = [alertVCVCard getSizeWRatio];
     float hRatio = [alertVCVCard getSizeHRatio];
@@ -156,6 +175,18 @@ CGFloat animatedDistanceV;
     [self.view bringSubviewToFront:vCardLoadButton];
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (void)setData{
     [vCardInfo setValue:nameTextField.text forKey:@"name"];
     [vCardInfo setValue:companyTextField.text forKey:@"company"];
@@ -174,6 +205,8 @@ CGFloat animatedDistanceV;
     [userDefaults setObject:vCardInfo forKey:@"vCard"];
 }
 
+
+#pragma mark text field and text view delegate
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [nameTextField resignFirstResponder];
@@ -297,25 +330,6 @@ CGFloat animatedDistanceV;
     [UIView commitAnimations];
 }
 
-
--(void)viewWillAppear:(BOOL)animated
-{
-    NSLog(@"vCard");
-    BleController *shareBERController = [BleController sharedController];
-    sensor = shareBERController.sensor;
-    sensor.delegate = self;
-    NSLog(@"Name : %@",sensor.activePeripheral.name);
-}
-
-
-- (void) viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    NSLog(@"vcard exit"); //view 將要結束
-    self.sensor.delegate = nil;
-}
-
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
     return YES;
@@ -327,18 +341,6 @@ CGFloat animatedDistanceV;
         return NO;
     }
     return YES;
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
-- (BOOL)shouldAutorotate{
-    return YES;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskPortrait;
 }
 
 #pragma mark vCard button actions

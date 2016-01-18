@@ -331,8 +331,6 @@ NSTimer *timeoutTimer;
 }
 
 - (void)stopScan{
-    //[timeoutTimer invalidate];
-    //timeoutTimer = nil;
     [sensor stopScan];
 }
 
@@ -344,18 +342,18 @@ NSTimer *timeoutTimer;
 
 
 #pragma mark handle segue
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"goDeviceView"]) {
-        NSLog(@"the destination is View 2 !\n");
-        //ViewController* deviceView = segue.destinationViewController;
-        //the destination is View 2
-        //deviceView.sensor = sensor;
-        
-        
-        BleController *shareBERController = [BleController sharedController];
-        [shareBERController setupControllerForSmcGATT:sensor];
-    }
-}
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+//    if ([[segue identifier] isEqualToString:@"goDeviceView"]) {
+//        NSLog(@"the destination is View 2 !\n");
+//        //ViewController* deviceView = segue.destinationViewController;
+//        //the destination is View 2
+//        //deviceView.sensor = sensor;
+//        
+//        
+//        BleController *shareBERController = [BleController sharedController];
+//        [shareBERController setupControllerForSmcGATT:sensor];
+//    }
+//}
 
 #pragma mark - HMSoftSensorDelegate
 -(void)sensorReady
