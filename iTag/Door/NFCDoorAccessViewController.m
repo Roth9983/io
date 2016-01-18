@@ -114,6 +114,7 @@ UIView *alertViewDoor;
     
     keyIDTextfield.textColor = [UIColor whiteColor];
     keyIDTextfield.delegate = self;
+    keyIDTextfield.keyboardType = UIKeyboardTypeEmailAddress;
     [keyIDTextfield addTarget:self action:@selector(textFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
     [self.view bringSubviewToFront:keyIDTextfield];
     
@@ -359,7 +360,7 @@ UIView *alertViewDoor;
     return UIInterfaceOrientationMaskPortrait;
 }
 
-#pragma mark handle connect state
+#pragma mark door handle connect state
 - (void) udfHandle{
     BleController *shareBERController = [BleController sharedController];
     sensor = shareBERController.sensor;
@@ -430,36 +431,7 @@ UIView *alertViewDoor;
     }
 }
 
-- (void)sendData{
-    //load data to band
-    NSString *index=@"";
-    [StringArray removeAllObjects];
-    int j=0;
-    count = 0;
-    for(int i=0;i<[NFCArray count];i++){
-        
-        if(j==0)
-            index = @"F0";
-        if(j==1)
-            index = @"F4";
-        if(j==2)
-            index = @"F8";
-        if(j==3)
-            index = @"FC";
-        
-        
-        NSString *key = [NFCArray objectAtIndex:i];
-        if(key != nil){
-            NSString *data = [NSString stringWithFormat:@"0223%@04000004%@000000000000000%lu",index,[NFCArray objectAtIndex:i],(unsigned long)[NFCArray count]];
-            [StringArray addObject:data];
-        }
-        
-        j++;
-    }
-    [sensor SendData:[StringArray objectAtIndex:0]];
-}
-
-#pragma mark set and get data
+#pragma mark door set and get data
 - (void)getNFCData{
     if([[NSUserDefaults standardUserDefaults] arrayForKey:@"door"].count != 0){
         NFCArray = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"door"]];
@@ -475,7 +447,7 @@ UIView *alertViewDoor;
     [[NSUserDefaults standardUserDefaults] setObject:keyNameArray forKey:@"keyName"];
 }
 
-#pragma mark check key's state
+#pragma mark door check key's state
 - (int)checkKeyStorage{
     int keyStorage = 0;
     for(int i=0;i<4;i++){
@@ -507,7 +479,7 @@ UIView *alertViewDoor;
     return isFull;
 }
 
-#pragma mark text field delegate
+#pragma mark door text field delegate
 - (void)textFieldDone:(UITextField *)textField{
     [textField resignFirstResponder];
 }
@@ -582,7 +554,7 @@ UIView *alertViewDoor;
     [UIView commitAnimations];
 }
 
-#pragma mark detect and handle key is selected
+#pragma mark door detect and handle key is selected
 - (void)keySelect:(UITextField *)textField{
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
@@ -671,7 +643,7 @@ UIView *alertViewDoor;
     [self.view addSubview:keySelectImageview];
 }
 
-#pragma mark button actions
+#pragma mark door button actions
 - (IBAction)backDoorPressed:(id)sender {
     [self dismissViewControllerAnimated:NO completion:nil];
 }
@@ -727,7 +699,36 @@ UIView *alertViewDoor;
     NSLog(@"~~key :\ncount : %ld\n1 : %@\n2 : %@\n3 : %@\n4 : %@", NFCArray.count, [NFCArray objectAtIndex:0], [NFCArray objectAtIndex:1], [NFCArray objectAtIndex:2], [NFCArray objectAtIndex:3]);
 }
 
-#pragma mark BTSmartSensorDelegate
+#pragma mark door BTSmartSensorDelegate
+- (void)sendData{
+    //load data to band
+    NSString *index=@"";
+    [StringArray removeAllObjects];
+    int j=0;
+    count = 0;
+    for(int i=0;i<[NFCArray count];i++){
+        
+        if(j==0)
+            index = @"F0";
+        if(j==1)
+            index = @"F4";
+        if(j==2)
+            index = @"F8";
+        if(j==3)
+            index = @"FC";
+        
+        
+        NSString *key = [NFCArray objectAtIndex:i];
+        if(key != nil){
+            NSString *data = [NSString stringWithFormat:@"0223%@04000004%@000000000000000%lu",index,[NFCArray objectAtIndex:i],(unsigned long)[NFCArray count]];
+            [StringArray addObject:data];
+        }
+        
+        j++;
+    }
+    [sensor SendData:[StringArray objectAtIndex:0]];
+}
+
 //取得資料整理
 -(void) serialGATTCharValueUpdated:(NSData *)data
 {

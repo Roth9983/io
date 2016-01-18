@@ -42,6 +42,8 @@
 
 @synthesize sensor;
 
+NSMutableDictionary *vCardInfo;
+
 AlertViewController *alertVCVCard;
 UIView *alertViewVcard;
 
@@ -51,6 +53,7 @@ CGFloat animatedDistanceV;
     [super viewDidLoad];
     
     userDefaults = [NSUserDefaults standardUserDefaults];
+    vCardInfo = [[NSMutableDictionary alloc] initWithDictionary:[userDefaults dictionaryForKey:@"vCard"]];
     alertVCVCard = [AlertViewController new];
     
     StringArray = [[NSMutableArray alloc] initWithCapacity:4];
@@ -94,78 +97,81 @@ CGFloat animatedDistanceV;
 
     nameTextField.delegate = self;
     [nameTextField setKeyboardType:UIKeyboardTypeDefault];
-    nameTextField.text = [userDefaults stringForKey:@"name"];
+    nameTextField.text = [vCardInfo objectForKey:@"name"];
     [self.view bringSubviewToFront:nameTextField];
 
     [self.view bringSubviewToFront:lineImageview];
     
     companyTextField.delegate = self;
     [companyTextField setKeyboardType:UIKeyboardTypeDefault];
-    companyTextField.text = [userDefaults stringForKey:@"company"];
+    companyTextField.text = [vCardInfo objectForKey:@"company"];
+    
     
     titleTextField.delegate = self;
-    [titleTextField setKeyboardType:UIKeyboardTypeDecimalPad];
-    titleTextField.text = [userDefaults stringForKey:@"title"];
+    [titleTextField setKeyboardType:UIKeyboardTypeDefault];
+    titleTextField.text = [vCardInfo objectForKey:@"title"];
     
     companyPhoneTextField.delegate = self;
     [companyPhoneTextField setKeyboardType:UIKeyboardTypeNumberPad];
-    companyPhoneTextField.text = [userDefaults stringForKey:@"companyPhone"];
+    companyPhoneTextField.text = [vCardInfo objectForKey:@"companyPhone"];
     
     addressTextField.delegate = self;
     [addressTextField setKeyboardType:UIKeyboardTypeDefault];
-    addressTextField.text = [userDefaults stringForKey:@"address"];
+    addressTextField.text = [vCardInfo objectForKey:@"address"];
     
     phoneTextField.delegate = self;
     [phoneTextField setKeyboardType:UIKeyboardTypeNumberPad];
-    phoneTextField.text = [userDefaults stringForKey:@"phone1"];
+    phoneTextField.text = [vCardInfo objectForKey:@"phone1"];
     phoneTextField.returnKeyType = UIReturnKeyNext;
     
     phone2TextField.delegate = self;
     [phone2TextField setKeyboardType:UIKeyboardTypeNumberPad];
-    phone2TextField.text = [userDefaults stringForKey:@"phone2"];
+    phone2TextField.text = [vCardInfo objectForKey:@"phone2"];
     
     emailTextField.delegate = self;
     [emailTextField setKeyboardType:UIKeyboardTypeEmailAddress];
-    emailTextField.text = [userDefaults stringForKey:@"email1"];
+    emailTextField.text = [vCardInfo objectForKey:@"email1"];
     
     email2TextField.delegate = self;
     [email2TextField setKeyboardType:UIKeyboardTypeEmailAddress];
-    email2TextField.text = [userDefaults stringForKey:@"email2"];
+    email2TextField.text = [vCardInfo objectForKey:@"email2"];
     
     webTextField.delegate = self;
     [webTextField setKeyboardType:UIKeyboardTypeDefault];
-    webTextField.text = [userDefaults stringForKey:@"web"];
+    webTextField.text = [vCardInfo objectForKey:@"web"];
     
     skypeTextField.delegate = self;
-    [skypeTextField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-    skypeTextField.text = [userDefaults stringForKey:@"skype"];
+    [skypeTextField setKeyboardType:UIKeyboardTypeEmailAddress];
+    skypeTextField.text = [vCardInfo objectForKey:@"skype"];
     
     QQTextField.delegate = self;
     [QQTextField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-    QQTextField.text = [userDefaults stringForKey:@"QQ"];
+    QQTextField.text = [vCardInfo objectForKey:@"QQ"];
     
     noteTextView.delegate = self;
     [noteTextView setKeyboardType:UIKeyboardTypeDefault];
-    noteTextView.text = [userDefaults stringForKey:@"note"];
+    noteTextView.text = [vCardInfo objectForKey:@"note"];
     
     [vCardLoadButton setImage:[UIImage imageNamed:@"upload02"] forState:UIControlStateHighlighted];
     [self.view bringSubviewToFront:vCardLoadButton];
 }
 
 - (void)setData{
-    [userDefaults setValue:nameTextField.text forKey:@"name"];
-    [userDefaults setValue:companyTextField.text forKey:@"company"];
-    [userDefaults setValue:titleTextField.text forKey:@"title"];
-    [userDefaults setValue:companyPhoneTextField.text forKey:@"companyPhone"];
-    [userDefaults setValue:addressTextField.text forKey:@"address"];
-    [userDefaults setValue:phoneTextField.text forKey:@"phone1"];
-    [userDefaults setValue:phone2TextField.text forKey:@"phone2"];
-    [userDefaults setValue:emailTextField.text forKey:@"email1"];
-    [userDefaults setValue:email2TextField.text forKey:@"email2"];
-    [userDefaults setValue:webTextField.text forKey:@"web"];
-    [userDefaults setValue:skypeTextField.text forKey:@"skype"];
-    [userDefaults setValue:QQTextField.text forKey:@"QQ"];
-    [userDefaults setValue:noteTextView.text forKey:@"note"];
+    [vCardInfo setValue:nameTextField.text forKey:@"name"];
+    [vCardInfo setValue:companyTextField.text forKey:@"company"];
+    [vCardInfo setValue:titleTextField.text forKey:@"title"];
+    [vCardInfo setValue:companyPhoneTextField.text forKey:@"companyPhone"];
+    [vCardInfo setValue:addressTextField.text forKey:@"address"];
+    [vCardInfo setValue:phoneTextField.text forKey:@"phone1"];
+    [vCardInfo setValue:phone2TextField.text forKey:@"phone2"];
+    [vCardInfo setValue:emailTextField.text forKey:@"email1"];
+    [vCardInfo setValue:email2TextField.text forKey:@"email2"];
+    [vCardInfo setValue:webTextField.text forKey:@"web"];
+    [vCardInfo setValue:skypeTextField.text forKey:@"skype"];
+    [vCardInfo setValue:QQTextField.text forKey:@"QQ"];
+    [vCardInfo setValue:noteTextView.text forKey:@"note"];
+    
+    [userDefaults setObject:vCardInfo forKey:@"vCard"];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -335,6 +341,7 @@ CGFloat animatedDistanceV;
     return UIInterfaceOrientationMaskPortrait;
 }
 
+#pragma mark vCard button actions
 - (IBAction)vCardBack:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -367,115 +374,7 @@ CGFloat animatedDistanceV;
     }
 }
 
-- (void)sendData{
-    NSLog(@"sendData");
-//    [userDefaults setValue:nameTextField.text forKey:@"name"];
-//    [userDefaults setValue:companyTextField.text forKey:@"company"];
-//    [userDefaults setValue:titleTextField.text forKey:@"title"];
-//    [userDefaults setValue:companyPhoneTextField.text forKey:@"companyPhone"];
-//    [userDefaults setValue:addressTextField.text forKey:@"address"];
-//    [userDefaults setValue:phoneTextField.text forKey:@"phone1"];
-//    [userDefaults setValue:phone2TextField.text forKey:@"phone2"];
-//    [userDefaults setValue:emailTextField.text forKey:@"email1"];
-//    [userDefaults setValue:email2TextField.text forKey:@"email2"];
-//    [userDefaults setValue:webTextField.text forKey:@"web"];
-//    [userDefaults setValue:skypeTextField.text forKey:@"skype"];
-//    [userDefaults setValue:QQTextField.text forKey:@"QQ"];
-//    [userDefaults setValue:noteTextView.text forKey:@"note"];
-//    
-    nfcindex = 4;
-    count = 0;
-    [StringArray removeAllObjects];
-    
-    
-    NSString *Name = @"",*Company= @"", *Job= @"", *TelC= @"", *CompanyAddress= @"", *Tel1= @"", *Tel2= @"",*Email= @"", *Email2= @"", *Web= @"", *Skype= @"", *QQ= @"", *Note= @"";
-    if([nameTextField text].length!=0){
-        Name = [NSString stringWithFormat:@"FN:%@\n",[nameTextField text]];
-    }
-    if([companyTextField text].length!=0){
-        Company = [NSString stringWithFormat:@"ORG:%@\n",[companyTextField text]];
-    }
-    if([titleTextField text].length!=0){
-        Job = [NSString stringWithFormat:@"TITLE:%@\n",[titleTextField text]];
-    }
-    if([companyPhoneTextField text].length!=0){
-        TelC = [NSString stringWithFormat:@"TEL;WORK:%@\n",[companyPhoneTextField text]];
-    }
-    if([addressTextField text].length!=0){
-        CompanyAddress = [NSString stringWithFormat:@"ADR;WORK:%@\n",[addressTextField text]];
-    }
-    if([phoneTextField text].length!=0){
-        Tel1 = [NSString stringWithFormat:@"TEL;CELL:%@\n",[phoneTextField text]];
-    }
-    if([phone2TextField text].length!=0){
-        Tel2 = [NSString stringWithFormat:@"TEL;CELL:%@\n",[phone2TextField text]];
-    }
-    if([emailTextField text].length!=0){
-        Email = [NSString stringWithFormat:@"EMAIL;WORK:%@\n",[emailTextField text]];
-    }
-    if([email2TextField text].length!=0){
-        Email2 = [NSString stringWithFormat:@"EMAIL;HOME:%@\n",[email2TextField text]];
-    }
-    if([webTextField text].length!=0){
-        Web = [NSString stringWithFormat:@"URL:%@\n",[webTextField text]];
-    }
-    
-    if([skypeTextField text].length!=0){
-        Skype = [NSString stringWithFormat:@"X-QQ:%@\n",[skypeTextField text]];
-    }
-    if([QQTextField text].length!=0){
-        QQ = [NSString stringWithFormat:@"X-SKYPE-USERNAME:%@\n",[QQTextField text]];
-    }
-    if([noteTextView text].length!=0){
-        Note = [NSString stringWithFormat:@"NOTE:%@\n",[noteTextView text]];
-    }
-    
-    
-    NSString *strMsgData = [NSString stringWithFormat:@"BEGIN:VCARD\nVERSION:2.1\n%@%@%@%@%@%@%@%@%@%@%@%@%@END:VCARD\r\n",
-                            Name,Company,Job,TelC,CompanyAddress,Tel1,Tel2,Email,Email2,Web,Skype,QQ,Note];
-    NSLog(@"VCard : %@", strMsgData);
-    NSString *type = [self stringToHex:@"text/x-vCard"];
-    NSLog(@"Vcard \n%@", [self stringToHex:strMsgData]);
-    strMsgData = [self stringToHex:strMsgData];
-    NSString *dec;
-    NSString *hexlength1;
-    NSString *hexlength2;
-    
-    int temp_cont = strMsgData.length/2+15;
-    
-    if(temp_cont <256){
-        hexlength1 = [self IntToHex:temp_cont];
-        hexlength2 = [self IntToHex:temp_cont-15];
-        strMsgData = [NSString stringWithFormat:@"03%@D20C%@%@%@FE",hexlength1, hexlength2, type, strMsgData];
-    }else  if(temp_cont >=256 && temp_cont <273){
-        hexlength1 = [self IntToHex:temp_cont];
-        hexlength2 = [self IntToHex:temp_cont-15];
-        strMsgData = [NSString stringWithFormat:@"03FF%@D20C%@%@%@FE",hexlength1, hexlength2, type, strMsgData];
-    }else{
-        hexlength1 = [self IntToHex:temp_cont+3];
-        hexlength2 = [self IntToHex:temp_cont-15];
-        strMsgData = [NSString stringWithFormat:@"03FF%@C20C0000%@%@%@FE",hexlength1, hexlength2, type, strMsgData];
-    }
-    
-    dec = @"";
-    
-    for(int i=0; i<fmod(strMsgData.length, 32) ;i++){
-        strMsgData=[NSString stringWithFormat:@"%@0",strMsgData];
-    }
-    
-    count = 0;
-    
-    for (int i = 0; i < strMsgData.length; i = i + 32) {
-        [StringArray addObject:[strMsgData substringWithRange:NSMakeRange(i,32)]];
-    }
-    
-    NSString *index = [NSString stringWithFormat:@"%X",nfcindex];
-    if(index.length == 1)
-        index = [NSString stringWithFormat:@"0%@",index];
-    NSString * text = [NSString stringWithFormat:@"0222%@%@",index, [StringArray objectAtIndex:count]];
-    [sensor SendData:text];
-}
-
+#pragma mark handle connect state
 - (void) udfHandle{
     NSLog(@"udfHandle");
     BleController *shareBERController = [BleController sharedController];
@@ -486,16 +385,6 @@ CGFloat animatedDistanceV;
     
     if([str isEqualToString:@"y"]){
         NSLog(@"connect state : success");
-        
-//        AlertViewController *alertVC = [[AlertViewController alloc] init];
-//        [alertViewVcard removeFromSuperview];
-//        alertViewVcard = nil;
-//        alertViewVcard = [alertVC alertCustom:@"Upload success"];
-//        
-//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-//        [alertViewVcard addGestureRecognizer:tap];
-//        
-//        [self.view addSubview:alertViewVcard];
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
         
@@ -571,11 +460,101 @@ CGFloat animatedDistanceV;
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark BTSmartSensorDelegate
+- (void)sendData{
+    NSLog(@"sendData");
+    nfcindex = 4;
+    count = 0;
+    [StringArray removeAllObjects];
+    
+    
+    NSString *Name = @"",*Company= @"", *Job= @"", *TelC= @"", *CompanyAddress= @"", *Tel1= @"", *Tel2= @"",*Email= @"", *Email2= @"", *Web= @"", *Skype= @"", *QQ= @"", *Note= @"";
+    if([nameTextField text].length!=0){
+        Name = [NSString stringWithFormat:@"FN:%@\n",[nameTextField text]];
+    }
+    if([companyTextField text].length!=0){
+        Company = [NSString stringWithFormat:@"ORG:%@\n",[companyTextField text]];
+    }
+    if([titleTextField text].length!=0){
+        Job = [NSString stringWithFormat:@"TITLE:%@\n",[titleTextField text]];
+    }
+    if([companyPhoneTextField text].length!=0){
+        TelC = [NSString stringWithFormat:@"TEL;WORK:%@\n",[companyPhoneTextField text]];
+    }
+    if([addressTextField text].length!=0){
+        CompanyAddress = [NSString stringWithFormat:@"ADR;WORK:%@\n",[addressTextField text]];
+    }
+    if([phoneTextField text].length!=0){
+        Tel1 = [NSString stringWithFormat:@"TEL;CELL:%@\n",[phoneTextField text]];
+    }
+    if([phone2TextField text].length!=0){
+        Tel2 = [NSString stringWithFormat:@"TEL;CELL:%@\n",[phone2TextField text]];
+    }
+    if([emailTextField text].length!=0){
+        Email = [NSString stringWithFormat:@"EMAIL;WORK:%@\n",[emailTextField text]];
+    }
+    if([email2TextField text].length!=0){
+        Email2 = [NSString stringWithFormat:@"EMAIL;HOME:%@\n",[email2TextField text]];
+    }
+    if([webTextField text].length!=0){
+        Web = [NSString stringWithFormat:@"URL:%@\n",[webTextField text]];
+    }
+    
+    if([skypeTextField text].length!=0){
+        Skype = [NSString stringWithFormat:@"X-QQ:%@\n",[skypeTextField text]];
+    }
+    if([QQTextField text].length!=0){
+        QQ = [NSString stringWithFormat:@"X-SKYPE-USERNAME:%@\n",[QQTextField text]];
+    }
+    if([noteTextView text].length!=0){
+        Note = [NSString stringWithFormat:@"NOTE:%@\n",[noteTextView text]];
+    }
+    
+    
+    NSString *strMsgData = [NSString stringWithFormat:@"BEGIN:VCARD\nVERSION:2.1\n%@%@%@%@%@%@%@%@%@%@%@%@%@END:VCARD\r\n",
+                            Name,Company,Job,TelC,CompanyAddress,Tel1,Tel2,Email,Email2,Web,Skype,QQ,Note];
+    NSLog(@"VCard : %@", strMsgData);
+    NSString *type = [self stringToHex:@"text/x-vCard"];
+    NSLog(@"Vcard \n%@", [self stringToHex:strMsgData]);
+    strMsgData = [self stringToHex:strMsgData];
+    NSString *dec;
+    NSString *hexlength1;
+    NSString *hexlength2;
+    
+    int temp_cont = (int)strMsgData.length/2+15;
+    
+    if(temp_cont <256){
+        hexlength1 = [self IntToHex:temp_cont];
+        hexlength2 = [self IntToHex:temp_cont-15];
+        strMsgData = [NSString stringWithFormat:@"03%@D20C%@%@%@FE",hexlength1, hexlength2, type, strMsgData];
+    }else  if(temp_cont >=256 && temp_cont <273){
+        hexlength1 = [self IntToHex:temp_cont];
+        hexlength2 = [self IntToHex:temp_cont-15];
+        strMsgData = [NSString stringWithFormat:@"03FF%@D20C%@%@%@FE",hexlength1, hexlength2, type, strMsgData];
+    }else{
+        hexlength1 = [self IntToHex:temp_cont+3];
+        hexlength2 = [self IntToHex:temp_cont-15];
+        strMsgData = [NSString stringWithFormat:@"03FF%@C20C0000%@%@%@FE",hexlength1, hexlength2, type, strMsgData];
+    }
+    
+    dec = @"";
+    
+    for(int i=0; i<fmod(strMsgData.length, 32) ;i++){
+        strMsgData=[NSString stringWithFormat:@"%@0",strMsgData];
+    }
+    
+    count = 0;
+    
+    for (int i = 0; i < strMsgData.length; i = i + 32) {
+        [StringArray addObject:[strMsgData substringWithRange:NSMakeRange(i,32)]];
+    }
+    
+    NSString *index = [NSString stringWithFormat:@"%X",nfcindex];
+    if(index.length == 1)
+        index = [NSString stringWithFormat:@"0%@",index];
+    NSString * text = [NSString stringWithFormat:@"0222%@%@",index, [StringArray objectAtIndex:count]];
+    [sensor SendData:text];
 }
-
 
 //取得資料整理
 -(void) serialGATTCharValueUpdated:(NSData *)data
@@ -622,15 +601,10 @@ CGFloat animatedDistanceV;
             //[self showOkayCancelAlert:@"發送結束"];
             
             [self uploadSuccess];
-            
         }
     }
-    
     NSLog(@"door     %@   %d",value, count);
-
-    
 }
-
 
 //連線成功
 -(void)setConnect
@@ -661,8 +635,6 @@ CGFloat animatedDistanceV;
     return [NSString stringWithString: hexStr];
 }
 
-
-// ==========================================================================================
 - (NSString *) hexDataToString:(UInt8 *)data
                         Length:(int)len
 {
@@ -677,7 +649,6 @@ CGFloat animatedDistanceV;
     return str;
 }
 
-// ----------------  ----------------
 - (NSString *) stringToHex:(NSString *)str
 {
     NSString * hexStr = [NSString stringWithFormat:@"%@",
@@ -701,7 +672,9 @@ CGFloat animatedDistanceV;
     return data;
 }
 
-
-
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 @end

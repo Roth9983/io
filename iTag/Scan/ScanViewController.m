@@ -23,7 +23,7 @@ bool isAuto = false;
 NSUserDefaults *scanUdf;
 AlertViewController *alertVCScan;
 UIView *alertViewScan;
-
+NSTimer *timeoutTimer;
 
 
 - (void)viewDidLoad {
@@ -218,12 +218,6 @@ UIView *alertViewScan;
     if(button.tag == 0){
         NSLog(@"try");
         
-//        AlertViewController *alert = [[AlertViewController alloc] init];
-//        [alertViewScan removeFromSuperview];
-//        alertViewScan = nil;
-//        alertViewScan = [alert alertConnecting];
-//        [self.view addSubview:alertViewScan];
-        
         [self scanBLEDevice];
     }else{
         NSLog(@"cancel");
@@ -295,14 +289,11 @@ UIView *alertViewScan;
 
 -(void) scanTimer:(NSTimer *)timer
 {
-    //    [scanBleDeviceButton setTitle:@"Scan" forState:UIControlStateNormal];
-    if(![[scanUdf objectForKey:@"connect"] isEqualToString:@"y"] && ![[scanUdf objectForKey:@"connect"] isEqualToString:@"s"]){
+    //[scanBleDeviceButton setTitle:@"Scan" forState:UIControlStateNormal];
+    if(![[scanUdf objectForKey:@"connect"] isEqualToString:@"y"]){
         [scanUdf setObject:@"t" forKey:@"connect"];
+        NSLog(@"scan time out");
     }
-    //    if(isAuto){
-    //        isAuto = false;
-    //        NSLog(@"Auto connect : %ld", self.peripheralViewControllerArray.count);
-    //    }
 }
 
 - (void)setSensor{
@@ -340,6 +331,8 @@ UIView *alertViewScan;
 }
 
 - (void)stopScan{
+    //[timeoutTimer invalidate];
+    //timeoutTimer = nil;
     [sensor stopScan];
 }
 

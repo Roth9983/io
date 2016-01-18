@@ -28,7 +28,10 @@ NSTimer *beepTimer;
 int beepCount;
 ScanViewController *ScanS;
 
+UIImageView *searchLightImageView;
+UIButton *beepButton;
 
+#pragma mark search view controller life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -40,18 +43,67 @@ ScanViewController *ScanS;
     [self setSearchUI];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"search");
+    self.sensor.delegate = (SearchViewController *) self;
+}
+
 - (void)viewDidAppear:(BOOL)animated{
-    [self startRadarAnimation];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udfHandle) name:NSUserDefaultsDidChangeNotification object:nil];
+    
+    beepButton.enabled = false;
+    if([[searchUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
+        NSLog(@"pair io");
+        [self searchRLightAnimation];
+        [alertViewSearch removeFromSuperview];
+        alertViewSearch = nil;
+        alertViewSearch = [alertVCSearch alertCustom:@"Please pair the io !"];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+        [alertViewSearch addGestureRecognizer:tap];
+        [self.view addSubview:alertViewSearch];
+    }else if(![[searchUdf objectForKey:@"connect"] isEqualToString:@"y"] && ![[searchUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
+        NSLog(@"no connect");
+        
+        searchWordImageView.image = [UIImage imageNamed:@"search1"];
+        
+        [self searchRLightAnimation];
+        
+        [ScanS autoConnectTag];
+        
+    }else{
+        beepButton.enabled = true;
+        
+        [self connectedWordAnimation];
+        [self searchGLightAnimation];
+        
+        [self startRadarAnimation];
+        
+        BleController *shareBERController = [BleController sharedController];
+        sensor = shareBERController.sensor;
+        sensor.delegate = self;
+    }
+    
+    NSLog(@"Name : %@",sensor.activePeripheral.name);
 }
 
-- (void)startRadarAnimation{
-    [self runSpinAnimationOnView:radar1ImageView clockwise:1 rotation:0.5];
-    [self runSpinAnimationOnView:radar2ImageView clockwise:-1 rotation:0.3];
-    [self runSpinAnimationOnView:radar3ImageView clockwise:1 rotation:0.25];
-    [self runSpinAnimationOnView:radar4ImageView clockwise:-1 rotation:0.5];
-    [self runSpinAnimationOnView:radar5ImageView clockwise:1 rotation:0.5];
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    if(![[searchUdf objectForKey:@"connect"] isEqualToString:@"y"])
+        [ScanS stopScan];
+    
+    NSLog(@"search exit"); //view 將要結束
+    self.sensor.delegate = nil;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
+    
+    
+    
 }
 
+#pragma mark search UI setting
 - (void)setSearchUI{
     float wRatio = [alertVCSearch getSizeWRatio];
     float hRatio = [alertVCSearch getSizeHRatio];
@@ -67,10 +119,18 @@ ScanViewController *ScanS;
     [radar4ImageView setTranslatesAutoresizingMaskIntoConstraints:YES];
     [radar5ImageView setTranslatesAutoresizingMaskIntoConstraints:YES];
     
-    
     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone){
         UIImageView *bg2ImageView;
+        UIImageView *bgImageView_state;
         float radarRatio = (wRatio+hRatio)/2;
+        
+        bgImageView_state = [[UIImageView alloc] initWithFrame:CGRectMake(33*wRatio, 99*hRatio, 347*wRatio, 126*hRatio)];
+        bgImageView_state.image = [UIImage imageNamed:@"bg_find_state"];
+        bgImageView_state.contentMode = UIViewContentModeScaleToFill;
+        [self.view addSubview:bgImageView_state];
+        
+        searchLightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(48*wRatio, 150*hRatio, 323*wRatio, 64*hRatio)];
+        //searchLightImageView.backgroundColor = [UIColor whiteColor];
         
         [searchBackButton setFrame:CGRectMake(32*wRatio, 15*hRatio, searchBackButton.imageView.image.size.width*wRatio, searchBackButton.imageView.image.size.height*hRatio)];
         [connectStateImageView setFrame:CGRectMake(139*wRatio, 107*hRatio, connectStateImageView.image.size.width*wRatio, connectStateImageView.image.size.height*hRatio)];
@@ -82,6 +142,9 @@ ScanViewController *ScanS;
         bg2ImageView.image = [UIImage imageNamed:@"bg_find2"];
         bg2ImageView.contentMode = UIViewContentModeScaleToFill;
         [self.view addSubview:bg2ImageView];
+        
+        beepButton = [[UIButton alloc] initWithFrame:CGRectMake(130*wRatio, 249*hRatio, 155*wRatio, 49*hRatio)];
+        [self.view addSubview:beepButton];
         
         [radar1ImageView setFrame:CGRectMake(72*wRatio, 317*hRatio, radar1ImageView.image.size.width*radarRatio, radar1ImageView.image.size.height*radarRatio)];
         radar1ImageView.center = CGPointMake(207*wRatio, 452*hRatio);
@@ -99,9 +162,14 @@ ScanViewController *ScanS;
         ioAnimationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(147*wRatio, 392*hRatio, 120*wRatio, 120*hRatio)];
         
     }else{
+        searchLightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(89*wRatio, 264*hRatio, 600*wRatio, 87*hRatio)];
+        
         [searchBackButton setFrame:CGRectMake(63*wRatio, 28*hRatio, searchBackButton.imageView.image.size.width*wRatio, searchBackButton.imageView.image.size.height*hRatio)];
         [connectStateImageView setFrame:CGRectMake(266*wRatio, 192*hRatio, connectStateImageView.image.size.width*wRatio, connectStateImageView.image.size.height*hRatio)];
         [searchWordImageView setFrame:CGRectMake(119*wRatio, 304*hRatio, searchWordImageView.image.size.width*wRatio, searchWordImageView.image.size.height*hRatio)];
+        
+        beepButton = [[UIButton alloc] initWithFrame:CGRectMake(268*wRatio, 374*hRatio, 235*wRatio, 65*hRatio)];
+        [self.view addSubview:beepButton];
         
         [radar1ImageView setFrame:CGRectMake(160*wRatio, 470*hRatio, radar1ImageView.image.size.width*wRatio, radar1ImageView.image.size.height*hRatio)];
         [radar2ImageView setFrame:CGRectMake(227*wRatio, 537*hRatio, radar2ImageView.image.size.width*wRatio, radar2ImageView.image.size.height*hRatio)];
@@ -112,6 +180,7 @@ ScanViewController *ScanS;
         ioAnimationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(284*wRatio, 590*hRatio, 200*wRatio, 200*hRatio)];
     }
     
+    [self.view addSubview:searchLightImageView];
     
     [searchBackButton setImage:[UIImage imageNamed:@"back02"] forState:UIControlStateHighlighted];
     [self.view bringSubviewToFront:searchBackButton];
@@ -125,6 +194,11 @@ ScanViewController *ScanS;
     
     searchWordImageView.contentMode = UIViewContentModeScaleToFill;
     [self.view bringSubviewToFront:searchWordImageView];
+    
+    [beepButton addTarget:self action:@selector(beepButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [beepButton setImage:[UIImage imageNamed:@"beep1"] forState:UIControlStateNormal];
+    [beepButton setImage:[UIImage imageNamed:@"beep2"] forState:UIControlStateHighlighted];
+    [beepButton setImage:[UIImage imageNamed:@"beep2"] forState:UIControlStateDisabled];
     
     radar1ImageView.contentMode = UIViewContentModeScaleToFill;
     [self.view bringSubviewToFront:radar1ImageView];
@@ -147,7 +221,35 @@ ScanViewController *ScanS;
     else
         ioAnimationImageView.image = [UIImage imageNamed:@"20151222.01a.png"];
     [self.view addSubview:ioAnimationImageView];
-    [self ioAnimation];
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark search light, radar, io animation setting
+- (void)startRadarAnimation{
+    [self runSpinAnimationOnView:radar1ImageView clockwise:1 rotation:0.5];
+    [self runSpinAnimationOnView:radar2ImageView clockwise:-1 rotation:0.3];
+    [self runSpinAnimationOnView:radar3ImageView clockwise:1 rotation:0.25];
+    [self runSpinAnimationOnView:radar4ImageView clockwise:-1 rotation:0.5];
+    [self runSpinAnimationOnView:radar5ImageView clockwise:1 rotation:0.5];
+}
+
+- (void)stopRadarAnimation{
+    [radar1ImageView stopAnimating];
+    [radar2ImageView stopAnimating];
+    [radar3ImageView stopAnimating];
+    [radar4ImageView stopAnimating];
+    [radar5ImageView stopAnimating];
 }
 
 - (void)runSpinAnimationOnView:(UIView*)view clockwise:(int)clockwise rotation:(float)rotation{
@@ -178,56 +280,54 @@ ScanViewController *ScanS;
     ioAnimationImageView.animationRepeatCount = 0;
     
     [ioAnimationImageView startAnimating];
+}
+
+- (void)searchGLightAnimation{
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    for(int i=1;i<11;i++){
+        NSLog(@"%@", [NSString stringWithFormat:@"g_light_%02d.png", i]);
+        [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"g_light_%02d.png", i]]];
+    }
+    searchLightImageView.animationImages = images;
+    searchLightImageView.animationDuration = 0.5;
+    searchLightImageView.animationRepeatCount = 0;
     
+    [searchLightImageView startAnimating];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
-    NSLog(@"search");
-    BleController *shareBERController = [BleController sharedController];
-    sensor = shareBERController.sensor;
-    sensor.delegate = self;
-    NSLog(@"Name : %@",sensor.activePeripheral.name);
-    [self searchTag];
+- (void)searchRLightAnimation{
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    for(int i=1;i<11;i++){
+        NSLog(@"%@", [NSString stringWithFormat:@"r_light_%02d.png", i]);
+        [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"r_light_%02d.png", i]]];
+    }
+    searchLightImageView.animationImages = images;
+    searchLightImageView.animationDuration = 0.5;
+    searchLightImageView.animationRepeatCount = 0;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udfHandle) name:NSUserDefaultsDidChangeNotification object:nil];
+    [searchLightImageView startAnimating];
 }
 
-- (void)udfHandle{
-    //TODO
+- (void)connectedWordAnimation{
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    [images addObject:[UIImage imageNamed:@"search3"]];
+    [images addObject:[UIImage imageNamed:@"search5"]];
+    searchWordImageView.animationImages = images;
+    searchWordImageView.animationDuration = 4;
+    searchWordImageView.animationRepeatCount = 0;
+    
+    [searchWordImageView startAnimating];
 }
 
-- (void) viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    NSLog(@"search exit"); //view 將要結束
-    self.sensor.delegate = nil;
-}
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
-- (BOOL)shouldAutorotate{
-    return YES;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-- (IBAction)searchBackButtonPressed:(id)sender {
-    [beepTimer invalidate];
-    beepTimer = nil;
-    [sensor SendBuzzer:0 ontime:0 offtime:0 count:0];
-    [ScanS stopScan];
-    [self dismissViewControllerAnimated:YES completion:nil];
+#pragma mark beep setting
+- (void)beepButtonPressed{
+    NSLog(@"beepButtonPressed");
+    if(!searchWordImageView.isAnimating){
+        [searchWordImageView stopAnimating];
+        searchWordImageView.image = [UIImage imageNamed:@"search4"];
+    }
+    [self ioAnimation];
+    [self beepWithCount];
 }
 
 - (void)beepWithCount{
@@ -237,163 +337,113 @@ ScanViewController *ScanS;
         beepTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(sendBuzzer) userInfo:nil repeats:YES];
     }else if(count == 3){
         beepCount = 3;
+        [NSTimer scheduledTimerWithTimeInterval:beepCount target:self selector:@selector(beepFinish) userInfo:nil repeats:false];
     }else if(count == 5){
         beepCount = 5;
+        [NSTimer scheduledTimerWithTimeInterval:beepCount target:self selector:@selector(beepFinish) userInfo:nil repeats:false];
     }
+    
     [self sendBuzzer];
+}
+
+- (void)beepFinish{
+    [self connectedWordAnimation];
+    [ioAnimationImageView stopAnimating];
 }
 
 - (void)sendBuzzer{
     [sensor SendBuzzer:(BOOL *)true ontime:5 offtime:5 count:beepCount];
 }
 
-- (void)searchTag{
-    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"connect"] isEqualToString:@"y"]){
-        [self beepWithCount];
-    }else{
-        [ScanS autoConnectTag];
-        //[self autoConnectTag];
-    }
-}
-
-- (NSString *)UUIDtoString:(NSUUID *)UUID{
-    CFStringRef s = CFUUIDCreateString(NULL, (__bridge CFUUIDRef)UUID);
-    NSString *myid = (__bridge NSString *)(s);
-    return myid;
-}
-
-- (void)setSensor{
-    NSLog(@"search setSensor");
-    
-    
+#pragma mark search handl connect state
+- (void)udfHandle{
+    //TODO
     BleController *shareBERController = [BleController sharedController];
-    [shareBERController setupControllerForSmcGATT:sensor];
+    sensor = shareBERController.sensor;
+    sensor.delegate = self;
     
-    //[sensor SendBuzzer:true ontime:1 offtime:1 count:3];
-}
-
-//- (void)connectSensor:(BleController *)inController{
-//    NSLog(@"connectSensor\n%@\n%@", [self UUIDtoString:inController.peripheral.identifier], [[NSUserDefaults standardUserDefaults] objectForKey:@"tagID"]);
-//    if([[self UUIDtoString:inController.peripheral.identifier] isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:@"tagID"]]){
-//        BleController *controller = inController;
-//        
-//        if (sensor.activePeripheral && sensor.activePeripheral != controller.peripheral) {
-//            [sensor disconnect:sensor.activePeripheral];
-//        }
-//        
-//        sensor.activePeripheral = controller.peripheral;
-//        
-//        [sensor connect:sensor.activePeripheral];
-//        [sensor stopScan];
-//        
-//        BleController *ble = [[BleController alloc] init];
-//        ble.sensor = sensor;
-//        
-//        [self setSensor];
-//    }
-//}
-//
-//- (void)autoConnectTag{
-//    NSLog(@"autoConnectTag");
-//    
-//    sensor = [[SmcGATT alloc] init];
-//    [sensor setup];
-//    sensor.delegate = self;
-//    
-//    peripheralArrayS = [[NSMutableArray alloc] init];
-//    
-//    [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(scanBLEDevice) userInfo:nil repeats:NO];
-//}
-//- (void)scanBLEDevice{
-//    NSLog(@"scanBleDevice Search");
-//    if ([sensor activePeripheral]) {
-//        if (sensor.activePeripheral.state == CBPeripheralStateConnected) {
-//            [sensor.manager cancelPeripheralConnection:sensor.activePeripheral];
-//            sensor.activePeripheral = nil;
-//        }
-//    }
-//    
-//    if ([sensor peripherals]) {
-//        sensor.peripherals = nil;
-//        [peripheralArrayS removeAllObjects];
-//    }
-//    
-//    sensor.delegate = self;
-//    printf("S : now we are searching device...\n");
-//    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
-//    
-//    [sensor findHMSoftPeripherals:5];
-//}
-
-//-(void) scanTimer:(NSTimer *)timer
-//{
-//    NSLog(@"S : Auto connect : %ld", self.peripheralArrayS.count);
-//    
-//    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(connectTimeout) userInfo:nil repeats:NO];
-//}
-
-//-(void) peripheralFound:(CBPeripheral *)peripheral rssi:(NSNumber *)rssi
-//{
-//    NSLog(@"S : peripheralFound");
-//    BleController *controller = [[BleController alloc] init];
-//    controller.peripheral = peripheral;
-//    controller.sensor = sensor;
-//    controller.rssi = rssi;
-//    [peripheralArrayS addObject:controller];
-//    
-//    [self connectSensor:controller];
-//}
-
-//取得資料整理
--(void) serialGATTCharValueUpdated:(NSData *)data
-{
-    NSString *value = [self NSDataToHex:data];
-    NSLog(@"S : data     %@",value);
-}
-
-
-//連線成功
--(void)setConnect
-{
-    NSLog(@"S : OK+CONN");
-    [self beepWithCount];
-    connectStateImageView.image = [UIImage imageNamed:@"light_g"];
-
-    [[NSUserDefaults standardUserDefaults] setObject:@"y" forKey:@"connect"];
-    //[self showOkayCancelAlert:@"iTag connected\niTag連線成功"];
-}
-
-//斷線
--(void)setDisconnect
-{
-    NSLog(@"S : OK+LOST");
-    connectStateImageView.image = [UIImage imageNamed:@"light_r"];
+    NSString *str = [searchUdf objectForKey:@"connect"];
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"n" forKey:@"connect"];
-    //[self showOkayCancelAlert:@"iTag disconnected\niTag連線失敗"];
-    [alertViewSearch removeFromSuperview];
-    alertViewSearch = nil;
-    alertViewSearch = [alertVCSearch alertConnectError];
-    
-    [self.view addSubview:alertViewSearch];
-    
-    UIButton *tryButton = [alertVCSearch getTryBurtton];
-    [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIButton *cancelButton = [alertVCSearch getCancelButton];
-    [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [alertViewSearch addSubview:tryButton];
-    [alertViewSearch addSubview:cancelButton];
+    if([str isEqualToString:@"y"]){
+        NSLog(@"S connect state : success");
+        
+        beepButton.enabled = true;
+        connectStateImageView.image = [UIImage imageNamed:@"light_g"];
+        [self connectedWordAnimation];
+        
+        if(![searchLightImageView isAnimating])
+            [self searchGLightAnimation];
+        else{
+            [searchLightImageView stopAnimating];
+            [self searchGLightAnimation];
+        }
+        
+        if(![radar1ImageView isAnimating])
+            [self startRadarAnimation];
+        
+        [alertViewSearch removeFromSuperview];
+        alertViewSearch = nil;
+        alertViewSearch = [alertVCSearch alertConnectSuccess];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+        [alertViewSearch addGestureRecognizer:tap];
+        
+        [self.view addSubview:alertViewSearch];
+        
+        [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+    }else if([str isEqualToString:@"n"]){
+        NSLog(@"S connect state : failed");
+        
+        beepButton.enabled = false;
+        connectStateImageView.image = [UIImage imageNamed:@"light_r"];
+        if(!searchWordImageView.isAnimating){
+            [searchWordImageView stopAnimating];
+            searchWordImageView.image = [UIImage imageNamed:@"search2"];
+        }
+        
+        if(![searchLightImageView isAnimating])
+            [self searchRLightAnimation];
+        else{
+            [searchLightImageView stopAnimating];
+            [self searchRLightAnimation];
+        }
+        
+        if(![radar1ImageView isAnimating]){
+            [self stopRadarAnimation];
+        }
+        [alertViewSearch removeFromSuperview];
+        alertViewSearch = nil;
+        alertViewSearch = [alertVCSearch alertConnectError];
+        
+        [self.view addSubview:alertViewSearch];
+        
+        UIButton *tryButton = [alertVCSearch getTryBurtton];
+        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIButton *cancelButton = [alertVCSearch getCancelButton];
+        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [alertViewSearch addSubview:tryButton];
+        [alertViewSearch addSubview:cancelButton];
+        
+    }else if([str isEqualToString:@"t"]){
+        NSLog(@"S connect state : timeout");
+        
+        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(connectTimeout) userInfo:nil repeats:NO];
+    }
+
 }
 
 - (void)connectErrorButtonPressed:(UIButton *)button{
     if(button.tag == 0){
         NSLog(@"try");
-        searchWordImageView.image = [UIImage imageNamed:@"search1"];
+        [self searchRLightAnimation];
+        if(!searchWordImageView.isAnimating){
+            [searchWordImageView stopAnimating];
+            searchWordImageView.image = [UIImage imageNamed:@"search1"];
+        }
         
         [ScanS autoConnectTag];
-        //[self autoConnectTag];
         
         [alertViewSearch removeFromSuperview];
         alertViewSearch = nil;
@@ -408,25 +458,6 @@ ScanViewController *ScanS;
 - (void)connectTimeout{
     if(![[[NSUserDefaults standardUserDefaults] objectForKey:@"connect"] isEqualToString:@"y"]){
         [[NSUserDefaults standardUserDefaults] setObject:@"n" forKey:@"connect"];
-    
-        if(![[searchUdf objectForKey:@"connect"] isEqualToString:@"y"]){
-            searchWordImageView.image = [UIImage imageNamed:@"search2"];
-            
-            [alertViewSearch removeFromSuperview];
-            alertViewSearch = nil;
-            alertViewSearch = [alertVCSearch alertConnectError];
-            
-            [self.view addSubview:alertViewSearch];
-            
-            UIButton *tryButton = [alertVCSearch getTryBurtton];
-            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            
-            UIButton *cancelButton = [alertVCSearch getCancelButton];
-            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            
-            [alertViewSearch addSubview:tryButton];
-            [alertViewSearch addSubview:cancelButton];
-        }
     }
 }
 
@@ -436,6 +467,39 @@ ScanViewController *ScanS;
         [alertViewSearch removeFromSuperview];
         alertViewSearch = nil;
     }
+}
+
+- (IBAction)searchBackButtonPressed:(id)sender {
+    [beepTimer invalidate];
+    beepTimer = nil;
+    [sensor SendBuzzer:0 ontime:0 offtime:0 count:0];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark BTSmartSensorDelegate
+//取得資料整理
+-(void) serialGATTCharValueUpdated:(NSData *)data
+{
+    NSString *value = [self NSDataToHex:data];
+    NSLog(@"S : data     %@",value);
+}
+
+
+//連線成功
+-(void)setConnect
+{
+    NSLog(@"S : OK+CONN");
+    [[NSUserDefaults standardUserDefaults] setObject:@"y" forKey:@"connect"];
+    //[self showOkayCancelAlert:@"iTag connected\niTag連線成功"];
+}
+
+//斷線
+-(void)setDisconnect
+{
+    NSLog(@"S : OK+LOST");
+    connectStateImageView.image = [UIImage imageNamed:@"light_r"];
+    [[NSUserDefaults standardUserDefaults] setObject:@"n" forKey:@"connect"];
+    //[self showOkayCancelAlert:@"iTag disconnected\niTag連線失敗"];
 }
 
 -(NSString*) NSDataToHex:(NSData*)data
@@ -449,5 +513,11 @@ ScanViewController *ScanS;
     }
     return [NSString stringWithString: hexStr];
 }
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 
 @end

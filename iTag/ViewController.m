@@ -27,7 +27,7 @@ UIView *alertView;
 
 @synthesize sensor;
 
-#pragma mark view controller life cycle
+#pragma mark main view controller life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -38,7 +38,7 @@ UIView *alertView;
         firstSet = true;
         [mainUdf setBool:YES forKey:@"firstUse"];
         [mainUdf setObject:@"defaultID" forKey:@"tagID"];
-        [mainUdf setObject:[[NSArray alloc] init] forKey:@"vCard"];
+        [mainUdf setObject:[[NSDictionary alloc] init] forKey:@"vCard"];
         [mainUdf setInteger:3 forKey:@"beepTime"];
         [mainUdf setObject:[[NSArray alloc] init] forKey:@"door"];
         [mainUdf setObject:[[NSArray alloc] init] forKey:@"keyName"];
@@ -189,7 +189,7 @@ UIView *alertView;
     return UIInterfaceOrientationMaskPortrait;
 }
 
-#pragma mark handle connect state
+#pragma mark main handle connect state
 - (void) udfHandle{
     BleController *shareBERController = [BleController sharedController];
     sensor = shareBERController.sensor;
@@ -278,7 +278,7 @@ UIView *alertView;
 //    
 //}
 
-#pragma mark button actions
+#pragma mark main button actions
 - (IBAction)toVCard:(id)sender {
     UIViewController *vCard = [self.storyboard instantiateViewControllerWithIdentifier:@"vCard"];
     [self presentViewController:vCard animated:YES completion:nil];
@@ -305,7 +305,7 @@ UIView *alertView;
     [self presentViewController:search animated:YES completion:nil];
 }
 
-#pragma mark BTSmartSensorDelegate
+#pragma mark main BTSmartSensorDelegate
 //取得資料整理
 -(void) serialGATTCharValueUpdated:(NSData *)data
 {
