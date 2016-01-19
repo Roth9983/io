@@ -31,6 +31,8 @@ ScanViewController *ScanS;
 UIImageView *searchLightImageView;
 UIButton *beepButton;
 
+UIImageView *tapAlertAnimationImageView;
+
 #pragma mark search view controller life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -98,9 +100,6 @@ UIButton *beepButton;
     self.sensor.delegate = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
-    
-    
-    
 }
 
 #pragma mark search UI setting
@@ -109,6 +108,12 @@ UIButton *beepButton;
     float hRatio = [alertVCSearch getSizeHRatio];
     
     [self.view addSubview:[alertVCSearch setBGImageView:[UIImage imageNamed:@"bg_find"]]];
+    
+    UITapGestureRecognizer *tapToAlert = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapAlert)];
+    tapToAlert.delegate = self;
+    
+    UIView *tapView = [[UIView alloc] init];
+    [tapView addGestureRecognizer:tapToAlert];
     
     [searchBackButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [connectStateImageView setTranslatesAutoresizingMaskIntoConstraints:YES];
@@ -124,13 +129,17 @@ UIButton *beepButton;
         UIImageView *bgImageView_state;
         float radarRatio = (wRatio+hRatio)/2;
         
+        [tapView setFrame:CGRectMake(0, 271*hRatio, [alertVCSearch getSizeW], 356*hRatio)];
+        
+        tapAlertAnimationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(22*wRatio, 348*hRatio, 370*wRatio, 205*hRatio)];
+        tapAlertAnimationImageView.image = [UIImage imageNamed:@"m_01.png"];
+        
         bgImageView_state = [[UIImageView alloc] initWithFrame:CGRectMake(33*wRatio, 99*hRatio, 347*wRatio, 126*hRatio)];
         bgImageView_state.image = [UIImage imageNamed:@"bg_find_state"];
         bgImageView_state.contentMode = UIViewContentModeScaleToFill;
         [self.view addSubview:bgImageView_state];
         
         searchLightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(48*wRatio, 150*hRatio, 323*wRatio, 64*hRatio)];
-        //searchLightImageView.backgroundColor = [UIColor whiteColor];
         
         [searchBackButton setFrame:CGRectMake(32*wRatio, 15*hRatio, searchBackButton.imageView.image.size.width*wRatio, searchBackButton.imageView.image.size.height*hRatio)];
         [connectStateImageView setFrame:CGRectMake(139*wRatio, 107*hRatio, connectStateImageView.image.size.width*wRatio, connectStateImageView.image.size.height*hRatio)];
@@ -144,7 +153,6 @@ UIButton *beepButton;
         [self.view addSubview:bg2ImageView];
         
         beepButton = [[UIButton alloc] initWithFrame:CGRectMake(130*wRatio, 249*hRatio, 155*wRatio, 49*hRatio)];
-        [self.view addSubview:beepButton];
         
         [radar1ImageView setFrame:CGRectMake(72*wRatio, 317*hRatio, radar1ImageView.image.size.width*radarRatio, radar1ImageView.image.size.height*radarRatio)];
         radar1ImageView.center = CGPointMake(207*wRatio, 452*hRatio);
@@ -159,9 +167,15 @@ UIButton *beepButton;
         radar5ImageView.center = CGPointMake(57*radarRatio, 549*radarRatio);
         radar5ImageView.center = CGPointMake(bg2ImageView.frame.origin.x+31*radarRatio, bg2ImageView.frame.origin.y+bg2ImageView.frame.size.height-78*radarRatio);
         
-        ioAnimationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(147*wRatio, 392*hRatio, 120*wRatio, 120*hRatio)];
+        ioAnimationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(147*radarRatio, 392*radarRatio, 120*radarRatio, 120*radarRatio)];
+        ioAnimationImageView.center = CGPointMake(207*wRatio, 452*hRatio);
         
     }else{
+        [tapView setFrame:CGRectMake(0, 410*hRatio, [alertVCSearch getSizeW], 576*hRatio)];
+        
+        tapAlertAnimationImageView = [[UIImageView alloc] initWithFrame:CGRectMake(23*wRatio, 492*hRatio, 723*wRatio, 400*hRatio)];
+        tapAlertAnimationImageView.image = [UIImage imageNamed:@"m_01.png"];
+        
         searchLightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(89*wRatio, 264*hRatio, 600*wRatio, 87*hRatio)];
         
         [searchBackButton setFrame:CGRectMake(63*wRatio, 28*hRatio, searchBackButton.imageView.image.size.width*wRatio, searchBackButton.imageView.image.size.height*hRatio)];
@@ -169,7 +183,6 @@ UIButton *beepButton;
         [searchWordImageView setFrame:CGRectMake(119*wRatio, 304*hRatio, searchWordImageView.image.size.width*wRatio, searchWordImageView.image.size.height*hRatio)];
         
         beepButton = [[UIButton alloc] initWithFrame:CGRectMake(268*wRatio, 374*hRatio, 235*wRatio, 65*hRatio)];
-        [self.view addSubview:beepButton];
         
         [radar1ImageView setFrame:CGRectMake(160*wRatio, 470*hRatio, radar1ImageView.image.size.width*wRatio, radar1ImageView.image.size.height*hRatio)];
         [radar2ImageView setFrame:CGRectMake(227*wRatio, 537*hRatio, radar2ImageView.image.size.width*wRatio, radar2ImageView.image.size.height*hRatio)];
@@ -208,10 +221,10 @@ UIButton *beepButton;
     
     radar3ImageView.contentMode = UIViewContentModeScaleToFill;
     [self.view bringSubviewToFront:radar3ImageView];
-        
+    
     radar4ImageView.contentMode = UIViewContentModeScaleToFill;
     [self.view bringSubviewToFront:radar4ImageView];
-        
+    
     radar5ImageView.contentMode = UIViewContentModeScaleToFill;
     [self.view bringSubviewToFront:radar5ImageView];
  
@@ -221,6 +234,19 @@ UIButton *beepButton;
     else
         ioAnimationImageView.image = [UIImage imageNamed:@"20151222.01a.png"];
     [self.view addSubview:ioAnimationImageView];
+    
+    [self.view addSubview:tapView];
+    
+    [self.view addSubview:beepButton];
+}
+
+- (void)handleTapAlert{
+    NSLog(@"handleTapAlert");
+    [self.view addSubview:tapAlertAnimationImageView];
+    
+    [self ioAnimation2];
+    
+//    [tapAlertAnimationImageView removeFromSuperview];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -280,6 +306,37 @@ UIButton *beepButton;
     ioAnimationImageView.animationRepeatCount = 0;
     
     [ioAnimationImageView startAnimating];
+}
+
+- (void)ioAnimation2{
+    NSLog(@"ioAnimation2");
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    for(int i=1;i<25;i++){
+        [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"m_%02d.png", i]]];
+    }
+    if([[searchUdf objectForKey:@"connect"] isEqualToString:@"y"]){
+        for (int i=0; i<50; i++) {
+            [images addObject:[UIImage imageNamed:@"m_25.png"]];
+        }
+    }else{
+        for (int i=0; i<50; i++) {
+            [images addObject:[UIImage imageNamed:@"m_26.png"]];
+        }
+    }
+    for(int i=24;i>0;i--){
+        [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"m_%02d.png", i]]];
+    }
+    tapAlertAnimationImageView.animationImages = images;
+    tapAlertAnimationImageView.animationDuration = 4;
+    tapAlertAnimationImageView.animationRepeatCount = 1;
+    
+    [tapAlertAnimationImageView startAnimating];
+    
+    [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(dismissAnimateView) userInfo:nil repeats:NO];
+}
+
+- (void)dismissAnimateView{
+    [tapAlertAnimationImageView removeFromSuperview];
 }
 
 - (void)searchGLightAnimation{
@@ -451,7 +508,7 @@ UIButton *beepButton;
         NSLog(@"cancel");
         [button.superview removeFromSuperview];
         //[[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        //[self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 

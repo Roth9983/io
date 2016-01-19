@@ -25,6 +25,9 @@ ScanViewController *scanV;
 AlertViewController *alertVC;
 UIView *alertView;
 
+UIView *flashView;
+NSTimer *flashTimer;
+
 @synthesize sensor;
 
 #pragma mark main view controller life cycle
@@ -64,6 +67,9 @@ UIView *alertView;
     [super viewWillDisappear:animated];
     NSLog(@"viewWillDisappear");
     self.sensor.delegate = nil;
+    
+    [flashTimer invalidate];
+    flashTimer = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
 }
@@ -129,6 +135,9 @@ UIView *alertView;
     NSLog(@"finish auto connect");
     
     NSLog(@"Name : %@",sensor.activePeripheral.name);
+    
+    flashTimer = [NSTimer timerWithTimeInterval:6 target:self selector:@selector(handleFlash) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:flashTimer forMode:NSDefaultRunLoopMode];
 }
 
 #pragma mark main UI setting
@@ -152,28 +161,19 @@ UIView *alertView;
     [autoPhotoButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [searchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     
-    //[powerImageview removeConstraints:powerImageview.constraints];
-//    [powerImageview removeFromSuperview];
-//    [settingsButton removeFromSuperview];
-    
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
+        flashView = [[UIView alloc] initWithFrame:CGRectMake(-600, 0, 600, 735)];
+        
         [powerImageview setFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
-//        powerImageview = [[UIImageView alloc] initWithFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
-//        powerImageview.image = [UIImage imageNamed:@"power01"];
-//        [self.view addSubview:powerImageview];
-        NSLog(@"power : %f, %f, %f, %f", powerImageview.frame.origin.x, powerImageview.frame.origin.y, powerImageview.frame.size.width, powerImageview.frame.size.height);
         [settingsButton setFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
-        //settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
-        //settingsButton.imageView.image = [UIImage imageNamed:@"setting01"];
-        //[self.view addSubview:settingsButton];
-        NSLog(@"set : %f, %f, %f, %f", settingsButton.frame.origin.x, settingsButton.frame.origin.y, settingsButton.frame.size.width, settingsButton.frame.size.height);
         [vCardButton setFrame:CGRectMake(108*wRatio, 268*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
         [doorAccessButton setFrame:CGRectMake(222*wRatio, 369*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
         [autoPhotoButton setFrame:CGRectMake(113*wRatio, 468*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
         [searchButton setFrame:CGRectMake(216*wRatio, 568*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
     }else{
-        [powerImageview setFrame:CGRectMake(412*wRatio, 47*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
+        flashView = [[UIView alloc] initWithFrame:CGRectMake(-835, 0, 835, 1024)];
         
+        [powerImageview setFrame:CGRectMake(412*wRatio, 47*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
         [settingsButton setFrame:CGRectMake(550*wRatio, 28*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
         [vCardButton setFrame:CGRectMake(243*wRatio, 394*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
         [doorAccessButton setFrame:CGRectMake(406*wRatio, 537*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
@@ -186,6 +186,21 @@ UIView *alertView;
     [doorAccessButton setImage:[UIImage imageNamed:@"key02"] forState:UIControlStateHighlighted];
     [autoPhotoButton setImage:[UIImage imageNamed:@"selfie02"] forState:UIControlStateHighlighted];
     [searchButton setImage:[UIImage imageNamed:@"find02"] forState:UIControlStateHighlighted];
+    
+    [flashView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_flash.png"]]];
+    [self.view addSubview:flashView];
+}
+
+- (void)handleFlash{
+    NSLog(@"handleFlash");
+    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
+        [flashView setFrame:CGRectMake(-600, 0, 600, 735)];
+    }else{
+        [flashView setFrame:CGRectMake(-835, 0, 835, 1024)];
+    }
+    [UIView animateWithDuration:1 animations:^{
+        flashView.center = CGPointMake([alertVC getSizeW] + flashView.frame.size.width/2, [alertVC getSizeH]/2);
+    }];
 }
 
 - (BOOL)prefersStatusBarHidden {

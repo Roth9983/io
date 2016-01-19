@@ -13,7 +13,7 @@
 #import "AlertViewController.h"
 #import "ScanViewController.h"
 
-@interface SearchViewController : UIViewController<BTSmartSensorDelegate>
+@interface SearchViewController : UIViewController<BTSmartSensorDelegate, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *connectStateImageView;
 @property (strong, nonatomic) IBOutlet UIImageView *searchWordImageView;
 @property (strong, nonatomic) IBOutlet UIImageView *radar1ImageView;
