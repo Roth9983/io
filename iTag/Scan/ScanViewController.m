@@ -282,7 +282,9 @@ NSTimer *timeoutTimer;
     sensor.delegate = self;
     printf("now we are searching device...\n");
     //[scanBleDeviceButton setTitle:@"Scanning..." forState:UIControlStateNormal];
-    [NSTimer scheduledTimerWithTimeInterval:SCAN_BLE_TIME target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
+    //timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:SCAN_BLE_TIME target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
+    timeoutTimer = [NSTimer timerWithTimeInterval:SCAN_BLE_TIME target:self selector:@selector(scanTimer:) userInfo:nil repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:timeoutTimer forMode:NSDefaultRunLoopMode];
     
     [sensor findHMSoftPeripherals:5];
 }
@@ -331,6 +333,8 @@ NSTimer *timeoutTimer;
 }
 
 - (void)stopScan{
+    [timeoutTimer invalidate];
+    timeoutTimer = nil;
     [sensor stopScan];
 }
 

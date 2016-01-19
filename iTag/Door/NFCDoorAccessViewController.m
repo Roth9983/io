@@ -69,6 +69,7 @@ UIView *alertViewDoor;
     [super viewWillDisappear:animated];
     NSLog(@"door exit"); //view 將要結束
     self.sensor.delegate = nil;
+    [self setNFCData];
 }
 
 #pragma mark door UI setting
@@ -525,7 +526,10 @@ UIView *alertViewDoor;
 
 - (void)textFieldDidEndEditing:(UITextField *)textfield{
     if(textfield == keyIDTextfield){
-        saveButton.enabled = true;
+        if(textfield.text.length > 0)
+            saveButton.enabled = true;
+        else
+            saveButton.enabled = false;
     }else if(textfield == key1Textfield && textfield.text.length>0){
         [keyNameArray removeObjectAtIndex:0];
         [keyNameArray insertObject:textfield.text atIndex:0];

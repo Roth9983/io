@@ -78,7 +78,6 @@ UIView *alertView;
 {
     [super viewDidAppear:animated];
     NSLog(@"viewDidAppear");//View 呈現後
-    
     //CBPeripheral *cp = (CBPeripheral*)[[mainUdf arrayForKey:@"device"] objectAtIndex:0];
     //NSLog(@"cp : %@", cp.identifier);
     if(firstSet){
@@ -153,9 +152,21 @@ UIView *alertView;
     [autoPhotoButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [searchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     
+    //[powerImageview removeConstraints:powerImageview.constraints];
+//    [powerImageview removeFromSuperview];
+//    [settingsButton removeFromSuperview];
+    
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         [powerImageview setFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
+//        powerImageview = [[UIImageView alloc] initWithFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
+//        powerImageview.image = [UIImage imageNamed:@"power01"];
+//        [self.view addSubview:powerImageview];
+        NSLog(@"power : %f, %f, %f, %f", powerImageview.frame.origin.x, powerImageview.frame.origin.y, powerImageview.frame.size.width, powerImageview.frame.size.height);
         [settingsButton setFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
+        //settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
+        //settingsButton.imageView.image = [UIImage imageNamed:@"setting01"];
+        //[self.view addSubview:settingsButton];
+        NSLog(@"set : %f, %f, %f, %f", settingsButton.frame.origin.x, settingsButton.frame.origin.y, settingsButton.frame.size.width, settingsButton.frame.size.height);
         [vCardButton setFrame:CGRectMake(108*wRatio, 268*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
         [doorAccessButton setFrame:CGRectMake(222*wRatio, 369*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
         [autoPhotoButton setFrame:CGRectMake(113*wRatio, 468*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
