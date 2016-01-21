@@ -271,11 +271,12 @@ UIImageView *tapAlertAnimationImageView;
 }
 
 - (void)stopRadarAnimation{
-    [radar1ImageView stopAnimating];
-    [radar2ImageView stopAnimating];
-    [radar3ImageView stopAnimating];
-    [radar4ImageView stopAnimating];
-    [radar5ImageView stopAnimating];
+    NSLog(@"stopRadarAnimation");
+    [self runSpinAnimationOnView:radar1ImageView clockwise:1 rotation:0];
+    [self runSpinAnimationOnView:radar2ImageView clockwise:-1 rotation:0];
+    [self runSpinAnimationOnView:radar3ImageView clockwise:1 rotation:0];
+    [self runSpinAnimationOnView:radar4ImageView clockwise:-1 rotation:0];
+    [self runSpinAnimationOnView:radar5ImageView clockwise:1 rotation:0];
 }
 
 - (void)runSpinAnimationOnView:(UIView*)view clockwise:(int)clockwise rotation:(float)rotation{
@@ -453,7 +454,7 @@ UIImageView *tapAlertAnimationImageView;
         
         beepButton.enabled = false;
         connectStateImageView.image = [UIImage imageNamed:@"light_r"];
-        if(!searchWordImageView.isAnimating){
+        if(searchWordImageView.isAnimating){
             [searchWordImageView stopAnimating];
             searchWordImageView.image = [UIImage imageNamed:@"search2"];
         }
@@ -465,9 +466,8 @@ UIImageView *tapAlertAnimationImageView;
             [self searchRLightAnimation];
         }
         
-        if(![radar1ImageView isAnimating]){
-            [self stopRadarAnimation];
-        }
+        [self stopRadarAnimation];
+        
         [alertViewSearch removeFromSuperview];
         alertViewSearch = nil;
         alertViewSearch = [alertVCSearch alertConnectError];
