@@ -28,6 +28,9 @@ UIView *alertView;
 UIView *flashView;
 NSTimer *flashTimer;
 
+UIScrollView *scrollCircleText;
+UIImageView *imageCircleText;
+
 @synthesize sensor;
 
 #pragma mark main view controller life cycle
@@ -140,14 +143,25 @@ NSTimer *flashTimer;
     
     flashTimer = [NSTimer timerWithTimeInterval:6 target:self selector:@selector(handleFlash) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:flashTimer forMode:NSDefaultRunLoopMode];
+    
+    [self runSpinAnimationOnView:imageCircleText clockwise:1 rotation:0.05];
 }
 
 #pragma mark main UI setting
 - (void)setMainUI{
     float wRatio = [alertVC getSizeWRatio];
     float hRatio = [alertVC getSizeHRatio];
+    NSLog(@"ratio : %f, %f", wRatio, hRatio);
     
-    [self.view addSubview:[alertVC setBGImageView:[UIImage imageNamed:@"bg_main"]]];
+    if([alertVC getSizeH] != 480)
+        [self.view addSubview:[alertVC setBGImageView:[UIImage imageNamed:@"bg_main"]]];
+    else{
+        [self.view addSubview:[alertVC setBGImageView:[UIImage imageNamed:@"bg_main35_1"]]];
+        UIImageView *bgMain2 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 85*hRatio, [alertVC getSizeW], [alertVC getSizeH]-85)];
+        bgMain2.contentMode = UIViewContentModeScaleAspectFit;
+        bgMain2.image = [UIImage imageNamed:@"bg_main35_2"];
+        [self.view addSubview:bgMain2];
+    }
     
     [self.view bringSubviewToFront:powerImageview];
     [self.view bringSubviewToFront:settingsButton];
@@ -162,18 +176,42 @@ NSTimer *flashTimer;
     [doorAccessButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [autoPhotoButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [searchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    
+
+    float cRatio = (wRatio+hRatio)/2;
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         flashView = [[UIView alloc] initWithFrame:CGRectMake(-600, 0, 600, 735)];
         
-        [powerImageview setFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
-        [settingsButton setFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
-        [vCardButton setFrame:CGRectMake(108*wRatio, 268*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
-        [doorAccessButton setFrame:CGRectMake(222*wRatio, 369*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
-        [autoPhotoButton setFrame:CGRectMake(113*wRatio, 468*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
-        [searchButton setFrame:CGRectMake(216*wRatio, 568*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
+        if([alertVC getSizeH] != 480){
+            scrollCircleText = [[UIScrollView alloc] initWithFrame:CGRectMake(67*wRatio, 85*hRatio, 280*cRatio, 140*cRatio)];
+            scrollCircleText.center = CGPointMake([alertVC getSizeW]/2, 85*hRatio+(140*cRatio)/2);
+            scrollCircleText.contentSize = CGSizeMake(280*cRatio, 280*cRatio);
+            imageCircleText = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 280*cRatio, 280*cRatio)];
+        
+            [powerImageview setFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
+            [settingsButton setFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
+            [vCardButton setFrame:CGRectMake(108*wRatio, 268*hRatio, vCardButton.imageView.image.size.width*wRatio, vCardButton.imageView.image.size.height*hRatio)];
+            [doorAccessButton setFrame:CGRectMake(222*wRatio, 369*hRatio, doorAccessButton.imageView.image.size.width*wRatio, doorAccessButton.imageView.image.size.height*hRatio)];
+            [autoPhotoButton setFrame:CGRectMake(113*wRatio, 468*hRatio, autoPhotoButton.imageView.image.size.width*wRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
+            [searchButton setFrame:CGRectMake(216*wRatio, 568*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
+        }else{
+            scrollCircleText = [[UIScrollView alloc] initWithFrame:CGRectMake(67*wRatio, 85*hRatio, 280*hRatio, 130*hRatio)];
+            scrollCircleText.center = CGPointMake([alertVC getSizeW]/2, 85*hRatio+(140*hRatio)/2);
+            scrollCircleText.contentSize = CGSizeMake(280*hRatio, 280*hRatio);
+            imageCircleText = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 280*hRatio, 280*hRatio)];
+            
+            [powerImageview setFrame:CGRectMake(222*wRatio, 26*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
+            [settingsButton setFrame:CGRectMake(296*wRatio, 15*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
+            [vCardButton setFrame:CGRectMake(108*wRatio+11.5, 268*hRatio+2.5, vCardButton.imageView.image.size.width*hRatio, vCardButton.imageView.image.size.height*hRatio)];
+            [doorAccessButton setFrame:CGRectMake(222*wRatio-1, 369*hRatio+3, doorAccessButton.imageView.image.size.width*hRatio, doorAccessButton.imageView.image.size.height*hRatio)];
+            [autoPhotoButton setFrame:CGRectMake(113*wRatio+11.5, 468*hRatio+5, autoPhotoButton.imageView.image.size.width*hRatio, autoPhotoButton.imageView.image.size.height*hRatio)];
+            [searchButton setFrame:CGRectMake(216*wRatio-0.5, 568*hRatio+6, searchButton.imageView.image.size.width*hRatio, searchButton.imageView.image.size.height*hRatio)];
+        }
     }else{
         flashView = [[UIView alloc] initWithFrame:CGRectMake(-835, 0, 835, 1024)];
+        
+        scrollCircleText = [[UIScrollView alloc] initWithFrame:CGRectMake(174*wRatio, 158*hRatio, 420*wRatio, 192*hRatio)];
+        scrollCircleText.contentSize = CGSizeMake(420*wRatio, 420*hRatio);
+        imageCircleText = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 420*wRatio, 420*hRatio)];
         
         [powerImageview setFrame:CGRectMake(412*wRatio, 47*hRatio, powerImageview.image.size.width*wRatio, powerImageview.image.size.height*hRatio)];
         [settingsButton setFrame:CGRectMake(550*wRatio, 28*hRatio, settingsButton.imageView.image.size.width*wRatio, settingsButton.imageView.image.size.height*hRatio)];
@@ -189,8 +227,30 @@ NSTimer *flashTimer;
     [autoPhotoButton setImage:[UIImage imageNamed:@"selfie02"] forState:UIControlStateHighlighted];
     [searchButton setImage:[UIImage imageNamed:@"find02"] forState:UIControlStateHighlighted];
     
+    CGPoint bottomOffset = CGPointMake(0, scrollCircleText.contentSize.height - scrollCircleText.bounds.size.height);
+    [scrollCircleText setContentOffset:bottomOffset animated:YES];
+    scrollCircleText.scrollEnabled = false;
+    
+    imageCircleText.image = [UIImage imageNamed:@"circletext"];
+    [scrollCircleText addSubview:imageCircleText];
+
+    [self.view addSubview:scrollCircleText];
+    
     [flashView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_flash.png"]]];
     [self.view addSubview:flashView];
+}
+
+- (void)runSpinAnimationOnView:(UIView*)view clockwise:(int)clockwise rotation:(float)rotation{
+    NSLog(@"~ animation");
+    CABasicAnimation* rotationAnimation;
+    CGFloat duration = 1.0;
+    rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0 /* full rotation*/ * (rotation * clockwise) * duration];
+    rotationAnimation.duration = duration;
+    rotationAnimation.cumulative = YES;
+    rotationAnimation.repeatCount = FLT_MAX;
+    
+    [view.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
 }
 
 - (void)handleFlash{
@@ -261,6 +321,9 @@ NSTimer *flashTimer;
         
         [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(connectTimeout) userInfo:nil repeats:NO];
     }
+    
+    if([mainUdf boolForKey:@"fore"])
+        [self runSpinAnimationOnView:imageCircleText clockwise:1 rotation:0.05];
 }
 
 - (void)connectErrorButtonPressed:(UIButton *)button{
