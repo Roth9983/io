@@ -380,6 +380,7 @@ UIImageView *tapAlertAnimationImageView;
 #pragma mark beep setting
 - (void)beepButtonPressed{
     NSLog(@"beepButtonPressed");
+    beepButton.enabled = false;
     if(!searchWordImageView.isAnimating){
         [searchWordImageView stopAnimating];
         searchWordImageView.image = [UIImage imageNamed:@"search4"];
@@ -395,16 +396,17 @@ UIImageView *tapAlertAnimationImageView;
         beepTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(sendBuzzer) userInfo:nil repeats:YES];
     }else if(count == 3){
         beepCount = 3;
-        [NSTimer scheduledTimerWithTimeInterval:beepCount target:self selector:@selector(beepFinish) userInfo:nil repeats:false];
+        [NSTimer scheduledTimerWithTimeInterval:beepCount target:self selector:@selector(beepFinish) userInfo:nil repeats:NO];
     }else if(count == 5){
         beepCount = 5;
-        [NSTimer scheduledTimerWithTimeInterval:beepCount target:self selector:@selector(beepFinish) userInfo:nil repeats:false];
+        [NSTimer scheduledTimerWithTimeInterval:beepCount target:self selector:@selector(beepFinish) userInfo:nil repeats:NO];
     }
     
     [self sendBuzzer];
 }
 
 - (void)beepFinish{
+    beepButton.enabled = true;
     [self connectedWordAnimation];
     [ioAnimationImageView stopAnimating];
 }
@@ -530,6 +532,7 @@ UIImageView *tapAlertAnimationImageView;
     [beepTimer invalidate];
     beepTimer = nil;
     [sensor SendBuzzer:0 ontime:0 offtime:0 count:0];
+    beepButton.enabled = true;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
