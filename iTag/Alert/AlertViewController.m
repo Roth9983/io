@@ -144,6 +144,23 @@ float fontSize;
     return bgView;
 }
 
+- (UIView *)alertIONotFound{
+    NSLog(@"alertIONotFound");
+    [self getScreenSize];
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, w, h)];
+    bgView.backgroundColor = [UIColor clearColor];
+    
+    UIImageView *imageView;
+    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
+        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(32*wRatio, 229*hRatio, 357*wRatio, 279*hRatio)];
+    else
+        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(59*wRatio, 253*hRatio, 651*wRatio, 518*hRatio)];
+    imageView.image = [UIImage imageNamed:@"ionotfound"];
+    [bgView addSubview:imageView];
+    
+    return bgView;
+}
+
 - (UIView *)alertConnecting{
     NSLog(@"alertConnecting");
     [self getScreenSize];

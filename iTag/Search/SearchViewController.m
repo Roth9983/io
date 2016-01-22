@@ -426,8 +426,8 @@ UIImageView *tapAlertAnimationImageView;
     
     if([str isEqualToString:@"y"]){
         NSLog(@"S connect state : success");
-        
-        beepButton.enabled = true;
+        [self beepButtonPressed];
+        //beepButton.enabled = true;
         connectStateImageView.image = [UIImage imageNamed:@"light_g"];
         [self connectedWordAnimation];
         
@@ -472,7 +472,8 @@ UIImageView *tapAlertAnimationImageView;
         
         [alertViewSearch removeFromSuperview];
         alertViewSearch = nil;
-        alertViewSearch = [alertVCSearch alertConnectError];
+        //alertViewSearch = [alertVCSearch alertConnectError];
+        alertViewSearch = [alertVCSearch alertIONotFound];
         
         [self.view addSubview:alertViewSearch];
         
@@ -510,7 +511,7 @@ UIImageView *tapAlertAnimationImageView;
         NSLog(@"cancel");
         [button.superview removeFromSuperview];
         //[[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
-        //[self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 

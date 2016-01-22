@@ -17,6 +17,7 @@
 
 - (UIView *)alertConnectSuccess;
 - (UIView *)alertConnectError;
+- (UIView *)alertIONotFound;
 - (UIView *)alertConnecting;
 - (UIView *)alertCustom:(NSString *)str;
 - (UIImageView *)setBGImageView:(UIImage *)image;

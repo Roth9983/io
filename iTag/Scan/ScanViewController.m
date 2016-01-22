@@ -59,6 +59,11 @@ NSTimer *timeoutTimer;
     [self.view bringSubviewToFront:scanBleDeviceButton];
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+    isAuto = false;
+    [self scanBLEDevice];
+}
+
 - (BOOL)prefersStatusBarHidden{
     return YES;
 }

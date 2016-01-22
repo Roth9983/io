@@ -104,12 +104,14 @@ NSTimer *flashTimer;
         
         if([[mainUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
             NSLog(@"pair io");
-            [alertView removeFromSuperview];
-            alertView = nil;
-            alertView = [alertVC alertCustom:@"Please pair the io !"];
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-            [alertView addGestureRecognizer:tap];
-            [self.view addSubview:alertView];
+            UIViewController *scan = [self.storyboard instantiateViewControllerWithIdentifier:@"scan"];
+            [self presentViewController:scan animated:YES completion:nil];
+//            [alertView removeFromSuperview];
+//            alertView = nil;
+//            alertView = [alertVC alertCustom:@"Please pair the io !"];
+//            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+//            [alertView addGestureRecognizer:tap];
+//            [self.view addSubview:alertView];
         }else if(![[mainUdf objectForKey:@"connect"] isEqualToString:@"y"] && ![[mainUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
             NSLog(@"no connect");
             
