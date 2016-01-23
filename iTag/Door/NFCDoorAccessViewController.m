@@ -91,14 +91,16 @@ UIView *alertViewDoor;
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         noTapView = [[UIView alloc] initWithFrame:CGRectMake(0, 80*hRatio, w, 200*hRatio)];
         [doorBackButton setFrame:CGRectMake(32*wRatio, 15*hRatio, doorBackButton.imageView.image.size.width*wRatio, doorBackButton.imageView.image.size.height*hRatio)];
-        [keyIDTextfield setFrame:CGRectMake(102*wRatio, 145*hRatio, (w-145-30)*wRatio, 20*hRatio)];
+        [keyIDTextfield setFrame:CGRectMake(102*wRatio, 130*hRatio, w-(102+70)*wRatio, 50*hRatio)];
+        keyIDTextfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
         [deleteButton setFrame:CGRectMake(128*wRatio, 202*hRatio, deleteButton.imageView.image.size.width*wRatio, deleteButton.imageView.image.size.height*hRatio)];
         [saveButton setFrame:CGRectMake(141*wRatio, 269*hRatio, saveButton.imageView.image.size.width*wRatio, saveButton.imageView.image.size.height*hRatio)];
         [loadToBandDoor setFrame:CGRectMake(113*wRatio, 651*hRatio, loadToBandDoor.imageView.image.size.width*wRatio, loadToBandDoor.imageView.image.size.height*hRatio)];
     }else{
         noTapView = [[UIView alloc] initWithFrame:CGRectMake(0, 100*hRatio, w, 150*hRatio)];
         [doorBackButton setFrame:CGRectMake(63*wRatio, 28*hRatio, doorBackButton.imageView.image.size.width*wRatio, doorBackButton.imageView.image.size.height*hRatio)];
-        [keyIDTextfield setFrame:CGRectMake(206*wRatio, 234*hRatio, (w-206)*wRatio, 40*hRatio)];
+        [keyIDTextfield setFrame:CGRectMake(206*wRatio, 225*hRatio, w-(206+120)*wRatio, 50*hRatio)];
+        keyIDTextfield.font = [UIFont fontWithName:@"Heiti TC" size:40];
         [deleteButton setFrame:CGRectMake(267.5*wRatio, 309*hRatio, deleteButton.imageView.image.size.width*wRatio, deleteButton.imageView.image.size.height*hRatio)];
         [saveButton setFrame:CGRectMake(288*wRatio, 400*hRatio, saveButton.imageView.image.size.width*wRatio, saveButton.imageView.image.size.height*hRatio)];
         [loadToBandDoor setFrame:CGRectMake(246*wRatio, 896*hRatio, loadToBandDoor.imageView.image.size.width*wRatio, loadToBandDoor.imageView.image.size.height*hRatio)];
@@ -173,27 +175,27 @@ UIView *alertViewDoor;
         key1Button = [[UIButton alloc] initWithFrame:CGRectMake(118*wRatio, 462*hRatio, 536*wRatio, 121*hRatio)];
         key1ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(58*wRatio, (key1Button.bounds.size.height-78*hRatio)/2, 74*wRatio, 78*hRatio)];
         key1Textfield = [[UITextField alloc] initWithFrame:CGRectMake((58+74+20)*wRatio, (key1Button.bounds.size.height-50)/2, key1Button.bounds.size.width-(58+74+60)*wRatio, 50)];
-        key1Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
+        key1Textfield.font = [UIFont fontWithName:@"Heiti TC" size:40];
         
         //key2
         key2Button = [[UIButton alloc] initWithFrame:CGRectMake(118*wRatio, 564*hRatio, 536*wRatio, 121*hRatio)];
         key2ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(58*wRatio, (key2Button.bounds.size.height-78*hRatio)/2, 74*wRatio, 78*hRatio)];
         key2Textfield = [[UITextField alloc] initWithFrame:CGRectMake((58+74+20)*wRatio, (key2Button.bounds.size.height-50)/2, key2Button.bounds.size.width-(58+74+60)*wRatio, 50)];
-        key2Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
+        key2Textfield.font = [UIFont fontWithName:@"Heiti TC" size:40];
         
         
         //key3
         key3Button = [[UIButton alloc] initWithFrame:CGRectMake(118*wRatio, 667*hRatio, 536*wRatio, 121*hRatio)];
         key3ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(58*wRatio, (key3Button.bounds.size.height-78*hRatio)/2, 74*wRatio, 78*hRatio)];
         key3Textfield = [[UITextField alloc] initWithFrame:CGRectMake((58+74+20)*wRatio, (key3Button.bounds.size.height-50)/2, key3Button.bounds.size.width-(58+74+60)*wRatio, 50)];
-        key3Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
+        key3Textfield.font = [UIFont fontWithName:@"Heiti TC" size:40];
         
         
         //key4
         key4Button = [[UIButton alloc] initWithFrame:CGRectMake(118*wRatio, 769*hRatio, 536*wRatio, 121*hRatio)];
         key4ImageView = [[UIImageView alloc] initWithFrame:CGRectMake(58*wRatio, (key4Button.bounds.size.height-78*hRatio)/2, 74*wRatio, 78*hRatio)];
         key4Textfield = [[UITextField alloc] initWithFrame:CGRectMake((58+74+20)*wRatio, (key4Button.bounds.size.height-50)/2, key4Button.bounds.size.width-(58+74+60)*wRatio, 50)];
-        key4Textfield.font = [UIFont fontWithName:@"Heiti TC" size:17];
+        key4Textfield.font = [UIFont fontWithName:@"Heiti TC" size:40];
     }
     
     NSAttributedString *placeholderOfKeyTextField = [[NSAttributedString alloc] initWithString:@"Input key's name" attributes:@{NSForegroundColorAttributeName : [UIColor colorWithRed:60.0/255.0 green:120.0/255.0 blue:180.0/255.0 alpha:1.0]}];
