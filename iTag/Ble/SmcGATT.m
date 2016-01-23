@@ -371,6 +371,10 @@
     [shareBERController SendBuzzer:on ontime: a offtime:b count:c];
 }
 
-
+-(void) SendLED:(NSString *)text{
+}
+-(NSString *)DoCheckSum:(NSString *)string{
+    return string;
+}
 
 @end
