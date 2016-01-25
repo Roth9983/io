@@ -26,12 +26,14 @@ static void * SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevic
 @property (nonatomic, weak) IBOutlet UIButton *stillButton;
 @property (strong, nonatomic) IBOutlet UIButton *recCounter;
 @property (strong, nonatomic) IBOutlet UIButton *backButton;
+@property (weak, nonatomic) IBOutlet UIButton *torchButton;
 
 - (IBAction)toggleMovieRecording:(id)sender;
 - (IBAction)changeCamera:(id)sender;
 - (IBAction)snapStillImage:(id)sender;
 - (IBAction)focusAndExposeTap:(UIGestureRecognizer *)gestureRecognizer;
 - (IBAction)back:(id)sender;
+- (IBAction)torchTurnOnOff:(id)sender;
 
 // Session management.
 @property (nonatomic) dispatch_queue_t sessionQueue; // Communicate with the session and other session objects on this queue.
@@ -55,6 +57,7 @@ static void * SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevic
 @synthesize recordButton;
 @synthesize recCounter;
 @synthesize backButton;
+@synthesize torchButton;
 NSTimer *myTimer;
 int secCounter;
 int minCounter;
@@ -63,6 +66,7 @@ bool rec = false;
 AlertViewController *alertVCCam;
 UIView *alertViewCam;
 UIView *topView, *buttomView, *leftView;
+bool on = false;
 
 
 @synthesize sensor;
@@ -342,7 +346,8 @@ UIView *topView, *buttomView, *leftView;
     [stillButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [backButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [cameraButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    
+    [torchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         NSLog(@"iphone");
         if((w == 320 && h == 480) || (w == 480 && h == 320)){
@@ -362,6 +367,7 @@ UIView *topView, *buttomView, *leftView;
                 [stillButton setFrame:CGRectMake(w/2-31.5, h-83, 69, 63)];
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
+                [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(w/2, h/2);
                 }
@@ -372,6 +378,7 @@ UIView *topView, *buttomView, *leftView;
                 [stillButton setFrame:CGRectMake(h-86, w/2-31.5, 69, 63)];
                 [backButton setFrame:CGRectMake(0, w-20-44, 44, 44)];
                 [cameraButton setFrame:CGRectMake(0, 20, 44, 44)];
+                [torchButton setFrame:CGRectMake(0, 20+44+20, 44, 44)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(h/2, w/2);
                 }
@@ -382,6 +389,7 @@ UIView *topView, *buttomView, *leftView;
                 [stillButton setFrame:CGRectMake(17, w/2-31.5, 69, 63)];
                 [backButton setFrame:CGRectMake(h-44, 20, 44, 44)];
                 [cameraButton setFrame:CGRectMake(h-44, w-20-44, 44, 44)];
+                [torchButton setFrame:CGRectMake(w-44, h-20-44-20-44, 44, 44)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(h/2, w/2);
                 }
@@ -398,6 +406,7 @@ UIView *topView, *buttomView, *leftView;
                 [stillButton setFrame:CGRectMake(w/2-31.5, h-83, 69, 63)];
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
+                [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(w/2, h/2);
                 }
@@ -412,6 +421,7 @@ UIView *topView, *buttomView, *leftView;
             [self.view bringSubviewToFront:cameraButton];
             [self.view bringSubviewToFront:backButton];
             [self.view bringSubviewToFront:stillButton];
+            [self.view bringSubviewToFront:torchButton];
         }else{
             NSLog(@"iphone 4 up");
             
@@ -420,16 +430,19 @@ UIView *topView, *buttomView, *leftView;
                 [stillButton setFrame:CGRectMake(w/2-31.5, h-20-69, 69, 63)];
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
+                [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
                 [self.previewView setFrame:CGRectMake(44, 0, (h*4/3), h)];
                 [stillButton setFrame:CGRectMake(w-20+3-69, h/2-31.5, 69, 63)];
                 [backButton setFrame:CGRectMake(0, h-20-44, 44, 44)];
                 [cameraButton setFrame:CGRectMake(0, 20, 44, 44)];
+                [torchButton setFrame:CGRectMake(0, 20+44+20, 44, 44)];
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
                 [self.previewView setFrame:CGRectMake((w-44-(h*4/3)), 0, (h*4/3), h)];
                 [stillButton setFrame:CGRectMake(20-3, h/2-31.5, 69, 63)];
                 [backButton setFrame:CGRectMake(w-44, 20, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-44, h-20-44, 44, 44)];
+                [torchButton setFrame:CGRectMake(w-44, h-20-44-20-44, 44, 44)];
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortraitUpsideDown){
 
             }else{
@@ -441,6 +454,7 @@ UIView *topView, *buttomView, *leftView;
                 [stillButton setFrame:CGRectMake(w/2-31.5, h-20-69, 69, 63)];
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
+                [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
             }
         }
     }else{
@@ -455,18 +469,21 @@ UIView *topView, *buttomView, *leftView;
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
+            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
         }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
             [self.previewView setFrame:CGRectMake(0, 0, w, h)];
             leftView = [[UIView alloc] initWithFrame:CGRectMake(w-103, 0, 103, 1024)];
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
+            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
         }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
             [self.previewView setFrame:CGRectMake(0, 0, w, h)];
             leftView = [[UIView alloc] initWithFrame:CGRectMake(w-103, 0, 103, 1024)];
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
+            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
         }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortraitUpsideDown){
             NSLog(@"~ upsidedown");
             [self.previewView setFrame:CGRectMake(0, 0, w, h)];
@@ -474,6 +491,7 @@ UIView *topView, *buttomView, *leftView;
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
+            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
             if(alertViewCam != nil){
                 alertViewCam.center = CGPointMake(w/2, h/2);
             }
@@ -487,6 +505,7 @@ UIView *topView, *buttomView, *leftView;
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
+            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
         }
         leftView.backgroundColor = [UIColor blackColor];
         leftView.alpha = 0.3;
@@ -787,6 +806,30 @@ UIView *topView, *buttomView, *leftView;
 
 - (IBAction)back:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)torchTurnOnOff:(id)sender {
+    // check if flashlight available
+    Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
+    if (captureDeviceClass != nil) {
+        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if ([device hasTorch] && [device hasFlash]){
+            
+            [device lockForConfiguration:nil];
+            if (!on) {
+                on = true;
+                [device setTorchMode:AVCaptureTorchModeOn];
+                [device setFlashMode:AVCaptureFlashModeOn];
+                //torchIsOn = YES; //define as a variable/property if you need to know status
+            } else {
+                on = false;
+                [device setTorchMode:AVCaptureTorchModeOff];
+                [device setFlashMode:AVCaptureFlashModeOff];
+                //torchIsOn = NO;
+            }
+            [device unlockForConfiguration];
+        }
+    }
 }
 
 

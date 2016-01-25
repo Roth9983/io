@@ -567,6 +567,14 @@
                                     <action selector="changeCamera:" destination="fxt-4j-DI0" eventType="touchUpInside" id="ewl-aw-6CT"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jnz-I4-G1P">
+                                <rect key="frame" x="277" y="285" width="46" height="30"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="T"/>
+                                <connections>
+                                    <action selector="torchTurnOnOff:" destination="fxt-4j-DI0" eventType="touchUpInside" id="an9-Dj-WbQ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -601,6 +609,7 @@
                         <outlet property="recCounter" destination="mWE-nz-Sbi" id="4Y4-SH-JO2"/>
                         <outlet property="recordButton" destination="OAS-xx-SKL" id="Nt9-Mj-FFJ"/>
                         <outlet property="stillButton" destination="zwl-Ux-DMb" id="HBj-cp-Ggv"/>
+                        <outlet property="torchButton" destination="Jnz-I4-G1P" id="jaX-4Q-AiK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qi8-CG-kPC" userLabel="First Responder" sceneMemberID="firstResponder"/>
