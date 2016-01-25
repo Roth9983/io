@@ -87,8 +87,7 @@ UIImageView *imageCircleText;
 {
     [super viewDidAppear:animated];
     NSLog(@"viewDidAppear");//View 呈現後
-    //CBPeripheral *cp = (CBPeripheral*)[[mainUdf arrayForKey:@"device"] objectAtIndex:0];
-    //NSLog(@"cp : %@", cp.identifier);
+    
     if(firstSet){
         NSLog(@"first use scan");
         firstSet = false;
@@ -109,18 +108,10 @@ UIImageView *imageCircleText;
             NSLog(@"pair io");
             UIViewController *scan = [self.storyboard instantiateViewControllerWithIdentifier:@"scan"];
             [self presentViewController:scan animated:YES completion:nil];
-//            [alertView removeFromSuperview];
-//            alertView = nil;
-//            alertView = [alertVC alertCustom:@"Please pair the io !"];
-//            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-//            [alertView addGestureRecognizer:tap];
-//            [self.view addSubview:alertView];
         }else if(![[mainUdf objectForKey:@"connect"] isEqualToString:@"y"] && ![[mainUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
             NSLog(@"no connect");
             
             [scanV autoConnectTag];
-            //[scanV autoConnectTag2:[mainUdf objectForKey:@"tagID"]];
-            //NSUUID *uuid = [[NSUUID UUID] initWithUUIDString:[mainUdf objectForKey:@"tagID"]];
             
             [alertView removeFromSuperview];
             alertView = nil;

@@ -12,6 +12,7 @@
 #import "CameraViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
 #import "CameraPreview.h"
 
 static void * CapturingStillImageContext = &CapturingStillImageContext;
@@ -27,6 +28,7 @@ static void * SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevic
 @property (strong, nonatomic) IBOutlet UIButton *recCounter;
 @property (strong, nonatomic) IBOutlet UIButton *backButton;
 @property (weak, nonatomic) IBOutlet UIButton *torchButton;
+@property (weak, nonatomic) IBOutlet UIButton *openAlbumButton;
 
 - (IBAction)toggleMovieRecording:(id)sender;
 - (IBAction)changeCamera:(id)sender;
@@ -34,6 +36,7 @@ static void * SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevic
 - (IBAction)focusAndExposeTap:(UIGestureRecognizer *)gestureRecognizer;
 - (IBAction)back:(id)sender;
 - (IBAction)torchTurnOnOff:(id)sender;
+- (IBAction)openAlbum:(id)sender;
 
 // Session management.
 @property (nonatomic) dispatch_queue_t sessionQueue; // Communicate with the session and other session objects on this queue.
@@ -58,6 +61,7 @@ static void * SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevic
 @synthesize recCounter;
 @synthesize backButton;
 @synthesize torchButton;
+@synthesize openAlbumButton;
 NSTimer *myTimer;
 int secCounter;
 int minCounter;
@@ -66,7 +70,8 @@ bool rec = false;
 AlertViewController *alertVCCam;
 UIView *alertViewCam;
 UIView *topView, *buttomView, *leftView;
-bool on = false;
+bool on;
+bool first;
 
 
 @synthesize sensor;
@@ -94,6 +99,8 @@ bool on = false;
     [self setSession:session];
     
     // Setup the preview view
+    on = false;
+    first = true;
     [self setCameraControlView];
     [[self previewView] setSession:session];
     
@@ -347,7 +354,12 @@ bool on = false;
     [backButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [cameraButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     [torchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-
+    [openAlbumButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    
+    if([[UIDevice currentDevice].systemVersion floatValue] <= 9){
+        openAlbumButton.hidden = true;
+    }
+    
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         NSLog(@"iphone");
         if((w == 320 && h == 480) || (w == 480 && h == 320)){
@@ -368,6 +380,7 @@ bool on = false;
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
                 [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(20, h-30-50, 50, 50)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(w/2, h/2);
                 }
@@ -379,6 +392,7 @@ bool on = false;
                 [backButton setFrame:CGRectMake(0, w-20-44, 44, 44)];
                 [cameraButton setFrame:CGRectMake(0, 20, 44, 44)];
                 [torchButton setFrame:CGRectMake(0, 20+44+20, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(w-30-50, h-20-50, 50, 50)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(h/2, w/2);
                 }
@@ -389,7 +403,8 @@ bool on = false;
                 [stillButton setFrame:CGRectMake(17, w/2-31.5, 69, 63)];
                 [backButton setFrame:CGRectMake(h-44, 20, 44, 44)];
                 [cameraButton setFrame:CGRectMake(h-44, w-20-44, 44, 44)];
-                [torchButton setFrame:CGRectMake(w-44, h-20-44-20-44, 44, 44)];
+                [torchButton setFrame:CGRectMake(h-44, w-20-44-20-44, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(30, 20, 50, 50)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(h/2, w/2);
                 }
@@ -407,6 +422,7 @@ bool on = false;
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
                 [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(20, h-30-50, 50, 50)];
                 if(alertViewCam != nil){
                     alertViewCam.center = CGPointMake(w/2, h/2);
                 }
@@ -431,18 +447,21 @@ bool on = false;
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
                 [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(20, h-30-50, 50, 50)];
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
                 [self.previewView setFrame:CGRectMake(44, 0, (h*4/3), h)];
                 [stillButton setFrame:CGRectMake(w-20+3-69, h/2-31.5, 69, 63)];
                 [backButton setFrame:CGRectMake(0, h-20-44, 44, 44)];
                 [cameraButton setFrame:CGRectMake(0, 20, 44, 44)];
                 [torchButton setFrame:CGRectMake(0, 20+44+20, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(w-30-50, h-20-50, 50, 50)];
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
                 [self.previewView setFrame:CGRectMake((w-44-(h*4/3)), 0, (h*4/3), h)];
                 [stillButton setFrame:CGRectMake(20-3, h/2-31.5, 69, 63)];
                 [backButton setFrame:CGRectMake(w-44, 20, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-44, h-20-44, 44, 44)];
                 [torchButton setFrame:CGRectMake(w-44, h-20-44-20-44, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(30, 20, 50, 50)];
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortraitUpsideDown){
 
             }else{
@@ -455,10 +474,12 @@ bool on = false;
                 [backButton setFrame:CGRectMake(20, 0, 44, 44)];
                 [cameraButton setFrame:CGRectMake(w-20-44, 0, 44, 44)];
                 [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
+                [openAlbumButton setFrame:CGRectMake(20, h-30-50, 50, 50)];
             }
         }
     }else{
         NSLog(@"ipad");
+        torchButton.hidden = true;
         if(leftView != nil){
             [leftView removeFromSuperview];
             leftView = nil;
@@ -469,21 +490,21 @@ bool on = false;
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
-            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
+            [openAlbumButton setFrame:CGRectMake(w-73.5, h-64-20-44, 44, 44)];
         }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
             [self.previewView setFrame:CGRectMake(0, 0, w, h)];
             leftView = [[UIView alloc] initWithFrame:CGRectMake(w-103, 0, 103, 1024)];
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
-            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
+            [openAlbumButton setFrame:CGRectMake(w-73.5, h-64-20-44, 44, 44)];
         }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
             [self.previewView setFrame:CGRectMake(0, 0, w, h)];
             leftView = [[UIView alloc] initWithFrame:CGRectMake(w-103, 0, 103, 1024)];
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
-            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
+            [openAlbumButton setFrame:CGRectMake(w-73.5, h-64-20-44, 44, 44)];
         }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortraitUpsideDown){
             NSLog(@"~ upsidedown");
             [self.previewView setFrame:CGRectMake(0, 0, w, h)];
@@ -491,7 +512,7 @@ bool on = false;
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
-            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
+            [openAlbumButton setFrame:CGRectMake(w-73.5, h-64-20-44, 44, 44)];
             if(alertViewCam != nil){
                 alertViewCam.center = CGPointMake(w/2, h/2);
             }
@@ -505,7 +526,7 @@ bool on = false;
             [backButton setFrame:CGRectMake(w-73.5, 20, 44, 44)];
             [stillButton setFrame:CGRectMake(w-86, h/2-31.5, 69, 63)];
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
-            [torchButton setFrame:CGRectMake(w-73.5, h-64-44-64, 44, 44)];
+            [openAlbumButton setFrame:CGRectMake(w-73.5, h-64-20-44, 44, 44)];
         }
         leftView.backgroundColor = [UIColor blackColor];
         leftView.alpha = 0.3;
@@ -514,6 +535,35 @@ bool on = false;
         [self.view bringSubviewToFront:cameraButton];
         [self.view bringSubviewToFront:backButton];
         [self.view bringSubviewToFront:stillButton];
+        [self.view bringSubviewToFront:openAlbumButton];
+    }
+    
+    if(first){
+        NSLog(@"PHFetchOptions");
+        first = false;
+        PHFetchOptions *fetchOptions = [[PHFetchOptions alloc] init];
+        fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+        PHFetchResult *fetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:fetchOptions];
+        PHAsset *lastAsset = [fetchResult lastObject];
+        [[PHImageManager defaultManager] requestImageForAsset:lastAsset
+                                                   targetSize:openAlbumButton.bounds.size
+                                                  contentMode:PHImageContentModeAspectFill
+                                                      options:PHImageRequestOptionsVersionCurrent
+                                                resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        CGRect rect = CGRectMake(0,0,50,50);
+                                                        UIGraphicsBeginImageContext( rect.size );
+                                                        [result drawInRect:rect];
+                                                        UIImage *picture1 = UIGraphicsGetImageFromCurrentImageContext();
+                                                        UIGraphicsEndImageContext();
+                                                    
+                                                        NSData *imageData = UIImagePNGRepresentation(picture1);
+                                                        UIImage *img=[UIImage imageWithData:imageData];
+                                                        //[openAlbumButton setImage:img forState:UIControlStateNormal];
+                                                        [openAlbumButton setBackgroundImage:img forState:UIControlStateNormal];
+                                                    });
+                                                }];
     }
     
     NSLog(@"preview : %f, %f, %f, %f", self.previewView.frame.origin.x, self.previewView.frame.origin.y, self.previewView.frame.size.width, self.previewView.frame.size.height);
@@ -793,6 +843,7 @@ bool on = false;
                 NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
                 UIImage *image = [[UIImage alloc] initWithData:imageData];
                 [[[ALAssetsLibrary alloc] init] writeImageToSavedPhotosAlbum:[image CGImage] orientation:(ALAssetOrientation)[image imageOrientation] completionBlock:nil];
+                [openAlbumButton setImage:image forState:UIControlStateNormal];
             }
         }];
     });
@@ -832,6 +883,11 @@ bool on = false;
     }
 }
 
+- (IBAction)openAlbum:(id)sender {
+    NSLog(@"openAlbum");
+    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"Photos://"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://0800"]];
+}
 
 - (void)subjectAreaDidChange:(NSNotification *)notification
 {

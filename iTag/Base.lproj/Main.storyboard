@@ -575,6 +575,12 @@
                                     <action selector="torchTurnOnOff:" destination="fxt-4j-DI0" eventType="touchUpInside" id="an9-Dj-WbQ"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KWG-le-zt9">
+                                <rect key="frame" x="277" y="285" width="46" height="30"/>
+                                <connections>
+                                    <action selector="openAlbum:" destination="fxt-4j-DI0" eventType="touchUpInside" id="XGX-dU-4tW"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -605,6 +611,7 @@
                     <connections>
                         <outlet property="backButton" destination="cRd-5t-hI8" id="pWt-5a-zCK"/>
                         <outlet property="cameraButton" destination="WBM-To-ebJ" id="Myx-Yw-DHQ"/>
+                        <outlet property="openAlbumButton" destination="KWG-le-zt9" id="CDB-Ju-dJe"/>
                         <outlet property="previewView" destination="bp4-bQ-0t6" id="e1d-22-OoH"/>
                         <outlet property="recCounter" destination="mWE-nz-Sbi" id="4Y4-SH-JO2"/>
                         <outlet property="recordButton" destination="OAS-xx-SKL" id="Nt9-Mj-FFJ"/>
