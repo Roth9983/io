@@ -885,8 +885,7 @@ bool first;
 
 - (IBAction)openAlbum:(id)sender {
     NSLog(@"openAlbum");
-    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"Photos://"]];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://0800"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"Photos://"]];
 }
 
 - (void)subjectAreaDidChange:(NSNotification *)notification
