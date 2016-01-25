@@ -190,7 +190,7 @@
         [delegate peripheralFound: peripheral rssi:RSSI];
         return;
     }
-    printf("%s\n", __FUNCTION__);
+    //printf("%s\n", __FUNCTION__);
 }
 
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral

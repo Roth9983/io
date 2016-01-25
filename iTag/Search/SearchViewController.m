@@ -75,6 +75,7 @@ UIImageView *tapAlertAnimationImageView;
         
     }else{
         beepButton.enabled = true;
+        NSLog(@"beep at viewdidappear");
         
         [self connectedWordAnimation];
         [self searchGLightAnimation];
@@ -84,6 +85,8 @@ UIImageView *tapAlertAnimationImageView;
         BleController *shareBERController = [BleController sharedController];
         sensor = shareBERController.sensor;
         sensor.delegate = self;
+        
+        [self beepButtonPressed];
     }
     
     NSLog(@"Name : %@",sensor.activePeripheral.name);
@@ -347,7 +350,7 @@ UIImageView *tapAlertAnimationImageView;
         [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"g_light_%02d.png", i]]];
     }
     searchLightImageView.animationImages = images;
-    searchLightImageView.animationDuration = 0.5;
+    searchLightImageView.animationDuration = 1;
     searchLightImageView.animationRepeatCount = 0;
     
     [searchLightImageView startAnimating];
@@ -360,7 +363,7 @@ UIImageView *tapAlertAnimationImageView;
         [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"r_light_%02d.png", i]]];
     }
     searchLightImageView.animationImages = images;
-    searchLightImageView.animationDuration = 0.5;
+    searchLightImageView.animationDuration = 1;
     searchLightImageView.animationRepeatCount = 0;
     
     [searchLightImageView startAnimating];
@@ -381,10 +384,10 @@ UIImageView *tapAlertAnimationImageView;
 - (void)beepButtonPressed{
     NSLog(@"beepButtonPressed");
     beepButton.enabled = false;
-    if(!searchWordImageView.isAnimating){
+    if(searchWordImageView.isAnimating){
         [searchWordImageView stopAnimating];
-        searchWordImageView.image = [UIImage imageNamed:@"search4"];
     }
+    searchWordImageView.image = [UIImage imageNamed:@"search4"];
     [self ioAnimation];
     [self beepWithCount];
 }
@@ -458,8 +461,8 @@ UIImageView *tapAlertAnimationImageView;
         connectStateImageView.image = [UIImage imageNamed:@"light_r"];
         if(searchWordImageView.isAnimating){
             [searchWordImageView stopAnimating];
-            searchWordImageView.image = [UIImage imageNamed:@"search2"];
         }
+        searchWordImageView.image = [UIImage imageNamed:@"search2"];
         
         if(![searchLightImageView isAnimating])
             [self searchRLightAnimation];
@@ -498,10 +501,10 @@ UIImageView *tapAlertAnimationImageView;
     if(button.tag == 0){
         NSLog(@"try");
         [self searchRLightAnimation];
-        if(!searchWordImageView.isAnimating){
+        if(searchWordImageView.isAnimating){
             [searchWordImageView stopAnimating];
-            searchWordImageView.image = [UIImage imageNamed:@"search1"];
         }
+        searchWordImageView.image = [UIImage imageNamed:@"search1"];
         
         [ScanS autoConnectTag];
         
