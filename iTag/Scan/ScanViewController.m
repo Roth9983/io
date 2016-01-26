@@ -19,10 +19,14 @@
 @synthesize scanBleDeviceButton;
 @synthesize sensor;
 @synthesize peripheralViewControllerArray;
+
 bool isAuto = false;
+
 NSUserDefaults *scanUdf;
 AlertViewController *alertVCScan;
+
 UIView *alertViewScan;
+
 NSTimer *timeoutTimer;
 
 

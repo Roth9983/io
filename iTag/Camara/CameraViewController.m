@@ -865,15 +865,16 @@ bool first;
     if (captureDeviceClass != nil) {
         AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         if ([device hasTorch] && [device hasFlash]){
-            
             [device lockForConfiguration:nil];
             if (!on) {
                 on = true;
+                [torchButton setImage:[UIImage imageNamed:@"torch_on"] forState:UIControlStateNormal];
                 [device setTorchMode:AVCaptureTorchModeOn];
                 [device setFlashMode:AVCaptureFlashModeOn];
                 //torchIsOn = YES; //define as a variable/property if you need to know status
             } else {
                 on = false;
+                [torchButton setImage:[UIImage imageNamed:@"torch_off"] forState:UIControlStateNormal];
                 [device setTorchMode:AVCaptureTorchModeOff];
                 [device setFlashMode:AVCaptureFlashModeOff];
                 //torchIsOn = NO;

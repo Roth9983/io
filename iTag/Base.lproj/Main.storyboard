@@ -568,9 +568,9 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jnz-I4-G1P">
-                                <rect key="frame" x="277" y="285" width="46" height="30"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="T"/>
+                                <rect key="frame" x="278" y="278" width="44" height="44"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="torch_off"/>
                                 <connections>
                                     <action selector="torchTurnOnOff:" destination="fxt-4j-DI0" eventType="touchUpInside" id="an9-Dj-WbQ"/>
                                 </connections>
@@ -922,6 +922,7 @@
         <image name="search1" width="287" height="22"/>
         <image name="selfie01" width="84" height="63"/>
         <image name="setting01" width="88" height="47"/>
+        <image name="torch_off" width="44" height="44"/>
         <image name="upload01" width="193" height="44"/>
         <image name="vcard01" width="84" height="63"/>
         <image name="vcard_space" width="260" height="39"/>

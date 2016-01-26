@@ -23,10 +23,12 @@
 
 NSUserDefaults *searchUdf;
 AlertViewController *alertVCSearch;
+ScanViewController *ScanS;
+
 UIView *alertViewSearch;
+
 NSTimer *beepTimer;
 int beepCount;
-ScanViewController *ScanS;
 
 UIImageView *searchLightImageView;
 UIButton *beepButton;
