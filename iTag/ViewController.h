@@ -11,7 +11,7 @@
 #import "SmcGATT.h"
 #import "Scan/ScanViewController.h"
 #import "AlertViewController.h"
-
+#import "AlertConnectSuccess.h"
 @class SmcGATT;
 
 @interface ViewController : UIViewController<BTSmartSensorDelegate>

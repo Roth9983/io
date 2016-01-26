@@ -116,12 +116,8 @@ UIImageView *imageCircleText;
             [alertView removeFromSuperview];
             alertView = nil;
             alertView = [alertVC alertConnecting];
-            
+        
             [self.view addSubview:alertView];
-            
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
-            [alertView addGestureRecognizer:tap];
-            
         }else{
             BleController *shareBERController = [BleController sharedController];
             sensor = shareBERController.sensor;
