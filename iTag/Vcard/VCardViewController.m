@@ -441,6 +441,7 @@ CGFloat animatedDistanceV;
         [alertViewVcard removeFromSuperview];
         alertViewVcard = nil;
         alertViewVcard = [alertVC alertConnecting];
+
         [self.view addSubview:alertViewVcard];
     }else{
         NSLog(@"cancel");

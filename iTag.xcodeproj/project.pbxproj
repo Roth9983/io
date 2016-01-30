@@ -11,7 +11,6 @@
 		969393D31C35142400FE8D36 /* AlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969393D21C35142400FE8D36 /* AlertViewController.m */; };
 		969EDD361C291ECF00950F0B /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969EDD351C291ECF00950F0B /* SearchViewController.m */; };
 		969EDD3A1C291EF100950F0B /* SetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969EDD391C291EF100950F0B /* SetViewController.m */; };
-		96AF1C1B1C5724A400941845 /* AlertConnectSuccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AF1C1A1C5724A400941845 /* AlertConnectSuccess.m */; };
 		96C13EAC1C5317ED00C649A0 /* launch_ipad@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96C13EA41C5317ED00C649A0 /* launch_ipad@1x.png */; };
 		96C13EAD1C5317ED00C649A0 /* launch_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96C13EA51C5317ED00C649A0 /* launch_ipad@2x.png */; };
 		96C13EAE1C5317ED00C649A0 /* launch_ipad2@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96C13EA61C5317ED00C649A0 /* launch_ipad2@1x.png */; };
@@ -62,8 +61,6 @@
 		969EDD351C291ECF00950F0B /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchViewController.m; path = Search/SearchViewController.m; sourceTree = "<group>"; };
 		969EDD381C291EF100950F0B /* SetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetViewController.h; path = Set/SetViewController.h; sourceTree = "<group>"; };
 		969EDD391C291EF100950F0B /* SetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetViewController.m; path = Set/SetViewController.m; sourceTree = "<group>"; };
-		96AF1C191C5724A400941845 /* AlertConnectSuccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertConnectSuccess.h; sourceTree = "<group>"; };
-		96AF1C1A1C5724A400941845 /* AlertConnectSuccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertConnectSuccess.m; sourceTree = "<group>"; };
 		96C13EA41C5317ED00C649A0 /* launch_ipad@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "launch_ipad@1x.png"; path = "launch/launch_ipad@1x.png"; sourceTree = "<group>"; };
 		96C13EA51C5317ED00C649A0 /* launch_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "launch_ipad@2x.png"; path = "launch/launch_ipad@2x.png"; sourceTree = "<group>"; };
 		96C13EA61C5317ED00C649A0 /* launch_ipad2@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "launch_ipad2@1x.png"; path = "launch/launch_ipad2@1x.png"; sourceTree = "<group>"; };
@@ -208,8 +205,6 @@
 				A9F602CC1BCCE4E10008B52D /* AppDelegate.m */,
 				A9F602CE1BCCE4E10008B52D /* ViewController.h */,
 				A9F602CF1BCCE4E10008B52D /* ViewController.m */,
-				96AF1C191C5724A400941845 /* AlertConnectSuccess.h */,
-				96AF1C1A1C5724A400941845 /* AlertConnectSuccess.m */,
 				A9F602D11BCCE4E10008B52D /* Main.storyboard */,
 				9616C2FF1C44DFAB00739ECB /* LaunchScreen.storyboard */,
 				A9F602D71BCCE4E10008B52D /* Assets.xcassets */,
@@ -439,7 +434,6 @@
 				A9F602CD1BCCE4E10008B52D /* AppDelegate.m in Sources */,
 				A9F602D61BCCE4E10008B52D /* iTag.xcdatamodeld in Sources */,
 				A9F603161BCCEFA40008B52D /* NFCDoorAccessViewController.m in Sources */,
-				96AF1C1B1C5724A400941845 /* AlertConnectSuccess.m in Sources */,
 				969EDD3A1C291EF100950F0B /* SetViewController.m in Sources */,
 				A9F602CA1BCCE4E10008B52D /* main.m in Sources */,
 				A9F604991BCCFCAC0008B52D /* CameraViewController.m in Sources */,

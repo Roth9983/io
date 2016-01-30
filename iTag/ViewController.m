@@ -51,7 +51,8 @@ UIImageView *imageCircleText;
     }else{
         NSLog(@"! first use\n%@", [mainUdf objectForKey:@"tagID"]);
     }
-    [mainUdf setObject:@"1.0" forKey:@"version"];
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    [mainUdf setObject:version forKey:@"version"];
     [mainUdf setObject:@"n" forKey:@"connect"];
     
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]){
@@ -116,7 +117,10 @@ UIImageView *imageCircleText;
             [alertView removeFromSuperview];
             alertView = nil;
             alertView = [alertVC alertConnecting];
-        
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
+            [alertView addGestureRecognizer:tap];
+            
             [self.view addSubview:alertView];
         }else{
             BleController *shareBERController = [BleController sharedController];
@@ -322,6 +326,9 @@ UIImageView *imageCircleText;
         alertView = nil;
         alertView = [alertVC alertConnecting];
         [self.view addSubview:alertView];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
+        [alertView addGestureRecognizer:tap];
     }else{
         NSLog(@"cancel");
         [button.superview removeFromSuperview];
