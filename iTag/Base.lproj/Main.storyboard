@@ -581,6 +581,13 @@
                                     <action selector="openAlbum:" destination="fxt-4j-DI0" eventType="touchUpInside" id="XGX-dU-4tW"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2bO-nJ-aOT">
+                                <rect key="frame" x="277" y="285" width="44" height="44"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="setContinuousShooting:" destination="fxt-4j-DI0" eventType="touchUpInside" id="b6N-wF-DiA"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -610,6 +617,7 @@
                     <connections>
                         <outlet property="backButton" destination="cRd-5t-hI8" id="pWt-5a-zCK"/>
                         <outlet property="cameraButton" destination="WBM-To-ebJ" id="Myx-Yw-DHQ"/>
+                        <outlet property="continuousShootingButton" destination="2bO-nJ-aOT" id="gbL-OO-vM4"/>
                         <outlet property="openAlbumButton" destination="KWG-le-zt9" id="CDB-Ju-dJe"/>
                         <outlet property="previewView" destination="bp4-bQ-0t6" id="e1d-22-OoH"/>
                         <outlet property="recCounter" destination="mWE-nz-Sbi" id="4Y4-SH-JO2"/>

@@ -314,6 +314,7 @@ UIImageView *imageCircleText;
     }
     
     if([mainUdf boolForKey:@"fore"])
+        
         [self runSpinAnimationOnView:imageCircleText clockwise:1 rotation:0.05];
 }
 
