@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SmcGATT.h"
 #import "AlertViewController.h"
+#import <SafariServices/SafariServices.h>
 
 @interface SetViewController : UIViewController
 @property (strong, nonatomic) IBOutlet UIButton *setBsckButton;

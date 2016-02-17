@@ -22,6 +22,8 @@
 
 bool isAuto = false;
 
+bool scan_check;
+
 NSUserDefaults *scanUdf;
 AlertViewController *alertVCScan;
 
@@ -34,6 +36,8 @@ NSTimer *timeoutTimer;
     NSLog(@"scan viewdidload");
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    scan_check = false;
+    
     self.title = @"Smc Uart";
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]){
         self.edgesForExtendedLayout = UIRectEdgeNone;

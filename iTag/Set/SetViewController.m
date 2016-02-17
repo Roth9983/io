@@ -155,7 +155,9 @@ AlertViewController *alertVCSet;
 
 - (IBAction)aboutUsButtonPressed:(id)sender {
     NSURL *url = [NSURL URLWithString:@"http://www.ihoin.com/about.html"];
-    [[UIApplication sharedApplication] openURL:url];
+    //[[UIApplication sharedApplication] openURL:url];
+    SFSafariViewController *sfViewController = [[SFSafariViewController alloc] initWithURL:url];
+    [self presentViewController:sfViewController animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
