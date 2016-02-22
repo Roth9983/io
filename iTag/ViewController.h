@@ -20,21 +20,21 @@
 
 
 //for UI
-@property (strong, nonatomic) IBOutlet UIButton *vCardButton;
-@property (strong, nonatomic) IBOutlet UIButton *doorAccessButton;
-@property (strong, nonatomic) IBOutlet UIButton *autoPhotoButton;
-@property (strong, nonatomic) IBOutlet UIButton *settingsButton;
-@property (strong, nonatomic) IBOutlet UIButton *searchButton;
-@property (strong, nonatomic) IBOutlet UIImageView *powerImageview;
+@property (strong, nonatomic) UIButton *vCardButton;
+@property (strong, nonatomic) UIButton *doorAccessButton;
+@property (strong, nonatomic) UIButton *autoPhotoButton;
+@property (strong, nonatomic) UIButton *settingsButton;
+@property (strong, nonatomic) UIButton *searchButton;
+@property (strong, nonatomic) UIImageView *powerImageview;
 
 
 
 //actions
-- (IBAction)toVCard:(id)sender;
-- (IBAction)toDoorAccess:(id)sender;
-- (IBAction)toAutoTake:(id)sender;
-- (IBAction)toSet:(id)sender;
-- (IBAction)toSearch:(id)sender;
+- (void)toVCard:(id)sender;
+- (void)toDoorAccess:(id)sender;
+- (void)toAutoTake:(id)sender;
+- (void)toSet:(id)sender;
+- (void)toSearch:(id)sender;
 
 @end
 

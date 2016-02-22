@@ -146,19 +146,26 @@ UIImageView *imageCircleText;
         [self.view addSubview:bgMain2];
     }
     
-    [self.view bringSubviewToFront:powerImageview];
-    [self.view bringSubviewToFront:settingsButton];
-    [self.view bringSubviewToFront:vCardButton];
-    [self.view bringSubviewToFront:doorAccessButton];
-    [self.view bringSubviewToFront:autoPhotoButton];
-    [self.view bringSubviewToFront:searchButton];
+    powerImageview = [UIImageView new];
+    settingsButton = [UIButton new];
+    vCardButton = [UIButton new];
+    doorAccessButton = [UIButton new];
+    autoPhotoButton = [UIButton new];
+    searchButton = [UIButton new];
     
-    [powerImageview setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [settingsButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [vCardButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [doorAccessButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [autoPhotoButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [searchButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [settingsButton setImage:[UIImage imageNamed:@"setting01"] forState:UIControlStateNormal];
+    [vCardButton setImage:[UIImage imageNamed:@"vcard01"] forState:UIControlStateNormal];
+    [doorAccessButton setImage:[UIImage imageNamed:@"key01"] forState:UIControlStateNormal];
+    [autoPhotoButton setImage:[UIImage imageNamed:@"selfie01"] forState:UIControlStateNormal];
+    [searchButton setImage:[UIImage imageNamed:@"find01"] forState:UIControlStateNormal];
+    
+    [settingsButton setImage:[UIImage imageNamed:@"setting02"] forState:UIControlStateHighlighted];
+    [vCardButton setImage:[UIImage imageNamed:@"vcard02"] forState:UIControlStateHighlighted];
+    [doorAccessButton setImage:[UIImage imageNamed:@"key02"] forState:UIControlStateHighlighted];
+    [autoPhotoButton setImage:[UIImage imageNamed:@"selfie02"] forState:UIControlStateHighlighted];
+    [searchButton setImage:[UIImage imageNamed:@"find02"] forState:UIControlStateHighlighted];
+    
+    powerImageview.image = [UIImage imageNamed:@"power01"];
 
     float cRatio = (wRatio+hRatio)/2;
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
@@ -204,12 +211,19 @@ UIImageView *imageCircleText;
         [searchButton setFrame:CGRectMake(398*wRatio, 823*hRatio, searchButton.imageView.image.size.width*wRatio, searchButton.imageView.image.size.height*hRatio)];
     }
     
-    [settingsButton setImage:[UIImage imageNamed:@"setting02"] forState:UIControlStateHighlighted];
-    [vCardButton setImage:[UIImage imageNamed:@"vcard02"] forState:UIControlStateHighlighted];
-    [doorAccessButton setImage:[UIImage imageNamed:@"key02"] forState:UIControlStateHighlighted];
-    [autoPhotoButton setImage:[UIImage imageNamed:@"selfie02"] forState:UIControlStateHighlighted];
-    [searchButton setImage:[UIImage imageNamed:@"find02"] forState:UIControlStateHighlighted];
+    [settingsButton addTarget:self action:@selector(toSet:) forControlEvents:UIControlEventTouchUpInside];
+    [vCardButton addTarget:self action:@selector(toVCard:) forControlEvents:UIControlEventTouchUpInside];
+    [doorAccessButton addTarget:self action:@selector(toDoorAccess:) forControlEvents:UIControlEventTouchUpInside];
+    [autoPhotoButton addTarget:self action:@selector(toAutoTake:) forControlEvents:UIControlEventTouchUpInside];
+    [searchButton addTarget:self action:@selector(toSearch:) forControlEvents:UIControlEventTouchUpInside];
     
+    [self.view addSubview:powerImageview];
+    [self.view addSubview:settingsButton];
+    [self.view addSubview:vCardButton];
+    [self.view addSubview:doorAccessButton];
+    [self.view addSubview:autoPhotoButton];
+    [self.view addSubview:searchButton];
+
     CGPoint bottomOffset = CGPointMake(0, scrollCircleText.contentSize.height - scrollCircleText.bounds.size.height);
     [scrollCircleText setContentOffset:bottomOffset animated:YES];
     scrollCircleText.scrollEnabled = false;
@@ -221,6 +235,8 @@ UIImageView *imageCircleText;
     
     [flashView addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"main_flash.png"]]];
     [self.view addSubview:flashView];
+    
+    powerImageview.hidden = true;
 }
 
 - (void)runSpinAnimationOnView:(UIView*)view clockwise:(int)clockwise rotation:(float)rotation{
