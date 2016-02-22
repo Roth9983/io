@@ -344,28 +344,28 @@ UIImageView *imageCircleText;
 //}
 
 #pragma mark main button actions
-- (IBAction)toVCard:(id)sender {
+- (void)toVCard:(id)sender {
     UIViewController *vCard = [self.storyboard instantiateViewControllerWithIdentifier:@"vCard"];
     [self presentViewController:vCard animated:YES completion:nil];
 }
 
-- (IBAction)toDoorAccess:(id)sender {
+- (void)toDoorAccess:(id)sender {
     UIViewController *door = [self.storyboard instantiateViewControllerWithIdentifier:@"door"];
     [self presentViewController:door animated:YES completion:nil];
 }
 
 
-- (IBAction)toAutoTake:(id)sender {
+- (void)toAutoTake:(id)sender {
     UIViewController *camera = [self.storyboard instantiateViewControllerWithIdentifier:@"camera"];
     [self presentViewController:camera animated:YES completion:nil];
 }
 
-- (IBAction)toSet:(id)sender {
+- (void)toSet:(id)sender {
     UIViewController *set = [self.storyboard instantiateViewControllerWithIdentifier:@"set"];
     [self presentViewController:set animated:YES completion:nil];
 }
 
-- (IBAction)toSearch:(id)sender {
+- (void)toSearch:(id)sender {
     UIViewController *search = [self.storyboard instantiateViewControllerWithIdentifier:@"search"];
     [self presentViewController:search animated:YES completion:nil];
 }

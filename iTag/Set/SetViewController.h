@@ -13,16 +13,16 @@
 
 @interface SetViewController : UIViewController<BTSmartSensorDelegate>
 @property (strong, nonatomic) SmcGATT *sensor;
-@property (strong, nonatomic) IBOutlet UIButton *setBsckButton;
-@property (strong, nonatomic) IBOutlet UIButton *pairButton;
-@property (strong, nonatomic) IBOutlet UIButton *alarmDurationButton;
-@property (strong, nonatomic) IBOutlet UIButton *aboutUsButton;
-@property (strong, nonatomic) IBOutlet UILabel *versionLabel;
+@property (strong, nonatomic) UIButton *setBsckButton;
+@property (strong, nonatomic) UIButton *pairButton;
+@property (strong, nonatomic) UIButton *alarmDurationButton;
+@property (strong, nonatomic) UIButton *aboutUsButton;
+@property (strong, nonatomic) UILabel *versionLabel;
 
 
-- (IBAction)setBackPressed:(id)sender;
-- (IBAction)pairButtonPressed:(id)sender;
-- (IBAction)alarmDurationButtonPressed:(id)sender;
-- (IBAction)aboutUsButtonPressed:(id)sender;
+- (void)setBackPressed:(id)sender;
+- (void)pairButtonPressed:(id)sender;
+- (void)alarmDurationButtonPressed:(id)sender;
+- (void)aboutUsButtonPressed:(id)sender;
 
 @end

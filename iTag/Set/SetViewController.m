@@ -57,11 +57,48 @@ AlertViewController *alertVCSet;
 
     [self.view addSubview:[alertVCSet setBGImageView:[UIImage imageNamed:@"bg_setting"]]];
     
-    [setBsckButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [pairButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [alarmDurationButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [versionLabel setTranslatesAutoresizingMaskIntoConstraints:YES];
-    [aboutUsButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+//    [setBsckButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+//    [pairButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+//    [alarmDurationButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+//    [versionLabel setTranslatesAutoresizingMaskIntoConstraints:YES];
+//    [aboutUsButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    
+    setBsckButton = [UIButton new];
+    pairButton = [UIButton new];
+    alarmDurationButton = [UIButton new];
+    aboutUsButton = [UIButton new];
+    versionLabel = [UILabel new];
+    
+    [setBsckButton setImage:[UIImage imageNamed:@"back01"] forState:UIControlStateNormal];
+    [setBsckButton setImage:[UIImage imageNamed:@"back02"] forState:UIControlStateHighlighted];
+    
+    
+    if(![[setUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
+        [pairButton setImage:[UIImage imageNamed:@"unpair01"] forState:UIControlStateNormal];
+        [pairButton setImage:[UIImage imageNamed:@"unpair02"] forState:UIControlStateHighlighted];
+    }else{
+        [pairButton setImage:[UIImage imageNamed:@"pair01"] forState:UIControlStateNormal];
+        [pairButton setImage:[UIImage imageNamed:@"pair02"] forState:UIControlStateHighlighted];
+    }
+        
+    NSInteger beepTime = [setUdf integerForKey:@"beepTime"];
+    if(beepTime == 3){
+        [alarmDurationButton setImage:[UIImage imageNamed:@"3sec01"] forState:UIControlStateNormal];
+        [alarmDurationButton setImage:[UIImage imageNamed:@"3sec02"] forState:UIControlStateHighlighted];
+    }else if(beepTime == 5){
+        [alarmDurationButton setImage:[UIImage imageNamed:@"5sec01"] forState:UIControlStateNormal];
+        [alarmDurationButton setImage:[UIImage imageNamed:@"5sec02"] forState:UIControlStateHighlighted];
+    }else if(beepTime == 0){
+        [alarmDurationButton setImage:[UIImage imageNamed:@"continuous01"] forState:UIControlStateNormal];
+        [alarmDurationButton setImage:[UIImage imageNamed:@"continuous02"] forState:UIControlStateHighlighted];
+    }
+    
+    
+    versionLabel.text = [setUdf objectForKey:@"version"];
+    versionLabel.textColor = [UIColor whiteColor];
+    
+    [aboutUsButton setImage:[UIImage imageNamed:@"aboutus01"] forState:UIControlStateNormal];
+    [aboutUsButton setImage:[UIImage imageNamed:@"aboutus02"] forState:UIControlStateHighlighted];
     
     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone){
         [setBsckButton setFrame:CGRectMake(32*wRatio, 15*hRatio, setBsckButton.imageView.image.size.width*wRatio, setBsckButton.imageView.image.size.height*hRatio)];
@@ -77,37 +114,17 @@ AlertViewController *alertVCSet;
         versionLabel.font = [UIFont fontWithName:@"Heiti TC" size:40];
         [aboutUsButton setFrame:CGRectMake(126*wRatio, 698*hRatio, aboutUsButton.imageView.image.size.width*wRatio, aboutUsButton.imageView.image.size.height*hRatio)];
     }
-
-    [setBsckButton setImage:[UIImage imageNamed:@"back02"] forState:UIControlStateHighlighted];
-    [self.view bringSubviewToFront:setBsckButton];
-
-    if(![[setUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
-        [pairButton setImage:[UIImage imageNamed:@"unpair01"] forState:UIControlStateNormal];
-        [pairButton setImage:[UIImage imageNamed:@"unpair02"] forState:UIControlStateHighlighted];
-    }else{
-        [pairButton setImage:[UIImage imageNamed:@"pair01"] forState:UIControlStateNormal];
-        [pairButton setImage:[UIImage imageNamed:@"pair02"] forState:UIControlStateHighlighted];
-    }
-    [self.view bringSubviewToFront:pairButton];
-
-    NSInteger beepTime = [setUdf integerForKey:@"beepTime"];
-    if(beepTime == 3){
-        [alarmDurationButton setImage:[UIImage imageNamed:@"3sec01"] forState:UIControlStateNormal];
-        [alarmDurationButton setImage:[UIImage imageNamed:@"3sec02"] forState:UIControlStateHighlighted];
-    }else if(beepTime == 5){
-        [alarmDurationButton setImage:[UIImage imageNamed:@"5sec01"] forState:UIControlStateNormal];
-        [alarmDurationButton setImage:[UIImage imageNamed:@"5sec02"] forState:UIControlStateHighlighted];
-    }else if(beepTime == 0){
-        [alarmDurationButton setImage:[UIImage imageNamed:@"continuous01"] forState:UIControlStateNormal];
-        [alarmDurationButton setImage:[UIImage imageNamed:@"continuous02"] forState:UIControlStateHighlighted];
-    }
-    [self.view bringSubviewToFront:alarmDurationButton];
-
-    versionLabel.text = [setUdf objectForKey:@"version"];
-    [self.view bringSubviewToFront:versionLabel];
-
-    [aboutUsButton setImage:[UIImage imageNamed:@"aboutus02"] forState:UIControlStateHighlighted];
-    [self.view bringSubviewToFront:aboutUsButton];
+    
+    [setBsckButton addTarget:self action:@selector(setBackPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [pairButton addTarget:self action:@selector(pairButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [alarmDurationButton addTarget:self action:@selector(alarmDurationButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [aboutUsButton addTarget:self action:@selector(aboutUsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:setBsckButton];
+    [self.view addSubview:pairButton];
+    [self.view addSubview:alarmDurationButton];
+    [self.view addSubview:versionLabel];
+    [self.view addSubview:aboutUsButton];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -132,11 +149,11 @@ AlertViewController *alertVCSet;
 }
 
 #pragma mark set button actions
-- (IBAction)setBackPressed:(id)sender {
+- (void)setBackPressed:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (IBAction)pairButtonPressed:(id)sender {
+- (void)pairButtonPressed:(id)sender {
     if(![[setUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
         BleController *controller = [BleController sharedController];
         
@@ -158,7 +175,7 @@ AlertViewController *alertVCSet;
     }
 }
 
-- (IBAction)alarmDurationButtonPressed:(id)sender {
+- (void)alarmDurationButtonPressed:(id)sender {
     NSInteger beepTime = [setUdf integerForKey:@"beepTime"];
     
     if(beepTime == 3){
@@ -178,7 +195,7 @@ AlertViewController *alertVCSet;
     [setUdf setInteger:beepTime forKey:@"beepTime"];
 }
 
-- (IBAction)aboutUsButtonPressed:(id)sender {
+- (void)aboutUsButtonPressed:(id)sender {
     NSURL *url = [NSURL URLWithString:@"http://www.ihoin.com/about.html"];
     //[[UIApplication sharedApplication] openURL:url];
     SFSafariViewController *sfViewController = [[SFSafariViewController alloc] initWithURL:url];

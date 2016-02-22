@@ -794,58 +794,8 @@
                     <view key="view" contentMode="scaleToFill" id="zG7-a9-PPD">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YWj-to-A6a">
-                                <rect key="frame" x="12" y="13" width="88" height="47"/>
-                                <state key="normal" image="back01"/>
-                                <connections>
-                                    <action selector="setBackPressed:" destination="4PB-xe-Qff" eventType="touchUpInside" id="BvN-OB-u9f"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9D8-pE-WOx">
-                                <rect key="frame" x="126" y="136" width="123" height="37"/>
-                                <state key="normal" image="pair01"/>
-                                <connections>
-                                    <action selector="pairButtonPressed:" destination="4PB-xe-Qff" eventType="touchUpInside" id="C3I-Ro-zyb"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yx8-MI-LGS">
-                                <rect key="frame" x="275" y="215" width="123" height="37"/>
-                                <state key="normal" image="3sec01"/>
-                                <connections>
-                                    <action selector="alarmDurationButtonPressed:" destination="4PB-xe-Qff" eventType="touchUpInside" id="07j-yV-nR0"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UuZ-MN-s8Y">
-                                <rect key="frame" x="120" y="378" width="123" height="37"/>
-                                <state key="normal" image="aboutus01"/>
-                                <connections>
-                                    <action selector="aboutUsButtonPressed:" destination="4PB-xe-Qff" eventType="touchUpInside" id="IrV-EI-7Ax"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QnV-oj-vfP">
-                                <rect key="frame" x="317" y="307" width="42" height="21"/>
-                                <attributedString key="attributedText">
-                                    <fragment content="1.0">
-                                        <attributes>
-                                            <color key="NSColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <font key="NSFont" size="17" name="STHeitiTC-Light"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <connections>
-                        <outlet property="aboutUsButton" destination="UuZ-MN-s8Y" id="apr-lb-Idk"/>
-                        <outlet property="alarmDurationButton" destination="Yx8-MI-LGS" id="pSF-j4-XPv"/>
-                        <outlet property="pairButton" destination="9D8-pE-WOx" id="PfO-E5-wNX"/>
-                        <outlet property="setBsckButton" destination="YWj-to-A6a" id="Piy-T6-af1"/>
-                        <outlet property="versionLabel" destination="QnV-oj-vfP" id="a7p-UI-lfs"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HIz-85-WZq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -853,8 +803,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="3sec01" width="123" height="37"/>
-        <image name="aboutus01" width="123" height="37"/>
         <image name="back01" width="88" height="47"/>
         <image name="back03" width="54" height="54"/>
         <image name="camera01" width="69" height="63"/>
@@ -862,7 +810,6 @@
         <image name="delete01" width="157" height="44"/>
         <image name="light_r" width="38" height="38"/>
         <image name="line" width="351" height="1"/>
-        <image name="pair01" width="123" height="37"/>
         <image name="radar1" width="270" height="270"/>
         <image name="radar2" width="190" height="190"/>
         <image name="radar3" width="160" height="160"/>
