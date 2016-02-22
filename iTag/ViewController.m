@@ -113,15 +113,7 @@ UIImageView *imageCircleText;
             NSLog(@"no connect");
             
             [scanV autoConnectTag];
-            
-            [alertView removeFromSuperview];
-            alertView = nil;
-            alertView = [alertVC alertConnecting];
-            
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
-            [alertView addGestureRecognizer:tap];
-            
-            [self.view addSubview:alertView];
+            [self showConnectStateAlert:0 info:nil];
         }else{
             BleController *shareBERController = [BleController sharedController];
             sensor = shareBERController.sensor;
@@ -278,34 +270,12 @@ UIImageView *imageCircleText;
     
     if([str isEqualToString:@"y"]){
         NSLog(@"connect state : success");
-        
-        [alertView removeFromSuperview];
-        alertView = nil;
-        alertView = [alertVC alertConnectSuccess];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-        [alertView addGestureRecognizer:tap];
-        
-        [self.view addSubview:alertView];
+        [self showConnectStateAlert:1 info:nil];
         
         [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
     }else if([str isEqualToString:@"n"]){
         NSLog(@"connect state : failed");
-        
-        [alertView removeFromSuperview];
-        alertView = nil;
-        alertView = [alertVC alertConnectError];
-        
-        [self.view addSubview:alertView];
-        
-        UIButton *tryButton = [alertVC getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVC getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertView addSubview:tryButton];
-        [alertView addSubview:cancelButton];
+        [self showConnectStateAlert:2 info:nil];
         
     }else if([str isEqualToString:@"t"]){
         NSLog(@"connect state : timeout");
@@ -322,14 +292,7 @@ UIImageView *imageCircleText;
     if(button.tag == 0){
         NSLog(@"try");
         [scanV autoConnectTag];
-        
-        [alertView removeFromSuperview];
-        alertView = nil;
-        alertView = [alertVC alertConnecting];
-        [self.view addSubview:alertView];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
-        [alertView addGestureRecognizer:tap];
+        [self showConnectStateAlert:0 info:nil];
     }else{
         NSLog(@"cancel");
         [button.superview removeFromSuperview];
@@ -425,6 +388,47 @@ UIImageView *imageCircleText;
         [hexStr appendFormat:@"%02x", dbytes[i]];
     }
     return [NSString stringWithString: hexStr];
+}
+
+#pragma mark - alert
+- (void)showConnectStateAlert:(int)state info:(NSString *)info{
+    [alertView removeFromSuperview];
+    alertView = nil;
+    switch (state) {
+        case 0:
+            //connecting
+            alertView = [alertVC alertConnecting];
+            break;
+        case 1:{
+            //connect success
+            alertView = [alertVC alertConnectSuccess];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertView addGestureRecognizer:tap];
+            [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+        }
+            break;
+        case 2:{
+            //connect failed
+            alertView = [alertVC alertConnectError];
+            
+            UIButton *tryButton = [alertVC getTryBurtton];
+            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton *cancelButton = [alertVC getCancelButton];
+            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [alertView addSubview:tryButton];
+            [alertView addSubview:cancelButton];
+        }
+            break;
+        case 3:
+            //custom alert
+            break;
+        default:
+            break;
+    }
+    [self.view addSubview:alertView];
 }
 
 - (void)didReceiveMemoryWarning {

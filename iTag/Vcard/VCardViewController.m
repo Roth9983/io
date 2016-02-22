@@ -359,20 +359,7 @@ CGFloat animatedDistanceV;
                                                      name:NSUserDefaultsDidChangeNotification
                                                    object:nil];
         
-        [alertViewVcard removeFromSuperview];
-        alertViewVcard = nil;
-        alertViewVcard = [alertVCVCard alertConnectError];
-        
-        [self.view addSubview:alertViewVcard];
-        
-        UIButton *tryButton = [alertVCVCard getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCVCard getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewVcard addSubview:tryButton];
-        [alertViewVcard addSubview:cancelButton];
+        [self showConnectStateAlert:2 info:nil];
     }
 }
 
@@ -396,20 +383,7 @@ CGFloat animatedDistanceV;
     }else if([str isEqualToString:@"n"]){
         NSLog(@"connect state : failed");
         
-        [alertViewVcard removeFromSuperview];
-        alertViewVcard = nil;
-        alertViewVcard = [alertVCVCard alertConnectError];
-        
-        [self.view addSubview:alertViewVcard];
-        
-        UIButton *tryButton = [alertVCVCard getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCVCard getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewVcard addSubview:tryButton];
-        [alertViewVcard addSubview:cancelButton];
+        [self showConnectStateAlert:2 info:nil];
         
     }else if([str isEqualToString:@"t"]){
         NSLog(@"connect state : timeout");
@@ -420,15 +394,8 @@ CGFloat animatedDistanceV;
 
 - (void)uploadSuccess{
     NSLog(@"uploadSuccess");
-    AlertViewController *alertVC = [[AlertViewController alloc] init];
-    [alertViewVcard removeFromSuperview];
-    alertViewVcard = nil;
-    alertViewVcard = [alertVC alertCustom:@"Upload success"];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-    [alertViewVcard addGestureRecognizer:tap];
-    
-    [self.view addSubview:alertViewVcard];
+
+    [self showConnectStateAlert:3 info:@"Upload success"];
 }
 
 - (void)connectErrorButtonPressed:(UIButton *)button{
@@ -436,13 +403,8 @@ CGFloat animatedDistanceV;
         NSLog(@"try");
         ScanViewController *scanV = [[ScanViewController alloc] init];
         [scanV autoConnectTag];
-        
-        AlertViewController *alertVC = [[AlertViewController alloc] init];
-        [alertViewVcard removeFromSuperview];
-        alertViewVcard = nil;
-        alertViewVcard = [alertVC alertConnecting];
 
-        [self.view addSubview:alertViewVcard];
+        [self showConnectStateAlert:0 info:nil];
     }else{
         NSLog(@"cancel");
         [button.superview removeFromSuperview];
@@ -673,6 +635,51 @@ CGFloat animatedDistanceV;
         data = [data substringWithRange:NSMakeRange((data.length-2),2)];
     }
     return data;
+}
+
+#pragma mark - alert
+- (void)showConnectStateAlert:(int)state info:(NSString *)info{
+    [alertViewVcard removeFromSuperview];
+    alertViewVcard = nil;
+    switch (state) {
+        case 0:
+            //connecting
+            alertViewVcard = [alertVCVCard alertConnecting];
+            break;
+        case 1:{
+            //connect success
+            alertViewVcard = [alertVCVCard alertConnectSuccess];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewVcard addGestureRecognizer:tap];
+            [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+        }
+            break;
+        case 2:{
+            //connect failed
+            alertViewVcard = [alertVCVCard alertConnectError];
+            
+            UIButton *tryButton = [alertVCVCard getTryBurtton];
+            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton *cancelButton = [alertVCVCard getCancelButton];
+            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [alertViewVcard addSubview:tryButton];
+            [alertViewVcard addSubview:cancelButton];
+        }
+            break;
+        case 3:{
+            //custom alert
+            alertViewVcard = [alertVCVCard alertCustom:info];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewVcard addGestureRecognizer:tap];
+        }
+            break;
+        default:
+            break;
+    }
+    [self.view addSubview:alertViewVcard];
 }
 
 - (void)didReceiveMemoryWarning {

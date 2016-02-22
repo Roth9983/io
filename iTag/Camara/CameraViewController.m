@@ -198,22 +198,7 @@ bool first;
                                                  selector:@selector(udfHandle)
                                                      name:NSUserDefaultsDidChangeNotification
                                                    object:nil];
-        
-        [alertViewCam removeFromSuperview];
-        alertViewCam = nil;
-        alertViewCam = [alertVCCam alertConnectError];
-        
-        
-        [self.view addSubview:alertViewCam];
-        
-        UIButton *tryButton = [alertVCCam getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCCam getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewCam addSubview:tryButton];
-        [alertViewCam addSubview:cancelButton];
+        [self showConnectStateAlert:2 info:nil];
     }
 }
 
@@ -226,15 +211,8 @@ bool first;
     
     if([str isEqualToString:@"y"]){
         NSLog(@"connect state : success");
-        
-        [alertViewCam removeFromSuperview];
-        alertViewCam = nil;
-        alertViewCam = [alertVCCam alertConnectSuccess];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-        [alertViewCam addGestureRecognizer:tap];
-        
-        [self.view addSubview:alertViewCam];
+    
+        [self showConnectStateAlert:1 info:nil];
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSUserDefaultsDidChangeNotification object:nil];
         
@@ -242,20 +220,7 @@ bool first;
     }else if([str isEqualToString:@"n"]){
         NSLog(@"connect state : failed");
         
-        [alertViewCam removeFromSuperview];
-        alertViewCam = nil;
-        alertViewCam = [alertVCCam alertConnectError];
-        
-        [self.view addSubview:alertViewCam];
-        
-        UIButton *tryButton = [alertVCCam getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCCam getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewCam addSubview:tryButton];
-        [alertViewCam addSubview:cancelButton];
+        [self showConnectStateAlert:2 info:nil];
         
     }else if([str isEqualToString:@"t"]){
         NSLog(@"connect state : timeout");
@@ -269,11 +234,8 @@ bool first;
         NSLog(@"try");
         ScanViewController *scanV = [[ScanViewController alloc] init];
         [scanV autoConnectTag];
-        
-        [alertViewCam removeFromSuperview];
-        alertViewCam = nil;
-        alertViewCam = [alertVCCam alertConnecting];
-        [self.view addSubview:alertViewCam];
+
+        [self showConnectStateAlert:0 info:nil];
     }else{
         NSLog(@"cancel");
         [button.superview removeFromSuperview];
@@ -389,9 +351,6 @@ bool first;
                 [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
                 [openAlbumButton setFrame:CGRectMake(20, h-30-50, 50, 50)];
                 [continuousShootingButton setFrame:CGRectMake(w-20-44-20-44-20-44, 0, 44, 44)];
-                if(alertViewCam != nil){
-                    alertViewCam.center = CGPointMake(w/2, h/2);
-                }
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
                 [self.previewView setFrame:CGRectMake(0, 0, h, w)];
                 topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 44, 480)];
@@ -402,9 +361,6 @@ bool first;
                 [torchButton setFrame:CGRectMake(0, 20+44+20, 44, 44)];
                 [openAlbumButton setFrame:CGRectMake(w-30-50, h-20-50, 50, 50)];
                 [continuousShootingButton setFrame:CGRectMake(0, 20+44+20+44+20, 44, 44)];
-                if(alertViewCam != nil){
-                    alertViewCam.center = CGPointMake(h/2, w/2);
-                }
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
                 [self.previewView setFrame:CGRectMake(0, 0, h, w)];
                 topView = [[UIView alloc] initWithFrame:CGRectMake(h-44, 0, 44, 480)];
@@ -415,9 +371,6 @@ bool first;
                 [torchButton setFrame:CGRectMake(h-44, w-20-44-20-44, 44, 44)];
                 [openAlbumButton setFrame:CGRectMake(30, 20, 50, 50)];
                 [continuousShootingButton setFrame:CGRectMake(h-44, w-20-44-20-44-20-44, 44, 44)];
-                if(alertViewCam != nil){
-                    alertViewCam.center = CGPointMake(h/2, w/2);
-                }
             }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortraitUpsideDown){
                 
             }else{
@@ -434,9 +387,6 @@ bool first;
                 [torchButton setFrame:CGRectMake(w-20-44-20-44, 0, 44, 44)];
                 [openAlbumButton setFrame:CGRectMake(20, h-30-50, 50, 50)];
                 [continuousShootingButton setFrame:CGRectMake(w-20-44-20-44-20-44, 0, 44, 44)];
-                if(alertViewCam != nil){
-                    alertViewCam.center = CGPointMake(w/2, h/2);
-                }
             }
             topView.backgroundColor = [UIColor blackColor];
             topView.alpha = 0.3;
@@ -533,9 +483,6 @@ bool first;
             [cameraButton setFrame:CGRectMake(w-73.5, h-64, 44, 44)];
             [openAlbumButton setFrame:CGRectMake(w-73.5, h-64-20-44, 44, 44)];
             [continuousShootingButton setFrame:CGRectMake(w-73.5, h-64-20-44-20-44, 44, 44)];
-            if(alertViewCam != nil){
-                alertViewCam.center = CGPointMake(w/2, h/2);
-            }
         }else{
             if(w > h){
                 w = [UIScreen mainScreen].bounds.size.height;
@@ -561,6 +508,10 @@ bool first;
     }
     
     [continuousShootingButton setTitle:[NSString stringWithFormat:@"%d", (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"cs"]] forState:UIControlStateNormal];
+    
+    if(alertViewCam != nil){
+        alertViewCam.center = CGPointMake(w/2, h/2);
+    }
     
     if(first){
         NSLog(@"PHFetchOptions");
@@ -600,9 +551,6 @@ bool first;
     switch ([UIDevice currentDevice].orientation) {
         case UIDeviceOrientationPortrait:
             NSLog(@"UIDeviceOrientationPortrait");
-            if(alertViewCam != nil){
-                alertViewCam.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);
-            }
             [self setCameraControlView];
             break;
         case UIDeviceOrientationPortraitUpsideDown:
@@ -611,16 +559,10 @@ bool first;
             break;
         case UIDeviceOrientationLandscapeLeft:
             NSLog(@"UIDeviceOrientationLandscapeLeft");
-            if(alertViewCam != nil){
-                alertViewCam.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);
-            }
             [self setCameraControlView];
             break;
         case UIDeviceOrientationLandscapeRight:
             NSLog(@"UIDeviceOrientationLandscapeRight");
-            if(alertViewCam != nil){
-                alertViewCam.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);
-            }
             [self setCameraControlView];
             break;
         case UIDeviceOrientationFaceUp:
@@ -1123,6 +1065,46 @@ bool first;
     return [NSString stringWithString: hexStr];
 }
 
+#pragma mark - alert
+- (void)showConnectStateAlert:(int)state info:(NSString *)info{
+    [alertViewCam removeFromSuperview];
+    alertViewCam = nil;
+    switch (state) {
+        case 0:
+            //connecting
+            alertViewCam = [alertVCCam alertConnecting];
+            break;
+        case 1:{
+            //connect success
+            alertViewCam = [alertVCCam alertConnectSuccess];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewCam addGestureRecognizer:tap];
+            [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+        }
+            break;
+        case 2:{
+            //connect failed
+            alertViewCam = [alertVCCam alertConnectError];
+            
+            UIButton *tryButton = [alertVCCam getTryBurtton];
+            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton *cancelButton = [alertVCCam getCancelButton];
+            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [alertViewCam addSubview:tryButton];
+            [alertViewCam addSubview:cancelButton];
+        }
+            break;
+        case 3:
+            //custom alert
+            break;
+        default:
+            break;
+    }
+    [self.view addSubview:alertViewCam];
+}
 
 
 @end

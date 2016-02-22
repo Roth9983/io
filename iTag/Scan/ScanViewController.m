@@ -135,7 +135,7 @@ bool pairFailed = false;
     //[scanBleDeviceButton setTitle:@"Scan" forState:UIControlStateNormal];
     //[self performSegueWithIdentifier:@"goDeviceView" sender:sensor.activePeripheral];
     
-    [self showConnectStateAlertScan:0 info:nil];
+    [self showConnectStateAlert:0 info:nil];
     
     [self setSensor];
     
@@ -181,7 +181,7 @@ bool pairFailed = false;
         
         pairCheckTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(pairFailed) userInfo:nil repeats:NO];
         
-        [self showConnectStateAlertScan:3 info:@"Press io"];
+        [self showConnectStateAlert:3 info:@"Press io"];
         
     }else{
         //在背後連線
@@ -201,7 +201,7 @@ bool pairFailed = false;
     if(!isAuto){
         NSLog(@"not auto");
         if(!pairFailed){
-            [self showConnectStateAlertScan:2 info:nil];
+            [self showConnectStateAlert:2 info:nil];
         }
     }
     
@@ -257,7 +257,7 @@ bool pairFailed = false;
     [pairCheckTimer invalidate];
     pairCheckTimer = nil;
     
-    [self showConnectStateAlertScan:1 info:nil];
+    [self showConnectStateAlert:1 info:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pairCheck" object:nil];
 }
@@ -281,7 +281,7 @@ bool pairFailed = false;
     
     sensor.delegate = nil;
     
-    [self showConnectStateAlertScan:2 info:nil];
+    [self showConnectStateAlert:2 info:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pairCheck" object:nil];
 }
@@ -448,7 +448,7 @@ bool pairFailed = false;
 }
 
 #pragma mark - alert
-- (void)showConnectStateAlertScan:(int)state info:(NSString *)info{
+- (void)showConnectStateAlert:(int)state info:(NSString *)info{
     [alertViewScan removeFromSuperview];
     alertViewScan = nil;
     switch (state) {

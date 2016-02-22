@@ -60,12 +60,7 @@ UIImageView *tapAlertAnimationImageView;
     if([[searchUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
         NSLog(@"pair io");
         [self searchRLightAnimation];
-        [alertViewSearch removeFromSuperview];
-        alertViewSearch = nil;
-        alertViewSearch = [alertVCSearch alertCustom:@"Please pair the io !"];
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-        [alertViewSearch addGestureRecognizer:tap];
-        [self.view addSubview:alertViewSearch];
+        [self showConnectStateAlert:3 info:@"Please pair the io !"];
     }else if(![[searchUdf objectForKey:@"connect"] isEqualToString:@"y"] && ![[searchUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
         NSLog(@"no connect");
         
@@ -445,15 +440,8 @@ UIImageView *tapAlertAnimationImageView;
         
         if(![radar1ImageView isAnimating])
             [self startRadarAnimation];
-        
-        [alertViewSearch removeFromSuperview];
-        alertViewSearch = nil;
-        alertViewSearch = [alertVCSearch alertConnectSuccess];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-        [alertViewSearch addGestureRecognizer:tap];
-        
-        [self.view addSubview:alertViewSearch];
+    
+        [self showConnectStateAlert:1 info:nil];
         
         [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
     }else if([str isEqualToString:@"n"]){
@@ -475,21 +463,7 @@ UIImageView *tapAlertAnimationImageView;
         
         [self stopRadarAnimation];
         
-        [alertViewSearch removeFromSuperview];
-        alertViewSearch = nil;
-        //alertViewSearch = [alertVCSearch alertConnectError];
-        alertViewSearch = [alertVCSearch alertIONotFound];
-        
-        [self.view addSubview:alertViewSearch];
-        
-        UIButton *tryButton = [alertVCSearch getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCSearch getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewSearch addSubview:tryButton];
-        [alertViewSearch addSubview:cancelButton];
+        [self showConnectStateAlert:4 info:nil];
         
     }else if([str isEqualToString:@"t"]){
         NSLog(@"S connect state : timeout");
@@ -578,6 +552,64 @@ UIImageView *tapAlertAnimationImageView;
         [hexStr appendFormat:@"%02x", dbytes[i]];
     }
     return [NSString stringWithString: hexStr];
+}
+
+#pragma mark - alert
+- (void)showConnectStateAlert:(int)state info:(NSString *)info{
+    [alertViewSearch removeFromSuperview];
+    alertViewSearch = nil;
+    switch (state) {
+        case 0:
+            //connecting
+            alertViewSearch = [alertVCSearch alertConnecting];
+            break;
+        case 1:{
+            //connect success
+            alertViewSearch = [alertVCSearch alertConnectSuccess];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewSearch addGestureRecognizer:tap];
+            [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+        }
+            break;
+        case 2:{
+            //connect failed
+            alertViewSearch = [alertVCSearch alertConnectError];
+            
+            UIButton *tryButton = [alertVCSearch getTryBurtton];
+            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton *cancelButton = [alertVCSearch getCancelButton];
+            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [alertViewSearch addSubview:tryButton];
+            [alertViewSearch addSubview:cancelButton];
+        }
+            break;
+        case 3:{
+            //custom alert
+            alertViewSearch = [alertVCSearch alertCustom:info];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewSearch addGestureRecognizer:tap];
+        }
+            break;
+        case 4:{
+            alertViewSearch = [alertVCSearch alertIONotFound];
+            
+            UIButton *tryButton = [alertVCSearch getTryBurtton];
+            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton *cancelButton = [alertVCSearch getCancelButton];
+            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [alertViewSearch addSubview:tryButton];
+            [alertViewSearch addSubview:cancelButton];
+        }
+            break;
+        default:
+            break;
+    }
+    [self.view addSubview:alertViewSearch];
 }
 
 - (void)didReceiveMemoryWarning {

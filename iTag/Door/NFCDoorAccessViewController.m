@@ -381,21 +381,7 @@ UIView *alertViewDoor;
         [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
     }else if([str isEqualToString:@"n"]){
         NSLog(@"connect state : failed");
-        
-        [alertViewDoor removeFromSuperview];
-        alertViewDoor = nil;
-        alertViewDoor = [alertVCDoor alertConnectError];
-        
-        [self.view addSubview:alertViewDoor];
-        
-        UIButton *tryButton = [alertVCDoor getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCDoor getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewDoor addSubview:tryButton];
-        [alertViewDoor addSubview:cancelButton];
+        [self showConnectStateAlert:2 info:nil];
         
     }else if([str isEqualToString:@"t"]){
         NSLog(@"connect state : timeout");
@@ -409,11 +395,7 @@ UIView *alertViewDoor;
         NSLog(@"try");
         ScanViewController *scanV = [[ScanViewController alloc] init];
         [scanV autoConnectTag];
-        
-        [alertViewDoor removeFromSuperview];
-        alertViewDoor = nil;
-        alertViewDoor = [alertVCDoor alertConnecting];
-        [self.view addSubview:alertViewDoor];
+        [self showConnectStateAlert:0 info:nil];
     }else{
         NSLog(@"cancel");
         [button.superview removeFromSuperview];
@@ -662,21 +644,7 @@ UIView *alertViewDoor;
                                                  selector:@selector(udfHandle)
                                                      name:NSUserDefaultsDidChangeNotification
                                                    object:nil];
-        
-        [alertViewDoor removeFromSuperview];
-        alertViewDoor = nil;
-        alertViewDoor = [alertVCDoor alertConnectError];
-        
-        [self.view addSubview:alertViewDoor];
-        
-        UIButton *tryButton = [alertVCDoor getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCDoor getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewDoor addSubview:tryButton];
-        [alertViewDoor addSubview:cancelButton];
+        [self showConnectStateAlert:2 info:nil];
     }
 }
 
@@ -774,9 +742,7 @@ UIView *alertViewDoor;
 
 - (void)uploadSuccess{
     [self setNFCData];
-    [alertViewDoor removeFromSuperview];
-    alertViewDoor = nil;
-    alertViewDoor = [alertVCDoor alertCustom:@"Upload success"];
+    [self showConnectStateAlert:3 info:@"Upload success"];
 }
 
 
@@ -807,6 +773,51 @@ UIView *alertViewDoor;
         [hexStr appendFormat:@"%02x", dbytes[i]];
     }
     return [NSString stringWithString: hexStr];
+}
+
+#pragma mark - alert
+- (void)showConnectStateAlert:(int)state info:(NSString *)info{
+    [alertViewDoor removeFromSuperview];
+    alertViewDoor = nil;
+    switch (state) {
+        case 0:
+            //connecting
+            alertViewDoor = [alertVCDoor alertConnecting];
+            break;
+        case 1:{
+            //connect success
+            alertViewDoor = [alertVCDoor alertConnectSuccess];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewDoor addGestureRecognizer:tap];
+            [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+        }
+            break;
+        case 2:{
+            //connect failed
+            alertViewDoor = [alertVCDoor alertConnectError];
+            
+            UIButton *tryButton = [alertVCDoor getTryBurtton];
+            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton *cancelButton = [alertVCDoor getCancelButton];
+            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [alertViewDoor addSubview:tryButton];
+            [alertViewDoor addSubview:cancelButton];
+        }
+            break;
+        case 3:{
+            //custom alert
+            alertViewDoor = [alertVCDoor alertCustom:info];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewDoor addGestureRecognizer:tap];
+        }
+            break;
+        default:
+            break;
+    }
+    [self.view addSubview:alertViewDoor];
 }
 
 - (void)didReceiveMemoryWarning {
