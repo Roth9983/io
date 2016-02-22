@@ -411,9 +411,12 @@ UIImageView *imageCircleText;
     [alertView removeFromSuperview];
     alertView = nil;
     switch (state) {
-        case 0:
+        case 0:{
             //connecting
             alertView = [alertVC alertConnecting];
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToStopConnect)];
+            [alertView addGestureRecognizer:tap];
+        }
             break;
         case 1:{
             //connect success
