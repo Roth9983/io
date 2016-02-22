@@ -30,6 +30,26 @@ AlertViewController *alertVCSet;
     [self setSetUI];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"set");
+    if(![[setUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
+    BleController *shareBERController = [BleController sharedController];
+    self.sensor = shareBERController.sensor;
+    self.sensor.delegate = self;
+    }
+    NSLog(@"Name : %@",self.sensor.activePeripheral.name);
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"set exit"); //view 將要結束
+    self.sensor.delegate = nil;
+}
+
+
 #pragma mark set UI setting
 - (void)setSetUI{
     float wRatio = [alertVCSet getSizeWRatio];
@@ -118,12 +138,17 @@ AlertViewController *alertVCSet;
 
 - (IBAction)pairButtonPressed:(id)sender {
     if(![[setUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
+        BleController *controller = [BleController sharedController];
+        
+        if (self.sensor.activePeripheral && self.sensor.activePeripheral != controller.peripheral) {
+            [self.sensor disconnect:self.sensor.activePeripheral];
+        }
+        self.sensor.delegate = nil;
+        
         [setUdf setObject:@"defaultID" forKey:@"tagID"];
         [setUdf setObject:@"n" forKey:@"connect"];
         [pairButton setImage:[UIImage imageNamed:@"pair01"] forState:UIControlStateNormal];
         [pairButton setImage:[UIImage imageNamed:@"pair02"] forState:UIControlStateHighlighted];
-        BleController *bleController = [BleController sharedController];
-        [bleController setupControllerForSmcGATT:nil];
     }else{
         //TODO
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udfHandle) name:NSUserDefaultsDidChangeNotification object:nil];
@@ -158,6 +183,24 @@ AlertViewController *alertVCSet;
     //[[UIApplication sharedApplication] openURL:url];
     SFSafariViewController *sfViewController = [[SFSafariViewController alloc] initWithURL:url];
     [self presentViewController:sfViewController animated:YES completion:nil];
+}
+
+-(void) serialGATTCharValueUpdated:(NSData *)data
+{
+    NSString *value = [self NSDataToHex:data];
+    NSLog(@"set     %@",value);
+}
+
+-(NSString*) NSDataToHex:(NSData*)data
+{
+    const unsigned char *dbytes = [data bytes];
+    NSMutableString *hexStr =
+    [NSMutableString stringWithCapacity:[data length]*2];
+    int i;
+    for (i = 0; i < [data length]; i++) {
+        [hexStr appendFormat:@"%02x", dbytes[i]];
+    }
+    return [NSString stringWithString: hexStr];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -21,6 +21,10 @@
 @synthesize peripheralViewControllerArray;
 
 bool isAuto = false;
+/*
+ isAuto = true;  在其他viewController背景連線時：首頁、find io時
+ isAuto = false;  present scan viewController時：第一次配對、setting unpair/pair時
+ */
 
 bool scan_check;
 
@@ -32,11 +36,15 @@ UIView *alertViewScan;
 NSTimer *timeoutTimer;
 NSTimer *pairCheckTimer;
 
+int indexOfIO;
+
+bool pairFailed = false;
+
 - (void)viewDidLoad {
     NSLog(@"scan viewdidload");
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    scan_check = false;
+    
+    scan_check = false;//接收io傳來資料的flag，因io傳來資料為連續多個，限制只接收一個資料
     
     self.title = @"Smc Uart";
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]){
@@ -50,6 +58,7 @@ NSTimer *pairCheckTimer;
     
     scanUdf = [NSUserDefaults standardUserDefaults];
     
+    //UI 設定
     alertVCScan = [AlertViewController new];
     [self.view addSubview:[alertVCScan setBGImageView:[UIImage imageNamed:@"bg_first"]]];
     
@@ -67,6 +76,7 @@ NSTimer *pairCheckTimer;
     [self.view bringSubviewToFront:scanBleDeviceButton];
 }
 
+//呼叫出scan頁面時先自動搜尋一次附近裝置
 - (void)viewDidAppear:(BOOL)animated{
     isAuto = false;
     [self scanBLEDevice];
@@ -107,6 +117,7 @@ NSTimer *pairCheckTimer;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger row = [indexPath row];
+    indexOfIO = (int)[indexPath row];
     BleController *controller = [peripheralViewControllerArray objectAtIndex:row];
     
     if (sensor.activePeripheral && sensor.activePeripheral != controller.peripheral) {
@@ -124,10 +135,7 @@ NSTimer *pairCheckTimer;
     //[scanBleDeviceButton setTitle:@"Scan" forState:UIControlStateNormal];
     //[self performSegueWithIdentifier:@"goDeviceView" sender:sensor.activePeripheral];
     
-    [alertViewScan removeFromSuperview];
-    alertViewScan = nil;
-    alertViewScan = [alertVCScan alertConnecting];
-    [self.view addSubview:alertViewScan];
+    [self showConnectStateAlertScan:0 info:nil];
     
     [self setSensor];
     
@@ -158,6 +166,49 @@ NSTimer *pairCheckTimer;
     return cell;
 }
 
+//連線成功
+-(void)setConnect
+{
+    NSLog(@"SCAN : OK+CONN");
+    //[scanUdf setObject:@"y" forKey:@"connect"];
+    
+    if(!isAuto){
+        //有present scan view controller
+        NSLog(@"not auto");
+        
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self selector:@selector(receivedPairSingnal) name:@"pairCheck" object:nil];
+        
+        pairCheckTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(pairFailed) userInfo:nil repeats:NO];
+        
+        [self showConnectStateAlertScan:3 info:@"Press io"];
+        
+    }else{
+        //在背後連線
+        [scanUdf setObject:@"y" forKey:@"connect"];
+    }
+    
+//    [self showOkayCancelAlert:@"iTag connected\niTag連線成功"];
+//    [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+//斷線
+-(void)setDisconnect
+{
+    NSLog(@"SCAN : OK+LOST");
+    [scanUdf setObject:@"n" forKey:@"connect"];
+    
+    if(!isAuto){
+        NSLog(@"not auto");
+        if(!pairFailed){
+            [self showConnectStateAlertScan:2 info:nil];
+        }
+    }
+    
+    //[self showOkayCancelAlert:@"iTag disconnected\niTag連線失敗"];
+    //[self dismissViewControllerAnimated:NO completion:nil];
+}
+
 -(NSString*) NSDataToHex:(NSData*)data
 {
     const unsigned char *dbytes = [data bytes];
@@ -176,6 +227,7 @@ NSTimer *pairCheckTimer;
     NSString *value = [self NSDataToHex:data];
     NSLog(@"data     %@",value);
     
+    //接收假配對確認資料
     if(value.length == 18){
         NSScanner *scanner;
         unsigned result = 0;
@@ -192,121 +244,56 @@ NSTimer *pairCheckTimer;
             }
         }
     }
-
+    
 }
 
-//連線成功
--(void)setConnect
-{
-    NSLog(@"SCAN : OK+CONN");
-    //[scanUdf setObject:@"y" forKey:@"connect"];
-    
-    if(!isAuto){
-        NSLog(@"not auto");
-//        [self dismissAlert];
-//        alertViewScan = [alertVCScan alertConnectSuccess];
-//    
-//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-//        [alertViewScan addGestureRecognizer:tap];
-//        [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
-//    
-//        [self.view addSubview:alertViewScan];
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self selector:@selector(receivedPairSingnal) name:@"pairCheck" object:nil];
-        
-        pairCheckTimer = [NSTimer timerWithTimeInterval:5.0 target:self selector:@selector(pairFailed) userInfo:nil repeats:NO];
-        
-        [alertViewScan removeFromSuperview];
-        alertViewScan = nil;
-        alertViewScan = [alertVCScan alertCustom:@"Press io"];
-        [self.view addSubview:alertViewScan];
-        
-    }
-    
-//    [self showOkayCancelAlert:@"iTag connected\niTag連線成功"];
-//    [self dismissViewControllerAnimated:NO completion:nil];
-}
-
+//假配對成功
 - (void)receivedPairSingnal{
+    NSLog(@"receivedPairSingnal");
+    pairFailed = false;
+    
     [scanUdf setObject:@"y" forKey:@"connect"];
     
     [pairCheckTimer invalidate];
     pairCheckTimer = nil;
     
-    [alertViewScan removeFromSuperview];
-    alertViewScan = nil;
-    alertViewScan = [alertVCScan alertConnectSuccess];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
-    [alertViewScan addGestureRecognizer:tap];
-    [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
-    
-    [self.view addSubview:alertViewScan];
+    [self showConnectStateAlertScan:1 info:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pairCheck" object:nil];
 }
 
+//假配對失敗
 - (void)pairFailed{
+    NSLog(@"pairFailed");
+    
+    pairFailed = true;
+    
     [scanUdf setObject:@"n" forKey:@"connect"];
-
+    
     [scanUdf setObject:@"defaultID" forKey:@"tagID"];
     NSLog(@"remember ID : %@", [scanUdf objectForKey:@"tagID"]);
     
-    sensor.delegate = nil;
+    BleController *controller = [peripheralViewControllerArray objectAtIndex:indexOfIO];;
     
-    [alertViewScan removeFromSuperview];
-    alertViewScan = nil;
-    alertViewScan = [alertVCScan alertConnectError];
-    
-    [self.view addSubview:alertViewScan];
-    
-    UIButton *tryButton = [alertVCScan getTryBurtton];
-    [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIButton *cancelButton = [alertVCScan getCancelButton];
-    [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [alertViewScan addSubview:tryButton];
-    [alertViewScan addSubview:cancelButton];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pairCheck" object:nil];
-}
-
-//斷線
--(void)setDisconnect
-{
-    NSLog(@"SCAN : OK+LOST");
-    [scanUdf setObject:@"n" forKey:@"connect"];
-    
-    if(!isAuto){
-        NSLog(@"not auto");
-        [alertViewScan removeFromSuperview];
-        alertViewScan = nil;
-        alertViewScan = [alertVCScan alertConnectError];
-        
-        [self.view addSubview:alertViewScan];
-        
-        UIButton *tryButton = [alertVCScan getTryBurtton];
-        [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *cancelButton = [alertVCScan getCancelButton];
-        [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [alertViewScan addSubview:tryButton];
-        [alertViewScan addSubview:cancelButton];
+    if (sensor.activePeripheral && sensor.activePeripheral != controller.peripheral) {
+        [sensor disconnect:sensor.activePeripheral];
     }
     
-    //[self showOkayCancelAlert:@"iTag disconnected\niTag連線失敗"];
-    //[self dismissViewControllerAnimated:NO completion:nil];
+    sensor.delegate = nil;
+    
+    [self showConnectStateAlertScan:2 info:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pairCheck" object:nil];
 }
 
 - (void)connectErrorButtonPressed:(UIButton *)button{
     if(button.tag == 0){
-        NSLog(@"try");
-        
+        NSLog(@"try connect");
+        [alertViewScan removeFromSuperview];
+        alertViewScan = nil;
         [self scanBLEDevice];
     }else{
-        NSLog(@"cancel");
+        NSLog(@"cancel connect");
         [button.superview removeFromSuperview];
     }
 }
@@ -324,15 +311,6 @@ NSTimer *pairCheckTimer;
     NSLog(@"scanBleDevicePressed");
     isAuto = false;
     [self scanBLEDevice];
-}
-
-- (void)autoConnectTag2:(NSString *)uuid{
-    NSLog(@"autoConnectTag2 : %@", uuid);
-    sensor = [[SmcGATT alloc] init];
-    [sensor setup];
-    sensor.delegate = self;
-    
-    [sensor myConnect:uuid];
 }
 
 - (void)autoConnectTag{
@@ -469,5 +447,45 @@ NSTimer *pairCheckTimer;
     NSLog(@"back to FirstPage");
 }
 
-
+#pragma mark - alert
+- (void)showConnectStateAlertScan:(int)state info:(NSString *)info{
+    [alertViewScan removeFromSuperview];
+    alertViewScan = nil;
+    switch (state) {
+        case 0:
+            //connecting
+            alertViewScan = [alertVCScan alertConnecting];
+            break;
+        case 1:{
+            //connect success
+            alertViewScan = [alertVCScan alertConnectSuccess];
+            
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissAlert)];
+            [alertViewScan addGestureRecognizer:tap];
+            [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(dismissAlert) userInfo:nil repeats:NO];
+        }
+            break;
+        case 2:{
+            //connect failed
+            alertViewScan = [alertVCScan alertConnectError];
+            
+            UIButton *tryButton = [alertVCScan getTryBurtton];
+            [tryButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIButton *cancelButton = [alertVCScan getCancelButton];
+            [cancelButton addTarget:self action:@selector(connectErrorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [alertViewScan addSubview:tryButton];
+            [alertViewScan addSubview:cancelButton];
+        }
+            break;
+        case 3:
+            //custom alert
+            alertViewScan = [alertVCScan alertCustom:info];
+            break;
+        default:
+            break;
+    }
+    [self.view addSubview:alertViewScan];
+}
 @end

@@ -11,7 +11,8 @@
 #import "AlertViewController.h"
 #import <SafariServices/SafariServices.h>
 
-@interface SetViewController : UIViewController
+@interface SetViewController : UIViewController<BTSmartSensorDelegate>
+@property (strong, nonatomic) SmcGATT *sensor;
 @property (strong, nonatomic) IBOutlet UIButton *setBsckButton;
 @property (strong, nonatomic) IBOutlet UIButton *pairButton;
 @property (strong, nonatomic) IBOutlet UIButton *alarmDurationButton;

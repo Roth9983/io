@@ -23,6 +23,5 @@
 - (IBAction)scanBleDevicePressed:(id)sender;
 - (void)autoConnectTag;
 - (void)stopScan;
-- (void)autoConnectTag2:(NSString *)uuid;
 @end
 
