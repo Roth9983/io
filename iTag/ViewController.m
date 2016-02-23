@@ -38,7 +38,7 @@ UIImageView *imageCircleText;
     [super viewDidLoad];
 
     mainUdf = [NSUserDefaults standardUserDefaults];
-    //[mainUdf removeObjectForKey:@"firstUse"];
+    
     if(![mainUdf objectForKey:@"firstUse"]){
         NSLog(@"first use");
         firstSet = true;
@@ -48,11 +48,8 @@ UIImageView *imageCircleText;
         [mainUdf setInteger:3 forKey:@"beepTime"];
         [mainUdf setObject:[[NSArray alloc] init] forKey:@"door"];
         [mainUdf setObject:[[NSArray alloc] init] forKey:@"keyName"];
-    }else{
-        NSLog(@"! first use\n%@", [mainUdf objectForKey:@"tagID"]);
     }
-    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
-    [mainUdf setObject:version forKey:@"version"];
+
     [mainUdf setObject:@"n" forKey:@"connect"];
     
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]){
@@ -60,8 +57,8 @@ UIImageView *imageCircleText;
     }
    // self.sensor.delegate = (ViewController *) self;
     
-    alertVC = [[AlertViewController alloc] init];
-    scanV = [[ScanViewController alloc] init];
+    alertVC = [AlertViewController new];
+    scanV = [ScanViewController new];
     
     [self setMainUI];
 }
@@ -132,6 +129,7 @@ UIImageView *imageCircleText;
 
 #pragma mark main UI setting
 - (void)setMainUI{
+    //先取得螢幕比例
     float wRatio = [alertVC getSizeWRatio];
     float hRatio = [alertVC getSizeHRatio];
     NSLog(@"ratio : %f, %f", wRatio, hRatio);
@@ -146,6 +144,8 @@ UIImageView *imageCircleText;
         [self.view addSubview:bgMain2];
     }
     
+    //初始化、setImage、setFrame要分開處理
+    //1.各個object先初始化
     powerImageview = [UIImageView new];
     settingsButton = [UIButton new];
     vCardButton = [UIButton new];
@@ -153,6 +153,7 @@ UIImageView *imageCircleText;
     autoPhotoButton = [UIButton new];
     searchButton = [UIButton new];
     
+    //2.設定圖片(Normal、Highlight)
     [settingsButton setImage:[UIImage imageNamed:@"setting01"] forState:UIControlStateNormal];
     [vCardButton setImage:[UIImage imageNamed:@"vcard01"] forState:UIControlStateNormal];
     [doorAccessButton setImage:[UIImage imageNamed:@"key01"] forState:UIControlStateNormal];
@@ -167,6 +168,10 @@ UIImageView *imageCircleText;
     
     powerImageview.image = [UIImage imageNamed:@"power01"];
 
+    //3.先設定好圖片再設定frame，就不用一一輸入圖片size，可以用object.imageView.image.size.width(height)代替
+    //  不然就得一直開啟原始圖檔抓取圖片大小做size運算
+    //  配合小毛的圖檔設計，分別處理ipad跟iphone
+    //  3.5"螢幕通常要另外處理
     float cRatio = (wRatio+hRatio)/2;
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
         flashView = [[UIView alloc] initWithFrame:CGRectMake(-600, 0, 600, 735)];
@@ -239,6 +244,7 @@ UIImageView *imageCircleText;
     powerImageview.hidden = true;
 }
 
+//字串圖轉圈動畫
 - (void)runSpinAnimationOnView:(UIView*)view clockwise:(int)clockwise rotation:(float)rotation{
     NSLog(@"~ animation");
     CABasicAnimation* rotationAnimation;
@@ -252,6 +258,7 @@ UIImageView *imageCircleText;
     [view.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
 }
 
+//閃光動畫
 - (void)handleFlash{
     NSLog(@"handleFlash");
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
@@ -300,10 +307,10 @@ UIImageView *imageCircleText;
     }
     
     if([mainUdf boolForKey:@"fore"])
-        
         [self runSpinAnimationOnView:imageCircleText clockwise:1 rotation:0.05];
 }
 
+//連線錯誤alert搭配的button選項
 - (void)connectErrorButtonPressed:(UIButton *)button{
     if(button.tag == 0){
         NSLog(@"try");

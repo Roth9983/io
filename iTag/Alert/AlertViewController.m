@@ -3,7 +3,7 @@
 //  iTag
 //
 //  Created by Jason Tsai on 2015/12/31.
-//  Copyright © 2015年 NFC. All rights reserved.
+//  Copyright © 2015年 朱若慈. All rights reserved.
 //
 
 #import "AlertViewController.h"
@@ -18,7 +18,11 @@
 
 float w, h, wRatio, hRatio;
 float fontSize;
-
+/**
+ *	@author Roth, 16-02-23 14:02:36
+ *
+ *	取得螢幕尺寸並運算各種alert背景及附屬button的大小及位置
+ */
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.

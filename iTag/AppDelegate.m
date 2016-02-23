@@ -3,7 +3,7 @@
 //  iTag
 //
 //  Created by 張政源 on 2015/10/13.
-//  Copyright © 2015年 NFC. All rights reserved.
+//  Copyright © 2015年 朱若慈. All rights reserved.
 //
 
 #import "AppDelegate.h"

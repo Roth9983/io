@@ -3,7 +3,7 @@
 //  iTag
 //
 //  Created by Jason Tsai on 2015/12/22.
-//  Copyright © 2015年 NFC. All rights reserved.
+//  Copyright © 2015年 朱若慈. All rights reserved.
 //
 
 #import "SetViewController.h"
@@ -34,9 +34,9 @@ AlertViewController *alertVCSet;
 {
     NSLog(@"set");
     if(![[setUdf objectForKey:@"tagID"] isEqualToString:@"defaultID"]){
-    BleController *shareBERController = [BleController sharedController];
-    self.sensor = shareBERController.sensor;
-    self.sensor.delegate = self;
+        BleController *shareBERController = [BleController sharedController];
+        self.sensor = shareBERController.sensor;
+        self.sensor.delegate = self;
     }
     NSLog(@"Name : %@",self.sensor.activePeripheral.name);
 }
@@ -56,12 +56,6 @@ AlertViewController *alertVCSet;
     float hRatio = [alertVCSet getSizeHRatio];
 
     [self.view addSubview:[alertVCSet setBGImageView:[UIImage imageNamed:@"bg_setting"]]];
-    
-//    [setBsckButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-//    [pairButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-//    [alarmDurationButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-//    [versionLabel setTranslatesAutoresizingMaskIntoConstraints:YES];
-//    [aboutUsButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     
     setBsckButton = [UIButton new];
     pairButton = [UIButton new];
@@ -94,7 +88,7 @@ AlertViewController *alertVCSet;
     }
     
     
-    versionLabel.text = [setUdf objectForKey:@"version"];
+    versionLabel.text = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
     versionLabel.textColor = [UIColor whiteColor];
     
     [aboutUsButton setImage:[UIImage imageNamed:@"aboutus01"] forState:UIControlStateNormal];

@@ -3,7 +3,7 @@
 //  iTag
 //
 //  Created by Jason Tsai on 2015/12/22.
-//  Copyright © 2015年 NFC. All rights reserved.
+//  Copyright © 2015年 朱若慈. All rights reserved.
 //
 
 #import "SearchViewController.h"
@@ -245,8 +245,6 @@ UIImageView *tapAlertAnimationImageView;
     [self.view addSubview:tapAlertAnimationImageView];
     
     [self ioAnimation2];
-    
-//    [tapAlertAnimationImageView removeFromSuperview];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -292,6 +290,7 @@ UIImageView *tapAlertAnimationImageView;
     [view.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
 }
 
+//io動畫
 - (void)ioAnimation{
     NSMutableArray *images = [[NSMutableArray alloc] init];
     for(int i=1;i<31;i++){
@@ -309,6 +308,7 @@ UIImageView *tapAlertAnimationImageView;
     [ioAnimationImageView startAnimating];
 }
 
+//點擊io出現的對話框動畫
 - (void)ioAnimation2{
     NSLog(@"ioAnimation2");
     NSMutableArray *images = [[NSMutableArray alloc] init];

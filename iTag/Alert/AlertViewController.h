@@ -3,7 +3,7 @@
 //  iTag
 //
 //  Created by Jason Tsai on 2015/12/31.
-//  Copyright © 2015年 NFC. All rights reserved.
+//  Copyright © 2015年 朱若慈. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
