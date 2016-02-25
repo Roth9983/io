@@ -5,27 +5,29 @@
 //  Created by Jason Tsai on 2015/9/1.
 //  Copyright (c) 2015年 朱若慈. All rights reserved.
 //
-
-// output action :
-// - (IBAction)loadToBandVCard:(id)sender;
-//
-// output data :
-// a dictionary save in
-// [[NSUserDefaults standardUserDefaults] setObject:vCardInfo forKey:@"vCardinfo"]
-//    keys :
-//      name
-//      company
-//      title
-//      companyPhone
-//      address
-//      phone1
-//      phone2
-//      email1
-//      email2
-//      web
-//      skype
-//      QQ
-//      note
+/**
+ *	@author Roth, 16-02-25 14:02:15
+ *
+ *  @brief - 每次編輯完都把textfield跟textview內的資料存進NSUserDefaults
+ *
+ *	@param IBAction	[[NSUserDefaults standardUserDefaults] setObject:vCardInfo forKey:@"vCardinfo"]
+     keys :
+       name
+       company
+       title
+       companyPhone
+       address
+       phone1
+       phone2
+       email1
+       email2
+       web
+       skype
+       QQ
+       note
+ *
+ *
+ */
 
 #import "VCardViewController.h"
 
@@ -42,7 +44,7 @@
 
 @synthesize sensor;
 
-NSMutableDictionary *vCardInfo;
+NSMutableDictionary *vCardInfo;//存名片資料
 
 AlertViewController *alertVCVCard;
 UIView *alertViewVcard;
@@ -207,6 +209,7 @@ CGFloat animatedDistanceV;
 
 
 #pragma mark text field and text view delegate
+//tap輸入框以外的地方就收起鍵盤
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [nameTextField resignFirstResponder];
@@ -224,6 +227,7 @@ CGFloat animatedDistanceV;
     [noteTextView resignFirstResponder];
 }
 
+//輸入開始時配合鍵盤高度把view往上移
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
     CGFloat MINIMUM_SCROLL_FRACTION = 0.2;
     CGFloat MAXIMUM_SCROLL_FRACTION = 0.8;
@@ -263,6 +267,7 @@ CGFloat animatedDistanceV;
     [UIView commitAnimations];
 }
 
+//輸入完畢後把view移回原位
 - (void)textFieldDidEndEditing:(UITextField *)textfield{
     [self setData];
     
@@ -278,6 +283,7 @@ CGFloat animatedDistanceV;
     [UIView commitAnimations];
 }
 
+//因為有note是用textview所以移動view部分要分開寫
 - (void)textViewDidBeginEditing:(UITextView *)textView{
     CGFloat MINIMUM_SCROLL_FRACTION = 0.2;
     CGFloat MAXIMUM_SCROLL_FRACTION = 0.8;
@@ -330,11 +336,13 @@ CGFloat animatedDistanceV;
     [UIView commitAnimations];
 }
 
+//編輯完畢收起鍵盤
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
     return YES;
 }
 
+//編輯完畢收起鍵盤
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if([text isEqualToString:@"\n"]){
         [textView resignFirstResponder];

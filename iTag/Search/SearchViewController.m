@@ -5,7 +5,13 @@
 //  Created by Jason Tsai on 2015/12/22.
 //  Copyright © 2015年 朱若慈. All rights reserved.
 //
-
+/**
+ *	@author Roth, 16-02-25 14:02:45
+ *
+ *	@brief - 搜尋io
+ *
+ *	
+ */
 #import "SearchViewController.h"
 
 @interface SearchViewController ()

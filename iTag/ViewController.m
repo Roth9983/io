@@ -5,7 +5,21 @@
 //  Created by Jason Tsai on 2015/9/1.
 //  Copyright (c) 2015年 朱若慈. All rights reserved.
 //
-
+/**
+ *	@author Roth, 16-02-25 12:02:30
+ *
+ *	@brief
+        1.設定需要用到的NSUserDefaults key值
+        2.處理已配對狀態下，每次開啟時的自動連線
+            viewDidAppear - 判斷連線狀態並處理連線、設置sensor delegate
+            viewWillDisappear - 記得移除senslr delegate
+        3.設定UI介面（詳細說明註解在setMainUI裡，其它頁面的UI設定方法都相似）
+        4.設定NSUserDefaults的NSNotification以處理臨時斷線或連線
+        5.buttons' action - 前往各頁面
+        6.alert設定 - 對各種連線狀態顯示對應alert（每頁面設定方法相似）
+ *  @note - 電池電量偵測未完成
+ *
+ */
 #import "ViewController.h"
 
 @interface ViewController ()
@@ -15,28 +29,28 @@
 @implementation ViewController
 @synthesize vCardButton, doorAccessButton, autoPhotoButton, settingsButton, searchButton;
 @synthesize powerImageview;
-@synthesize peripheralArray;
-
-NSUserDefaults *mainUdf;
-bool firstSet = false;
-
-ScanViewController *scanV;
-
-AlertViewController *alertVC;
-UIView *alertView;
-
-UIView *flashView;
-NSTimer *flashTimer;
-
-UIScrollView *scrollCircleText;
-UIImageView *imageCircleText;
-
+@synthesize peripheralArray;//記錄搜尋到的peripheral用來跟配對的比較，SmcGATT.m有-(void) connect: (CBPeripheral *)peripheral;可以直接連不用比較後再連，但是我測試後都會當機
 @synthesize sensor;
+NSUserDefaults *mainUdf;
+bool firstSet = false;//根據[mainUdf setBool:YES forKey:@"firstUse"]判斷是否為第一次使用。
+
+ScanViewController *scanV;//ScanViewController *scanV; - 若無配對 -> present scan 頁面進行io偵測;已配對 -> 在背後自動連線
+
+AlertViewController *alertVC;//使用各種alert的VC
+UIView *alertView;//要顯示alert的view
+
+UIView *flashView;//閃光動畫的view
+NSTimer *flashTimer;//閃光動畫的時間間隔
+
+UIScrollView *scrollCircleText;//遮擋一半圓形動畫的scroll view
+UIImageView *imageCircleText;//顯示圓形動畫的image view
 
 #pragma mark main view controller life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
+    scanV = [ScanViewController new];
+    alertVC = [AlertViewController new];
     mainUdf = [NSUserDefaults standardUserDefaults];
     
     if(![mainUdf objectForKey:@"firstUse"]){
@@ -55,11 +69,7 @@ UIImageView *imageCircleText;
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]){
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
-   // self.sensor.delegate = (ViewController *) self;
-    
-    alertVC = [AlertViewController new];
-    scanV = [ScanViewController new];
-    
+
     [self setMainUI];
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import "ScanViewController.h"
-//#import "ViewController.h"
 
 #define SCAN_BLE_TIME   5
 @interface ScanViewController ()

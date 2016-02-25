@@ -5,13 +5,13 @@
 //  Created by Jason Tsai on 2015/9/9.
 //  Copyright (c) 2015年 朱若慈. All rights reserved.
 //
-//
-// output action :
-// - (IBAction)loadToBandDoorPressed:(id)sender;
-//
-// output data :
-// an array save in
-// [[NSUserDefaults standardUserDefaults] objectForKey:@"door"]
+/**
+ *	@author Roth, 16-02-25 12:02:03
+ *
+ *  @brief - 門禁ID記錄，較麻煩的是處理各個button, label, textfield, imageview之間的關係
+ *  @note - 傳送資料有bug
+ *
+ */
 
 
 #import "NFCDoorAccessViewController.h"
@@ -22,21 +22,34 @@
 
 @implementation NFCDoorAccessViewController
 @synthesize deleteButton, saveButton, doorBackButton;
-@synthesize keyIDTextfield;
-@synthesize NFCArray;
-@synthesize keyNameArray;
+@synthesize keyIDTextfield;//id輸入框
+@synthesize NFCArray;//紀錄四組id
+@synthesize keyNameArray;//紀錄四組id的命名
 @synthesize loadToBandDoor;
 @synthesize sensor;
 
-int chooseIndexOfKey;
+int chooseIndexOfKey;//現在選擇的key，用白色長方形框框框起來;tap key以外的地方表示沒有選取，chooseIndexOfKey值為4
 
-CGFloat animatedDistance;
+CGFloat animatedDistance;//鍵盤拉起來的高度
 
-UIImageView *keySelectImageview;
+UIImageView *keySelectImageview;//白色框框
 
 UIButton *key1Button, *key2Button, *key3Button, *key4Button;
 UITextField *key1Textfield, *key2Textfield, *key3Textfield, *key4Textfield;
 UIImageView *key1ImageView, *key2ImageView, *key3ImageView, *key4ImageView;
+
+//每隻key的UI組成示意圖
+// ________________________
+//|key1Button              |
+//| _____  _______________ |
+//||key1 ||key1Textfield  ||
+//||image||               ||
+//||view ||               ||
+//||_____||_______________||
+//|________________________|
+//key1Button - 整隻key的tap感應範圍
+//key1ImageView - key左邊顯示是否有記錄的圓形圖案（藍色/橘色）
+//key1Textfield - 可以輸入鑰匙自定義名稱
 
 AlertViewController *alertVCDoor;
 UIView *alertViewDoor;
@@ -74,6 +87,7 @@ UIView *alertViewDoor;
 
 #pragma mark door UI setting
 - (void)setDoorUI{
+    //設定key以外的UI，key UI在下一個method
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
     float w = [alertVCDoor getSizeW];
@@ -106,6 +120,7 @@ UIView *alertViewDoor;
         [loadToBandDoor setFrame:CGRectMake(246*wRatio, 896*hRatio, loadToBandDoor.imageView.image.size.width*wRatio, loadToBandDoor.imageView.image.size.height*hRatio)];
     }
     
+    //防止誤戳
     noTapView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:noTapView];
     UITapGestureRecognizer *tap0 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAtnoTapView)];
@@ -136,6 +151,7 @@ UIView *alertViewDoor;
     [self setKeyUI];
 }
 - (void)setKeyUI{
+    //設定四隻key的UI
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
     
@@ -296,6 +312,7 @@ UIView *alertViewDoor;
 }
 
 - (void)tapActive:(UIGestureRecognizer *)ges{
+    //tap key以外的地方，表示沒有選取任何key
     //NSLog(@"tap at bg");
     keyIDTextfield.text = nil;
     [keySelectImageview setFrame:CGRectMake(0, 0, 0, 0)];
@@ -313,7 +330,7 @@ UIView *alertViewDoor;
 }
 
 - (void)changeKeyUI:(int)index{
-    //delete or save
+    //刪除或儲存後改變UI
     bool editEnable;
     NSString *keytype;
     if([[NFCArray objectAtIndex:index] isEqualToString:@"nil"]){
@@ -434,6 +451,7 @@ UIView *alertViewDoor;
 
 #pragma mark door check key's state
 - (int)checkKeyStorage{
+    //檢查是否已達四隻上限
     int keyStorage = 0;
     for(int i=0;i<4;i++){
         if([[NFCArray objectAtIndex:i] isEqualToString:@"nil"]){
@@ -448,6 +466,7 @@ UIView *alertViewDoor;
 }
 
 - (BOOL)checkKeyAtIndexNotEmptyToDelete:(int)index{
+    //檢查儲存到第幾支key了，接下來要儲存的key要存在第幾格
     BOOL isFull = false;
     //isEdit = false;
     if(![[NFCArray objectAtIndex:index] isEqualToString:@"nil"]){
@@ -466,10 +485,12 @@ UIView *alertViewDoor;
 
 #pragma mark door text field delegate
 - (void)textFieldDone:(UITextField *)textField{
+    //文字輸入完畢，收回鍵盤
     [textField resignFirstResponder];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
+    //開始輸入時整個view上移，以免被鍵盤遮蔽
     CGFloat MINIMUM_SCROLL_FRACTION = 0.2;
     CGFloat MAXIMUM_SCROLL_FRACTION = 0.8;
     CGRect textFieldRect = [self.view.window convertRect:textField.bounds fromView:textField];
@@ -509,6 +530,7 @@ UIView *alertViewDoor;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textfield{
+    //結束輸入時，view回到原位
     if(textfield == keyIDTextfield){
         if(textfield.text.length > 0)
             saveButton.enabled = true;
@@ -543,7 +565,9 @@ UIView *alertViewDoor;
 }
 
 #pragma mark door detect and handle key is selected
+//因為keybutton有一大部分會被keytextfield擋住，所以偵測是否選取到該key要分兩部分(keyButton&keyTextfield)
 - (void)keySelect:(UITextField *)textField{
+    //選取到的key textfield要加上白色框框
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
     
@@ -583,6 +607,7 @@ UIView *alertViewDoor;
 }
 
 - (void)keyButtonPressed:(UIButton *)sender{
+    //選取到的key button要加上白色框框
     float wRatio = [alertVCDoor getSizeWRatio];
     float hRatio = [alertVCDoor getSizeHRatio];
     
@@ -648,6 +673,7 @@ UIView *alertViewDoor;
     }
 }
 
+//刪除key
 - (IBAction)deleteButtonPressed:(id)sender {
     [NFCArray removeObjectAtIndex:chooseIndexOfKey];
     [NFCArray insertObject:@"nil" atIndex:chooseIndexOfKey];
@@ -655,6 +681,7 @@ UIView *alertViewDoor;
     [self setNFCData];
 }
 
+//儲存key
 - (IBAction)saveButtonPressed:(id)sender {
     if(keyIDTextfield.text.length>0){
         for(int i=0;i<4;i++){
